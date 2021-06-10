@@ -1,0 +1,388 @@
+\usepackage{luatexja-otf}
+\usepackage{luatexja-fontspec}
+%\usepackage{unicode-math}
+\usepackage{varwidth}
+\usepackage{environ}
+\usepackage{tikz}
+\usepackage[most]{tcolorbox}
+\usepackage[explicit]{titlesec}%%%%% <--- changed 
+\usepackage[outline]{contour}%%%%% <--- changed
+\usepackage{luacode}%%%% <--- changed
+\usepackage{ifthen}%%%% <--- changed
+\usepackage{indentfirst}%%%% <--- changed
+\usepackage{caption}
+\usepackage{fancybox}
+\usepackage{pdfpages}
+
+\captionsetup[table]{belowskip=5pt}
+\captionsetup[table]{aboveskip=1\zh}
+
+\usetikzlibrary{shapes}
+\usetikzlibrary{calc,shapes.callouts,shapes.arrows}
+\usetikzlibrary{positioning}
+\tcbuselibrary{breakable}
+
+\newfontfamily\chapnum{ArialNarrow-Bold}
+\setmainfont{GenJyuuGothic-Normal}
+\setmainjfont[BoldFont=GenJyuuGothic-Bold]{GenJyuuGothic-Normal}
+%\setmathfont{Fira Math}
+
+\setlength{\parindent}{1\zh}
+\setlength{\jot}{1.5\zh}
+
+
+\tikzset{
+    max width/.style args={#1}{
+        execute at begin node={\begin{varwidth}{#1}},
+        execute at end node={\end{varwidth}}
+    }
+}
+
+
+\begin{luacode}
+function TitleE(s)     
+  t = string.gsub(s,"：(.*)","")
+  tex.sprint(t)
+end
+function TitleJ(s)     
+  t = string.gsub(s,"(.*)：","")
+  if (t==s)
+  then
+    tex.sprint("")
+  else
+    tex.sprint(t)
+   end
+end
+\end{luacode}
+
+\definecolor{ao}{HTML}{3E6DA9} %%%%% <--- changed
+\definecolor{ao2}{HTML}{6B9DE8} %%%%% <--- changed
+\definecolor{bar}{HTML}{E8E8E8}%%%%% <--- changed
+\definecolor{gmoji}{HTML}{555555}%%%%% <--- changed
+\definecolor{gmoji2}{HTML}{7B7B7B}%%%%% <--- changed
+\definecolor{gback}{HTML}{F0F0F0}%%%%% <--- changed
+\definecolor{gline}{HTML}{D0D0D0} %%%%% <--- changed
+\definecolor{gline2}{HTML}{B0B0B0} %%%%% <--- changed
+\definecolor{daidai}{HTML}{F1BF63} %%%%% <--- changed
+\definecolor{dline}{HTML}{E39300} %%%%% <--- changed
+\definecolor{emph}{HTML}{E39300} %EBBC66
+
+\hypersetup{
+  linkcolor=ao,
+  filecolor=ao,
+  citecolor=ao,
+  urlcolor=ao,
+}
+
+\renewcommand\familydefault{\sfdefault}
+\renewcommand{\emph}[1]{\textbf{\color{emph} #1}}
+\newcommand{\TabName}{分 析}
+\newcommand{\jlogo}{\raisebox{-.3\zh}{\includegraphics[height=1\zh]{images/misc/jamovi-logo.pdf}}}
+\newcommand{\infig}[1]{\raisebox{-.2\zh}{\includegraphics[height=1.2\zh]{images/assets/#1}}}
+\renewcommand{\topfraction}{.85}
+\renewcommand{\bottomfraction}{.7}
+\renewcommand{\textfraction}{.15}
+\renewcommand{\floatpagefraction}{.66}
+\setcounter{topnumber}{3}
+\setcounter{bottomnumber}{3}
+\setcounter{totalnumber}{4}
+
+\newlength\tabpos
+
+\newcommand{\makeChapterBase}{%
+	\begin{tikzpicture}[remember picture, overlay]
+		\node[fill=ao, minimum width=\pagewidth+5, minimum height=15mm] at ([yshift=-7.5mm]current page.north){}; %青色のバー
+		\node[fill=gback, minimum width=\pagewidth+5, minimum height=45mm] at ([yshift=-37.5mm]current page.north){}; %グレーのエリア
+		\node[anchor=south,text=white] at ([xshift=15mm,yshift=-12.5mm]current page.north west){\fontsize{18}{20}\selectfont ≡};
+		\node[anchor=south,text=white] at ([xshift=-15mm,yshift=-12.5mm]current page.north east){\fontsize{18}{20}\selectfont \rotatebox[origin=c]{90}{\textbf{…}}};
+	\end{tikzpicture}
+	\makeTab{1}{0}% #1:pos  #2 0:title 1:tab
+	\makeTab{2}{0}% #1:pos  #2 0:title 1:tab
+	\makeTab{3}{0}% #1:pos  #2 0:title 1:tab
+}%
+\newcommand{\makeTab}[2]{
+	\ifcase#1\relax\or
+		\setlength{\tabpos}{35mm}
+		\renewcommand{\TabName}{導 入}
+	\or
+		\setlength{\tabpos}{65mm}
+		\renewcommand{\TabName}{分 析}
+	\or
+		\setlength{\tabpos}{95mm}
+		\renewcommand{\TabName}{付 録}
+	\fi
+
+	\ifcase#2
+		\begin{tikzpicture}[remember picture, overlay]
+			\node[anchor=south,text=white] at ([xshift=\tabpos,yshift=-12.5mm]current page.north west){\fontsize{16}{20}\selectfont \TabName};
+		\end{tikzpicture}
+	\or
+		\begin{tikzpicture}[remember picture, overlay]
+			\node[fill=gback, minimum width=30mm, minimum height=13mm, anchor=south] at ([xshift=\tabpos,yshift=-16mm]current page.north west){}; %タブ
+			\node[anchor=south,text=ao] at ([xshift=\tabpos,yshift=-12.5mm]current page.north west){\fontsize{16}{20}\selectfont \TabName};
+		\end{tikzpicture}
+	\fi
+}
+
+\newcommand{\NumberedChapter}[1]{
+	\makeChapterBase
+	\makeTab{2}{1}% #1:pos  #2 0:title 1:tab
+	\begin{tikzpicture}[remember picture, overlay]
+	 	\node[anchor=south] at ([xshift=20mm,yshift=-42mm]current page.north west) {\fontsize{60}{60}\selectfont\chapnum\contourlength{4pt}\contour{ao2}{\protect\color{white}\textbf{\thechapter}}};
+ 		\node[] at ([xshift=20mm,yshift=-50mm]current page.north west) {\fontsize{18}{24}\selectfont Chapter};
+	 	\node[text width = 18cm,
+	 		  text = gmoji,
+	 	      anchor=base west] at ([xshift=40mm,yshift=-42mm]current page.north west){\fontsize{48}{60}\selectfont\chapnum\directlua{TitleE(\luastring{#1})}};
+	 	\node[text width = 18cm,
+	 		  text = gmoji,
+	 		  align = right,
+	 	      anchor=east] at ([xshift=-30mm,yshift=-72mm]current page.north east){\fontsize{36}{24}\selectfont\textbf{\directlua{TitleJ(\luastring{#1})}}};
+	 	\path[draw = gline,%
+              ultra thick, 	
+	 	     ] ([yshift=-60mm]current page.north west)--([yshift=-60mm]current page.north east);
+		\node[] at ([xshift=-40mm,yshift=-37.5mm]current page.north east) {\includegraphics[height=25mm]{images/chapter/\directlua{TitleE(\luastring{#1})}}};
+	\end{tikzpicture}
+}
+
+\newcommand{\IntroChapter}[2]{
+	\makeChapterBase
+	\makeTab{1}{1}% #1:pos  #2 0:title 1:tab
+	\begin{tikzpicture}[remember picture, overlay]
+	 	\node[text width = 18cm,
+	 		  text = gmoji,
+	 	      anchor=base west] at ([xshift=20mm,yshift=-42mm]current page.north west){\fontsize{48}{60}\selectfont\textbf{#1}};
+	 	\path[draw = gline,%
+              ultra thick, 	
+	 	     ] ([yshift=-60mm]current page.north west)--([yshift=-60mm]current page.north east);
+		\node[] at ([xshift=-40mm,yshift=-37.5mm]current page.north east) {\includegraphics[height=25mm]{images/chapter/#2}};
+	\end{tikzpicture}
+}
+
+\newcommand{\IndexChapter}[2]{
+	\begin{tikzpicture}[remember picture, overlay]
+	 	\node[text width = 18cm,
+	 		  text = gmoji,
+	 	      anchor=base west] at ([xshift=20mm,yshift=-42mm]current page.north west){\fontsize{48}{60}\selectfont\textbf{#1}};
+	 	\path[draw = gline,%
+              ultra thick, 	
+	 	     ] ([yshift=-60mm]current page.north west)--([yshift=-60mm]current page.north east);
+		\node[] at ([xshift=-40mm,yshift=-37.5mm]current page.north east) {\includegraphics[height=25mm]{images/chapter/Index}};
+	\end{tikzpicture}
+}
+
+
+\newcommand{\AppendixChapter}[1]{
+	\makeChapterBase
+	\makeTab{3}{1}% #1:pos  #2 0:title 1:tab
+	\begin{tikzpicture}[remember picture, overlay]
+	 	\node[anchor=south] at ([xshift=20mm,yshift=-45mm]current page.north west) {\includegraphics[height=20mm]{images/chapter/Appendix}};
+ 		\node[] at ([xshift=20mm,yshift=-50mm]current page.north west) {\fontsize{18}{24}\selectfont Appendix};
+	 	\node[text width = 18cm,
+	 		  text = gmoji,
+	 	      anchor=base west] at ([xshift=40mm,yshift=-42mm]current page.north west){\fontsize{48}{60}\selectfont\textbf{#1}};
+	 	\path[draw = gline,%
+              ultra thick, 	
+	 	     ] ([yshift=-60mm]current page.north west)--([yshift=-60mm]current page.north east);
+		\node[] at ([xshift=-40mm,yshift=-37.5mm]current page.north east) {\includegraphics[height=25mm]{images/chapter/Func}};
+	\end{tikzpicture}
+}
+
+%%%%% env
+\newenvironment{jmvformula}{%
+	\VerbatimEnvironment
+	\begin{center}%
+	\begin{tcolorbox}[%
+		colframe=gline,
+		colback=gmoji!2!white,
+		width=.9\textwidth,
+		]
+	\begin{Verbatim}}
+	{\end{Verbatim}\vspace{-1.5\zh}\end{tcolorbox}\end{center}}
+
+\newenvironment{jmvmenu}{%
+	\begin{center}%
+	\begin{tcolorbox}[%
+		title=分析メニュー,
+		colframe=ao,
+		colbacktitle=ao,
+		colback=ao!2!white,
+		breakable,
+		width=.9\textwidth,
+		]\small\addtolength{\leftmargini}{-3\labelsep}%
+	}%
+	{\end{tcolorbox}\end{center}}
+
+\newenvironment{jmvribbon}{%
+	\begin{center}%
+	\begin{tcolorbox}[%
+		title=ツールボタン,
+		colframe=ao,
+		colbacktitle=ao,
+		colback=ao!2!white,
+		breakable,
+		width=.9\textwidth,
+		]\small\addtolength{\leftmargini}{-3\labelsep}%
+	}%
+	{\end{tcolorbox}\end{center}}
+
+\newenvironment{jmvvar}{%
+	\begin{center}%
+	\begin{tcolorbox}[%
+		title=変数一覧,
+		colframe=daidai,
+		colbacktitle=daidai!30!white,
+		coltitle=daidai!10!black,
+		colback=daidai!2!white,
+		breakable,
+		width=.9\textwidth
+		]\small\addtolength{\leftmargini}{-3\labelsep}%
+	}%
+	{\end{tcolorbox}\end{center}}
+
+\newenvironment{jmvsettings}{%
+	\begin{center}%
+	\begin{tcolorbox}[%
+		title=設定項目,
+		colframe=gmoji,
+		colbacktitle=gmoji,
+		colback=gmoji!2!white,
+		breakable,
+		width=.9\textwidth,
+		]\small\addtolength{\leftmargini}{-3\labelsep}%
+	}%
+	{\end{tcolorbox}\end{center}}
+
+\newenvironment{jmvfunctions}{%
+	\begin{center}%
+	\begin{tcolorbox}[%
+		title=関数一覧,
+		colframe=gmoji,
+		colbacktitle=gmoji,
+		colback=gmoji!2!white,
+		breakable,
+		width=.9\textwidth,
+		]\small\addtolength{\leftmargini}{-3\labelsep}%
+	}%
+	{\end{tcolorbox}\end{center}}
+
+\newenvironment{jmvblue}{%
+	\begin{center}%
+	\begin{tcolorbox}[%
+		colframe=ao,
+		colbacktitle=ao,
+		colback=ao!2!white,
+		breakable,
+		width=.9\textwidth,
+		]\small\addtolength{\leftmargini}{-3\labelsep}%
+	}%
+	{\end{tcolorbox}\end{center}}
+
+\newenvironment{jmvorange}{%
+	\begin{center}%
+	\begin{tcolorbox}[%
+		colframe=daidai,
+		colbacktitle=daidai!30!white,
+		coltitle=daidai!10!black,
+		colback=daidai!2!white,
+		breakable,
+		width=.9\textwidth
+		]\small\addtolength{\leftmargini}{-3\labelsep}%
+	}%
+	{\end{tcolorbox}\end{center}}
+
+\newenvironment{jmvgray}{%
+	\begin{center}%
+	\begin{tcolorbox}[%
+		colframe=gline,
+		colbacktitle=gmoji,
+		colback=gmoji!2!white,
+		breakable,
+		width=.9\textwidth,
+		]\small\addtolength{\leftmargini}{-3\labelsep}%
+	}%
+	{\end{tcolorbox}\end{center}}
+
+
+%%%% ここから章タイトルの設定
+\titleformat{\chapter}[display]{\sffamily}{}{10pt}{%
+	\thispagestyle{empty}
+  \NumberedChapter{#1}
+}
+\titlespacing*{\chapter}{0pt}{0pt}{30pt} %% l u b<-----changed
+\titleformat{name=\chapter,numberless}[display]{\sffamily}{}{10pt}{%
+	\ifthenelse{\equal{#1}{目次}}{
+  	\thispagestyle{empty}
+	  \makeChapterBase
+	  \makeTab{1}{1}% #1:pos  #2 0:title 1:tab
+	  \IndexChapter{目次}{Index}
+	 }{}
+}%
+\titlespacing*{name=\chapter,numberless}{0pt}{0pt}{30pt} %% l u b<-----changed
+
+%%%% ここからセクションタイトルの設定
+\titleformat{\section}[display]{\sffamily}{}{18pt}{%
+	\clearpage
+	\begin{tcolorbox}[
+        title = \fontsize{16}{16}\selectfont\thesection\hspace{1em}{\directlua{TitleE(\luastring{#1})}},%
+	    colback=white,%
+	    colframe=ao,%
+	    sharp corners,%
+	]%
+	{\centering\fontsize{24}{24}\selectfont\textcolor{gmoji}{\directlua{TitleJ(\luastring{#1})}}}
+    \end{tcolorbox}%
+}%
+\titlespacing*{\section}{0pt}{0pt}{0pt} %% l u b<-----changed
+
+%%%% ここからサブセクションタイトルの設定
+\titleformat{\subsection}[display]{\sffamily}{}{12pt}{%
+	\vspace{5cm}\penalty-200\vspace{-5cm}\noindent
+	\begin{tcolorbox}[
+	    colback=bar,%
+	    colframe=gline2,%
+	    sharp corners,%
+	]%
+	\raisebox{-.25\zh}{\includegraphics[height=1\zh]{images/assets/modules-analyses-arrow-r}}\textcolor{gmoji2}{| \thesubsection\hspace{1\zw}#1}
+    \end{tcolorbox}%
+}[]%
+\titleformat{name=\subsection,numberless}[display]{\sffamily}{}{12pt}{%
+	\vspace{5cm}\penalty-200\vspace{-5cm}\noindent
+	\begin{tcolorbox}[
+	    colback=bar,%
+	    colframe=gline2,%
+	    sharp corners,%
+	]%
+	\raisebox{-.25\zh}{\includegraphics[height=1\zh]{images/assets/modules-analyses-arrow-r}}\textcolor{gmoji2}{| \thesubsection\hspace{1\zw}#1}
+    \end{tcolorbox}%
+}%
+
+%%%% ここからサブサブセクションタイトルの設定
+\titleformat{name=\subsubsection,numberless}[display]{}{}{1em}{%
+    \textbf{#1}
+}%
+%\titlespacing*{name=\subsubsection,numberless}{-1\zh}{1\zh}{0pt} %% l u b<-----changed
+
+%%%% ここからパラグラフタイトルの設定
+\titleformat{name=\paragraph}[runin]{}{}{1em}{%
+    \raisebox{-.3\zh}{\includegraphics[height=1.5\zh]{images/assets/action-box-checked}}\ \textbf{#1}\hspace*{1\zw}
+}%
+\titlespacing*{name=\paragraph}{-1\zh}{1\zh}{0pt} %% l u b<-----changed
+\titleformat{name=\paragraph,numberless}[runin]{}{}{1em}{%
+    \raisebox{-.3\zh}{\includegraphics[height=1.5\zh]{images/assets/action-box-checked}}\ \textbf{#1}\hspace*{1\zw}
+}%
+\titlespacing*{name=\paragraph,numberless}{-1\zh}{1\zh}{0pt} %% l u b<-----changed
+
+%%%% ここからサブパラグラフタイトルの設定
+\titleformat{name=\subparagraph}[runin]{}{}{1em}{%
+    \raisebox{-.4\zh}{\includegraphics[height=1.5\zh]{images/assets/action-radio-selected}}\ \textbf{#1}\hspace*{1\zw}
+}%
+\titlespacing*{name=\subparagraph}{-1\zh}{1\zh}{0pt} %% l u b<-----changed
+\titleformat{name=\subparagraph,numberless}[runin]{}{}{1em}{%
+    \raisebox{-.4\zh}{\includegraphics[height=1.5\zh]{images/assets/action-radio-selected}}\ \textbf{#1}\hspace*{1\zw}
+}%
+\titlespacing*{name=\subparagraph,numberless}{-1\zh}{1\zh}{0pt} %% l u b<-----changed
+
+\let\oldmaketitle\maketitle
+\AtBeginDocument{\let\maketitle\relax}
+
+\widowpenalty=10000
+\clubpenalty=10000

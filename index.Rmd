@@ -1,0 +1,89 @@
+--- 
+title: "jamovi完全攻略ガイド"
+author: "芝田 征司"
+date: "`r Sys.Date()`"
+output: 
+  pdf_document:
+    extra_dependencies:["flafter"]
+papersize: a5j
+biblio-style: apalike
+link-citations: null
+colorlinks: yes
+fontsize: 12pt
+site: bookdown::bookdown_site
+description: 本書は初めてjamoviを使用する人のためのガイドです。
+github-repo: rstudio/bookdown
+documentclass: bxjsbook
+classoption: lualatex, ja=standard
+cover-image: images/cover.jpg
+---
+
+
+# はじめに {-#preface}
+`r if(knitr::is_latex_output()){'\\IntroChapter{はじめに}{Intro}'}`
+
+```{r, echo =F}
+jlogo <- function(){
+  if(knitr::is_latex_output()){
+    x<-'\\jlogo{}'
+  } else {
+    x<-'<jamovi></jamovi>'
+  }
+  return(x)
+}
+
+infig <- function(img){
+  if(knitr::is_latex_output()){
+    x<-paste('\\infig{',img,'.pdf}',sep='')
+  } else {
+    x<-paste('![inline](images/assets/',img,'.svg)',sep='')
+  }
+  return(x)
+}
+
+```
+
+
+`r jlogo()`は，高度な統計手法をできるだけ簡単に使用できるようにすることを目的として作成された統計ソフトウェアです。操作はマウス（トラックパッド）によるメニュー選択が基本で，複雑なコマンドを入力したりする必要はありません。jamoviと同じようにマウスで操作できる統計ソフトウェアとして非常に有名なものに[SPSS](https://www.ibm.com/jp-ja/analytics/spss-statistics-software)があり，大学を含め，さまざまな機関で統計処理や統計法の学習に使用されていますが，SPSSは非常に高価なソフトウェアであり，個人で気軽に購入できるようなものではないため，大学のコンピューター室でしか課題作業ができない（家で課題をできない）というような問題がありました。
+
+
+しかし，近年ではオープンソース^[プログラムの中身が公開されていて，誰でも自由に使えるソフトウェアのことです。]の統計解析環境である[R](https://www.r-project.org)が専門家の間で広く使われるようになっています。オープンソースであるRは基本的に無料で使用できるため，誰もが自由に自分のPCにインストールして統計処理を行えるのです。ただし，Rはコマンドを入力して実行するという形式で分析を進めていくため，使いこなすにはコンピューター・プログラミングの基本的な知識が必要です。そのため，無料で使用できるとはいえ，入門者にはかなりハードルの高いものでした。
+
+このような状況を打開するために作られたのがjamoviです^[同様のソフトに[JASP](https://jasp-stats.org/)もあります。見た目や使用方法はどちらも非常によく似ていますが，こちらは*ベイズ推定*に重点をおいたものになっています。]。jamoviはSPSS以上に単純な操作で使用できますが，内部ではRが動作しており，統計計算の正確さは専門家が使用するソフトウェアと同じです。また，jamoviもRと同様にオープンソース・ソフトウェアであり無料ですので，自分が所有するPCに自由にインストールして使用することができます。
+
+このように，jamoviはとくに統計法の入門者にとって最適と言えるソフトウェアなのですが，現在のところソフトウェアが英語版のみであることや，とくに日本語で得られる情報が非常に少ないことが導入の妨げになっているようです。そこで本書では，jamoviの基本的な使用方法からjamoviの分析ツールとその設定オプションの使い方まで，簡単なサンプルデータを用いて実践的に解説を行いました。本書の構成はjamoviのメニューや設定項目に沿った形になっていますので，jamoviの入門書としてだけでなく，リファレンスマニュアルとしても使えるものになっているのではないかと思います。
+
+なお，本書はjamoviのバージョン1.8.0.0を元に作成していますが，jamoviは開発が活発に進んでおり，バージョンがどんどん新しくなっていくため，本書の画面と実際の画面が異なっていることがあるかもしれません。その点はご了承ください。
+
+本書はjamoviの解説書であって，統計法の教科書ではありません。その点は誤解のないようにお願いします。統計法の教科書や入門書ではありませんので，統計手法の詳細については説明していません。ただし，それぞれの分析を利用するにあたって知って必要と思われる最低限の考え方については，各分析手法の最初に説明するようにしています。
+
+また，本書はすべて，Rの[bookdown](https://bookdown.org/)パッケージを用いて作成されています。本書のソースコードおよびサンプルデータは，[GitHub](https://github.com/sbtseiji/jmv_compguide.git)から入手可能です。
+
+
+* Version 1.0.0 2021年6月10日公開
+
+<br/>
+<br/>
+```{=html}
+<div style="text-align: right"> 芝田 征司（SHIBATA Seiji） </div>
+```
+```{=latex}
+\vspace{2\zh}
+\hfill 芝田 征司（SHIBATA Seiji）
+```
+<br/>
+<br/>
+
+```{=html}
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="クリエイティブ・コモンズ・ライセンス" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />本書は <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">クリエイティブ・コモンズ 表示 - 非営利 - 継承 4.0 国際 ライセンス</a>の下に提供されています。
+```
+
+```{=latex}
+\vfill
+\begin{center}
+\includegraphics[width=3cm]{images/CC-BY-NC-SA}
+\end{center}
+本書は，\href{http://creativecommons.org/licenses/by-nc-sa/4.0/}{クリエイティブ・コモンズ 表示 - 非営利 - 継承 4.0 国際 ライセンス}の下に提供されています。
+```
+
+

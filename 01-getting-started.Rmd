@@ -1,0 +1,217 @@
+```{r, echo =F,message=FALSE}
+  source('rscripts/_utility.R')
+```
+
+# Getting Started：jamoviの導入 {#ch:introduction}
+
+この章ではまず，jamoviのインストール方法やソフトウェア全体の基本操作について見ていきます。jamoviはメニューやツールが非常によく整理されて作られていますので，他の統計ソフトに比べて操作に迷うことはだいぶ少ないはずです。
+
+また，jamoviは心理学者が中心に開発していることもあって，心理学系の論文やレポートに適した設定が初めからなされています。そのため，普段の使用で設定を変更する必要はほとんどないかもしれませんが，念のため，一通りの設定項目についても見ておきましょう。
+
+
+## Installation：jamoviのインストール {#sec:intro-install}
+
+まずはソフトウェアのインストールからです。jamoviウェブサイトの[ダウンロードページ](https://www.jamovi.org/download.html)から，ソフトウェアをダウンロードしましょう。ダウンロードページには「1.x.xx solid」というダウンロードボタンと「1.x.xx current」というダウンロードボタンの2種類があります（図\@ref(fig:jamovi-download)）。
+
+このうちの「solid 」のほうは「安定版」で，最新の機能は含まれていませんが，動作が安定しているバージョンです。もう一方の「current」は最新版で，最新の機能が取り入れられているのですが，やや動作が不安定かもしれません。どちらを選ぶか迷った場合は，ひとまず「solid（安定板）」を選んでおくとよいでしょう。
+
+なお，本書ではバージョン1.8.0を元に説明します^[執筆時点での安定版は1.6.23ですが，1.8.0.0から重要な機能がいくつか追加されているためです。]。
+
+```{r jamovi-download, fig.cap='jamoviのダウンロード画面（Mac版）', echo=FALSE}
+knitr::include_graphics("images/intro/jamovi-download.png")
+```
+
+
+#### Windowsでのインストール方法 {-#sub:intro-install-win}
+
+Windowsを使用している人の場合，ダウンロードしたファイルをダブルクリックするとインストーラが実行されるので，あとはインストーラの指示に従っていけばインストールは完了です。
+
+#### Macでのインストール方法 {-#sub:intro-install-mac}
+
+Macを使用している人の場合，ダウンロードしたファイルをダブルクリックして開き，その中にある「jamovi」を「アプリケーション」フォルダにドラッグ・アンド・ドロップすればインストールは完了です。
+
+#### LinuxまたはChromebookでのインストール方法 {-#sub:intro-install-other}
+
+最近のバージョンでは，LinuxやChromebook^[Chromebookにインストールするには「Linux」サポートが有効になっている必要があります。]でもjamoviを利用できるようになりました。Linuxの場合にはディストリビューションごとに設定方法が少しずつ異なりますので，ここでは具体的なインストール方法は省略します。ウェブサイトに示された手順にしたがってインストールしてください。
+
+
+## Starting Up：起動と終了{#sec:intro-launch-quit}
+
+まずはソフトウェアの起動と終了の仕方を見ておきましょう。
+
+### jamoviの起動 {#sub:intro-launch}
+
+Windowsの場合，jamoviを起動するにはデスクトップに配置されている`r infig('logo-v')`アイコンをダブルクリックしてください。デスクトップにアイコンがない場合，「スタートメニュー」の「すべてのアプリ」から「jamovi」を選択すれば起動することができます。Macの場合は，「アプリケーション」フォルダまたはLaunchpadで`r infig('logo-v')`を選択して実行してください。
+
+jamoviを起動すると図\@ref(fig:jamovi-screen)のような画面が現れます。
+
+```{r jamovi-screen, fig.cap='jamoviのアプリケーション画面', echo=FALSE}
+knitr::include_graphics("images/intro/jamovi-overview.png")
+```
+
+基本的な使い方については「[基本操作](#sec:basics)」で説明しますので，ここでは起動できるかどうかだけ確認しておきましょう。
+
+### jamoviの終了 {#sub:intro-quit}
+
+jamoviの終了方法は，開いているjamoviウィンドウをすべて閉じるだけです。作業中の内容がある場合には，忘れずに作業内容を保存しておいてください。ファイルの保存方法についてはこの後の「[ファイル操作](#sec:intro-file)」で説明します。
+
+## Settings：環境設定{#sec:intro-option}
+
+画面最上部，青色の帯の一番右端にある「**⋮**」をクリックすると，ウィンドウ右側にjamoviの画面表示や動作に関する設定項目が表示されます（図\@ref(fig:options-menu)）。
+
+
+```{r options-menu, fig.cap='環境設定メニュー', echo=FALSE }
+knitr::include_graphics("images/intro/options-menu.png")
+```
+
+実際の使用場面では環境設定を変更する必要はほとんどないと思いますが，どのような設定項目があるのかを一通りみておくことにしましょう（図\@ref(fig:options-window)）。
+
+```{r options-window, fig.cap='環境設定項目', echo=FALSE }
+knitr::include_graphics("images/intro/options.png")
+```
+
+これらの項目のうち，数値と*p値*の書式については説明が必要かもしれません（図\@ref(fig:options-number-format)）。
+
+
+```{r options-number-format, fig.cap='数値表示形式の設定', echo=FALSE}
+knitr::include_graphics("images/intro/options-results.png")
+```
+
+「Number format（数値書式）」と「p-value format（p値書式）」の表示形式は，「significant figures（有効桁数）」と「decimal places（小数位）」の２通りの方法で設定できます。「significant figures（有効桁数）」は，結果を表示させる際に整数部分を含めて最低何桁まで表示させるかを指定する方法で，有効桁数を３桁（`3 sf`）にすると，「1」は「1.00」，「1.3」は「1.30」，「12.3」は「12.3」というように，少なくとも３桁分の数値が表示されるようになります。なお，指定した有効桁数よりも整数部分の桁数が多い場合は，整数部分のみが表示され，小数点以下は表示されません。たとえば，有効桁数３桁（`3 sf`）で結果の値が「9999.999」であったような場合には，画面上では「9999」という表示になります。
+
+これに対し，「decimal places（小数位）」は小数点以下を何桁目まで表示させるかという設定方法で，小数位を２桁（`2 dp`）にすると，「1」は「1.00」，「1.3」は「1.30」，「12.3」は「12.30」と表示されます。先ほどの有効桁数の場合とよく似ていますが，「12.3」の場合には表示方法が異なっている点に注意してください。小数位（`dp`）による指定では，整数部分が何桁あるかにかかわらず，小数点以下は指定した桁数だけ表示されるのです。またこの場合，指定した桁数よりも数値が短い場合には，その分を「0」で埋める形で表示されます。たとえば，小数位２桁（`2 dp`）の指定で結果の数値が「12」であった場合には，画面上には「12.00」と表示されます。
+
+実験レポートの場合，小数点以下の数値の桁数がそろっていることが求められるため，「小数位２桁（`2 dp`）」あるいは「小数位３桁（`3 dp`）」の設定にしておくのがよいでしょう。なお，この設定はあくまでも結果の表示に関するものなので，ここを変更しても入力中のデータの表示は変わりません。
+
+
+#### Syntax mode：シンタックスモード {-#syn}
+
+環境設定項目の「Syntax mode」は，「シンタックスモード」と呼ばれる特殊モードのオン・オフです。jamoviは内部でRのスクリプト^[小規模なプログラムのことです。]を実行しており，このモードをオンにすると，分析のために使用したRスクリプトが結果画面に表示されます。将来的にjamoviからRへとステップアップしたい人にとって，このような機能はとても役立つことでしょう。
+
+
+
+
+## Files：ファイル操作{#sec:intro-file}
+
+### ファイルメニュー{#subsec:intro-file-menu}
+jamoviでデータファイルを読み込んだり作業内容を保存したりする場合には，画面左上の「**≡**」を使用します（図\@ref(fig:file-menu)）。
+
+```{r file-menu, fig.cap='ファイルメニュー', echo=FALSE}
+knitr::include_graphics("images/intro/file.png")
+```
+
+
+#### New：新規{-#subsec:intro-file-new}
+
+新規に別のファイルを作成したい場合は，ファイルメニューの「**New**」を使用します。「**New**」を実行すると，アプリの起動直後と同じ空白のファイルが作成されます。
+
+#### Open：開く{-#subsec:intro-file-open}
+
+「**Open**」メニューは，すでにあるjamoviファイルやデータファイルを開く際に使用します（図\@ref(fig:file-open)）。
+
+```{r file-open, fig.cap='Open（開く）メニュー',echo=F, fig.align='center'}
+knitr::include_graphics("images/intro/file-open.png")
+```
+
+「**Open**」を選択すると，さらに「**This PC**」と「**Data Library**」の２つのメニューが表示されます。「**This PC**」はそのコンピューター上のファイル，「**Data Library**」はデータライブラリのファイルを開くことを意味しています。ExplorerやFinderなど，OS標準のファイルブラウザ（ファイルマネージャ）でファイルを選択して開きたい場合には，「**This PC**」が選択されていることを確認してから「`r infig('place-browse')` Browse」をクリックしてください。
+
+jamoviで開くことのできるデータファイルは，次の通りです。
+
+:::{.jmvblue data-latex=""}
++ jamoviファイル（拡張子「.omv」）
++ コンマ区切りテキストファイル（.csv，.txt）
++ LibreOffice（Microsoft Officeの互換ソフト）形式ファイル（.ods）
++ Excelファイル（.xlsx）
++ SPSS（市販統計ソフト）ファイル（.sav，.zsav，.por）
++ R（オープンソースの統計ソフト）ファイル（.RData，.RDS）
++ Stata（市販統計ソフト）ファイル（.dta）
++ SAS（市販統計ソフト）ファイル（.xpt，.sas7bdat）
++ JASP（オープンソースの統計ソフト）ファイル（.jasp）
+:::
+
+また，これらのデータ形式に加え，jamoviのテンプレートファイル（分析手順が保存されたファイル「.omt」）を開くこともできます。
+
+
+#### Import：読み込み{-#sec:intro-file-import}
+
+「**Import**」のメニューは，いま作業中のファイルに別のデータファイルの内容を追加する場合に使用します。「**Open**」とよく似ているのですが，「**Import**」の場合には現在開いているデータファイルの内容が読み込んだファイルの内容に更新される点が異なります。なお，開いているデータファイルと「Import」したファイルで変数名が異なる場合には，それらは新たな*変数*としてデータファイルに追加されます。
+
+
+#### Save, Save As：保存，別名で保存{-#sec:intro-file-save}
+
+入力したデータや分析結果をjamoviファイルとして保存するには「**Save**」または「**Save As**」を使用します。保存場所を指定するには「`r infig('place-browse')` Browse」をクリックしてください。なお，jamoviファイルの拡張子は「.omv」です。
+
+#### Export：書き出し{-#sec:intro-file-export}
+
+作業中のデータや分析結果をワープロソフトや別の統計ソフトなどで使用したい場合に使用します。書き出し可能なデータ形式は以下の通りです。
+
+
+:::{.jmvblue data-latex=""}
++ 別の統計ソフト用にデータを書き出す
+  - コンマ区切りテキストファイル（.csv） 
+  - Rオブジェクト（.rds，RData）
+  - SPSSファイル（.sav）
+  - SASファイル（.sas7bdat，.xpt）
+  - Stataファイル（.dta）
++ 分析結果をワープロなどで利用できるように書き出す
+  - PDFファイル（.pdf）
+  - Webページ（.html，.htm）
+  - LaTeXバンドル^[LaTeXはオープンソースの組版システムです。]（.zip）
++ 分析手順をテンプレートとして書き出す
+  - jamoviテンプレート（.omt）　
+:::
+
+## Exercise：実践 ファイルを開く{#sec:intro-exercise1}
+
+#### jamoviデータファイルの場合 {-#jamovidatafilenobaai}
+
+それでは，ファイルを開く練習をしましょう。まず，次の練習用データファイルをダウンロードしてください。
+
++ 練習用データファイル1（[intro_data01.omv](https://github.com/sbtseiji/jmv_compguide/tree/master/data/omv/intro_data01.omv)）
+
+このファイルはjamoviのデータファイルなので，通常はこのファイルをダブルクリックすればjamoviで開くことができるのですが，ここではファイルメニューを使ってこのファイルを開いてみます。
+
+##### 手順1 {-#iti}
+「≡」をクリックしてファイルメニューを開きます。
+
+
+##### 手順2 {-#ni}
+「Open」で「This PC」が選択されていることを確認します。
+
+##### 手順3 {-#san}
+
+「`r infig('place-browse')` Browse」をクリックします（図\@ref(fig:file-exercise)）。
+
+```{r file-exercise, fig.cap='ファイルを開く手順',echo=F, fig.align='center'}
+knitr::include_graphics("images/intro/exercise.png")
+```
+
+##### 手順4 {-#yon}
+
+目的のデータファイルを選択します。
+
+
+図\@ref(fig:file-exercise-done)のような画面が表示されたら完了です。
+
+```{r file-exercise-done, fig.cap='データファイルを開いた様子',echo=F, fig.align='center'}
+knitr::include_graphics("images/intro/exercise-done.png")
+```
+
+
+
+#### テキストファイル・Excelファイルの場合 {-#exceldatafilenobaai}
+
+テキストファイル（`.csv`）やExcelファイル（`.xlsx`）として保存されているデータファイルの開き方も手順は同じです。次の２つのデータファイルをダウンロードしてください。
+
++ 練習用データファイル2（[intro_data01.csv](data/csv/intro_data01.csv)）
+
++ 練習用データファイル3（[intro_data01.xlsx](data/xlsx/intro_data01.xlsx)）
+
+この２つのデータファイルをそれぞれjamoviで開いてみましょう。テキストファイル（`.csv`）とExcelファイル（`.xlsx`）のどちらから先に開いても構いません。どちらの場合も，先ほどと同じ画面になるはずです。
+
+なお，テキストファイルやExcelファイルを使用する場合，データファイルの1行目は変数名とみなされます。実際のデータは2行目以降に入力されている必要がありますので注意してください。また，テキストファイルでは，各データ値の区切りには半角のコンマ（`,`）を使用します（図\@ref(fig:file-exercise-example)）。
+
+```{r file-exercise-example, fig.cap='データファイルの入力例',echo=F, fig.align='center'}
+knitr::include_graphics("images/intro/exercise-example.png")
+```
+
