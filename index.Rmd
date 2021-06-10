@@ -11,7 +11,7 @@ link-citations: null
 colorlinks: yes
 fontsize: 12pt
 site: bookdown::bookdown_site
-description: 本書は初めてjamoviを使用する人のためのガイドです。
+description: フリーの統計ソフト jamovi の使用方法についての日本語ガイドです。データの編集方法から分散分析や因子分析の設定方法まで、基本機能のすべてについて一通り説明しています。
 github-repo: rstudio/bookdown
 documentclass: bxjsbook
 classoption: lualatex, ja=standard

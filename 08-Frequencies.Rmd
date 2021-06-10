@@ -72,7 +72,7 @@ jamoviでは，従来型の一般的な方法による2項検定の他に，ベ�
 
 先ほどは説明のために70%ちょうどの56人から前後1人の幅で考えましたが，実際の場面ではこれよりもっとばらつくことは普通にあるでしょう。極端な話，80人全員が課題に通過する場合や，その逆に全員が通過できない場合というのも，非常にまれなことには違いないですが，確率的には0ではありません。
 
-そこで，母集団における通過率が70%である場合に，80人の標本で通過者が0人である場合から80人である場合までのすべての場合について確率を算出し，それを図示したのが図\@ref(tab:frequencies-binomial-distribution)です。
+そこで，母集団における通過率が70%である場合に，80人の標本で通過者が0人である場合から80人である場合までのすべての場合について確率を算出し，それを図示したのが図\@ref(fig:frequencies-binomial-distribution)です。
 
 ```{r frequencies-binomial-distribution, fig.cap='母集団における通過率が70％の場合の確率の分布', echo=FALSE}
 knitr::include_graphics("images/frequencies/binomial-distribution.png")
@@ -84,7 +84,7 @@ knitr::include_graphics("images/frequencies/binomial-distribution.png")
 
 ### 分析手順 {#sub:frequencies-binomial-procedure}
 
-分析に入る前に，先ほどの調査結果を次のようにスプレッドシートに入力しましょう（図\@ref(tab:frequencies-data01)）。なお，人数は実際には連続変数ですが，分析の都合上，ここでは「名義型（`r infig('variable-nominal')` Nominal）」として設定してください。
+分析に入る前に，先ほどの調査結果を次のようにスプレッドシートに入力しましょう（図\@ref(fig:frequencies-data01)）。なお，人数は実際には連続変数ですが，分析の都合上，ここでは「名義型（`r infig('variable-nominal')` Nominal）」として設定してください。
 
 <!-- -->
 ```{r frequencies-data01, fig.cap='サンプルデータ', echo=FALSE}
@@ -361,7 +361,7 @@ knitr::include_graphics("images/frequencies/n-outcomes-goodness-set-count.png")
 
 ### Expected Proportions：期待比率 {#sub:frequencies-n-outcomes-expected-proportions}
 
-比較対象となる比率を設定するには，`r groupbar('Expected Prportions')`（期待比率）を展開し，各変数値の「Ratio（比）」のところに適切な数値を入力します（図\@ref(fig:frequencies-n-outcomes-goodness-proportion)）。
+比較対象となる比率を設定するには，`r groupbar('Expected Prportions')`（期待比率）を展開し，各変数値の「Ratio（比）」のところに適切な数値を入力します（図\@ref(fig:frequencies-n-outcomes-goodness-set-proportion)）。
 
 ```{r frequencies-n-outcomes-goodness-set-proportion, fig.cap='各スタイルの度数を設定', echo=FALSE}
 knitr::include_graphics("images/frequencies/n-outcomes-goodness-set-proportion.png")

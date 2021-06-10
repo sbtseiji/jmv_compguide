@@ -9,8 +9,6 @@
 *.lot
 *.gz
 *.ai
-*.RData
-*.Rhistory
-*.Rproj.user
+*.R*
 _book
 .Rproj.user
