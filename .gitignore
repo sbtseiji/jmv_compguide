@@ -13,3 +13,4 @@
 *.Rhistory
 *.Rproj.user
 _book
+.Rproj.user

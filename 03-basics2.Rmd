@@ -30,7 +30,7 @@ out<-jmvReadWrite::jmvWrite(data01,'data/omv/basics2_data01.omv')
 
 ```
 
-ここでは，次のサンプルデータ（[basics2_data01.omv](data/omv/basics2_data01.omv)）を用いて，jamoviにおける分析の基本的な手順，そして分析作業を効率化してくれるいくつかの機能について見ていくことにしましょう（図\@ref(fig:bs2-data01)）。
+ここでは，次のサンプルデータ（[basics2_data01.omv](https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/basics2_data01.omv)）を用いて，jamoviにおける分析の基本的な手順，そして分析作業を効率化してくれるいくつかの機能について見ていくことにしましょう（図\@ref(fig:bs2-data01)）。
 
 
 ```{r bs2-data01, fig.cap='サンプルデータの中身', echo=FALSE}

@@ -87,7 +87,7 @@ alpha.cronbach %>%
 
 ### 基本手順 {#sub:factor-reliability-analysis-method}
 
-ここでは，このサンプルデータ（[factor_data01.omv](data/omv/factor_data01.omv)）を用いて尺度の内的一貫性について分析してみましょう。このデータは「メッセージアプリ志向尺度」を用いて測定されたもので，次の変数が含まれています。なお，各質問への回答は，いずれも「1:まったくあてはまらない」から「5:とてもよくあてはまる」までの5段階です（図\@ref(fig:factor-data01)）。
+ここでは，このサンプルデータ（[factor_data01.omv](https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/factor_data01.omv)）を用いて尺度の内的一貫性について分析してみましょう。このデータは「メッセージアプリ志向尺度」を用いて測定されたもので，次の変数が含まれています。なお，各質問への回答は，いずれも「1:まったくあてはまらない」から「5:とてもよくあてはまる」までの5段階です（図\@ref(fig:factor-data01)）。
 
 ```{r factor-data01, fig.cap='サンプルデータ', echo=FALSE}
 knitr::include_graphics("images/factor/data01.png")
@@ -273,7 +273,7 @@ knitr::include_graphics("images/factor/reliability-save-scores.png")
 
 ### 考え方
 
-ここでは次のサンプルデータ（[factor_data02.omv](data/omv/factor_data02.omv)）を用いて主成分分析の基本的な考え方を見ておきましょう。このデータは，ある大学の学生男女計250人を対象に，食堂で提供されている代表的なメニュー6種類に対する満足度を「1:とても不満」から「7:非常に満足」までの7段階でたずねた結果です（図\@ref(fig:factor-data02)）。このデータを用い，この食堂で提供されているメニューに対する総合的な満足度について分析したいと思います。
+ここでは次のサンプルデータ（[factor_data02.omv](https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/factor_data02.omv)）を用いて主成分分析の基本的な考え方を見ておきましょう。このデータは，ある大学の学生男女計250人を対象に，食堂で提供されている代表的なメニュー6種類に対する満足度を「1:とても不満」から「7:非常に満足」までの7段階でたずねた結果です（図\@ref(fig:factor-data02)）。このデータを用い，この食堂で提供されているメニューに対する総合的な満足度について分析したいと思います。
 
 ```{r}
 data02<-read.csv('data/factor_data02.csv')
@@ -747,7 +747,7 @@ knitr::include_graphics("images/factor/efa-basics.png")
 
 ### 基本手順 {#sub:factor-efa-procedure}
 
-ここからは，次のサンプルデータ（[factor_data03.omv](data/omv/factor_data03.omv)）を用いて探索的因子分析の分析手順についてみていくことにしましょう（図\@ref(fig:factor-data03)）。
+ここからは，次のサンプルデータ（[factor_data03.omv](https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/factor_data03.omv)）を用いて探索的因子分析の分析手順についてみていくことにしましょう（図\@ref(fig:factor-data03)）。
 <!-- -->
 
 ```{r factor-data03, fig.cap='サンプルデータ', echo=FALSE}
@@ -1063,7 +1063,7 @@ knitr::include_graphics("images/factor/efa-factor-results.png")
 
 ここでは，先ほどの探索的因子分析で用いたサンプルデータ（オタク傾向）の分析結果をもとに，確認的因子分析の考え方を見ていきましょう。先ほどの分析では，9つの質問への回答の背後に3つの共通因子が推定されました。そして，9つの質問のうち，Q1からQ3は「収集欲求」因子のみの負荷が高く，Q4からQ6は「非社交性」因子，Q7からQ9は「熱中傾向」因子のみの負荷が高いというように，各質問への回答には3つの因子のうちいずれか1つのみが強く影響している単純構造にあることが示されました。
 
-そして，このような構造が，海外のオタクにおいてもあてはまるといえるかどうかを知りたいとしましょう。そこで，前回の調査で使用した9つの質問を英訳し，英語圏に住む成人400名を対象に調査を実施しました。その結果がこのサンプルデータ（[factor_data04.omv](data/omv/factor_data04.omv)）に入力されています（図\@ref(fig:factor-data04)）。
+そして，このような構造が，海外のオタクにおいてもあてはまるといえるかどうかを知りたいとしましょう。そこで，前回の調査で使用した9つの質問を英訳し，英語圏に住む成人400名を対象に調査を実施しました。その結果がこのサンプルデータ（[factor_data04.omv](https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/factor_data04.omv)）に入力されています（図\@ref(fig:factor-data04)）。
 
 <!-- -->
 ```{r factor-data04, fig.cap='サンプルデータ', echo=FALSE}

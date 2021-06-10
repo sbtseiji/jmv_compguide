@@ -51,7 +51,7 @@ r.pearson %>%
 
 ### 分析手順 {#sub:regression-correlation-analysis}
 
-ここではまず，次のサンプルデータ（[regression_data01.omv](data/omv/regression_data01.omv)）を用いて相関分析の方法について見ていきましょう。このデータファイルには，100家族分の父親・母親・娘の身長データが格納されています（図\@ref(fig:regression-data01)）。
+ここではまず，次のサンプルデータ（[regression_data01.omv](https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/regression_data01.omv)）を用いて相関分析の方法について見ていきましょう。このデータファイルには，100家族分の父親・母親・娘の身長データが格納されています（図\@ref(fig:regression-data01)）。
 
 ```{r}
 data01<-read.csv('data/regression_data01.csv')
@@ -257,7 +257,7 @@ knitr::include_graphics("images/regression/partial-basic.png")
 
 ### 分析手順 {#sub:regression-partial-analysis}
 
-ここでは，相関行列のところで用いたのと同じサンプルデータ（[regression_data01.omv](data/omv/regression_data01.omv)）を用いて，部分相関係数・偏相関係数を算出してみましょう。部分相関係数や偏相関係数の算出には，Analysesタブの「`r infig('analysis-regression')`  Regression」から「Partial Correlation（偏相関）」を選択します（図\@ref(fig:regression-partial-menu)）。
+ここでは，相関行列のところで用いたのと同じサンプルデータ（[regression_data01.omv](https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/regression_data01.omv)）を用いて，部分相関係数・偏相関係数を算出してみましょう。部分相関係数や偏相関係数の算出には，Analysesタブの「`r infig('analysis-regression')`  Regression」から「Partial Correlation（偏相関）」を選択します（図\@ref(fig:regression-partial-menu)）。
 
 ```{r regression-partial-menu, fig.cap='部分相関係数・偏相関係数の算出', echo=FALSE}
 knitr::include_graphics("images/regression/partial-menu.png")
@@ -391,7 +391,7 @@ $$
 
 ### 基本手順 {#sub:regression-LR-howto}
 
-それでは回帰分析の手順を見ておきましょう。ここでも，サンプルデータは[相関行列](#sec:regression-cormat)のところで用いたのと同じデータ（[regression_data01.omv](data/omv/regression_data01.omv)）を用います。（線形）回帰分析を実行するには，Analysesタブの「`r infig('analysis-regression')`  Regression」から「Linear Regression（線形回帰）」を選択してください（図\@ref(fig:regression-LR-menu)）。
+それでは回帰分析の手順を見ておきましょう。ここでも，サンプルデータは[相関行列](#sec:regression-cormat)のところで用いたのと同じデータ（[regression_data01.omv](https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/regression_data01.omv)）を用います。（線形）回帰分析を実行するには，Analysesタブの「`r infig('analysis-regression')`  Regression」から「Linear Regression（線形回帰）」を選択してください（図\@ref(fig:regression-LR-menu)）。
 
 ```{r regression-LR-menu, fig.cap='線形回帰', echo=FALSE}
 knitr::include_graphics("images/regression/lr-menu.png")
@@ -599,7 +599,7 @@ knitr::include_graphics("images/regression/lr-model-builder-result2.png")
 
 ### Reference Levels：基準レベル{#sub:regression-LR-reflevels}
 
-今度は別のデータで回帰分析を行ってみましょう。次のサンプルデータ（[regression_data02.omv](data/omv/regression_data02.omv)）をダウンロードして開いてください。このデータファイルは，先ほどと同じく100家族分の身長データなのですが，父母の身長と子供の身長，そしてその子供の性別が記録されています（図\@ref(fig:regression-data02)）。
+今度は別のデータで回帰分析を行ってみましょう。次のサンプルデータ（[regression_data02.omv](https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/regression_data02.omv)）をダウンロードして開いてください。このデータファイルは，先ほどと同じく100家族分の身長データなのですが，父母の身長と子供の身長，そしてその子供の性別が記録されています（図\@ref(fig:regression-data02)）。
 
 ```{r}
 data02<-read.csv('data/regression_data02.csv')
@@ -1095,7 +1095,7 @@ knitr::include_graphics("images/regression/lr-save-residuals.png")
 
 そこでこのような場合には，*ロジスティック回帰分析*と呼ばれる手法がよく用いられます。この手法は，目的変数が名義型や順序型の変数である場合にも適切な結果が得られるように，線形回帰分析の考え方を拡張したものです。ロジスティック回帰分析には，目的変数が2値変数の場合に用いられる*2項ロジスティック回帰分析*，目的変数が複数のカテゴリをもつ名義型変数である場合に用いられる*多項ロジスティック回帰分析*，目的変数が順序型変数である場合に用いられる*順序ロジスティック回帰分析*など，いくつかの種類が存在します。
 
-ここではまず，次のサンプルデータ（[regression_data03.omv](data/omv/regression_data03.omv)）を用いて，2項ロジスティック回帰分析についての基本的な考え方と分析方法を見ていくことにしましょう。
+ここではまず，次のサンプルデータ（[regression_data03.omv](https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/regression_data03.omv)）を用いて，2項ロジスティック回帰分析についての基本的な考え方と分析方法を見ていくことにしましょう。
 
 このデータファイルには，ある災害を体験した成人100名について，PTSD（心的外傷後ストレス障害）の有無とその人の性別と年齢，神経症傾向の強さ，そして体験した出来事の主観的強度が記録されています（図\@ref(fig:regression-data03)）。
 
@@ -1582,7 +1582,7 @@ out<-jmvReadWrite::jmvWrite(data04,'data/omv/regression_data04.omv')
 ```
 
 
-次のサンプルデータ（[regression_data04.omv](data/omv/regression_data04.omv)）を見てください。このデータには，成人200名分の，その人がもつ愛着スタイル（安定型，不安型，回避型）と，性格検査による性格主要5因子の測定値が記録されています（図\@ref(fig:regression-data04)）。
+次のサンプルデータ（[regression_data04.omv](https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/regression_data04.omv)）を見てください。このデータには，成人200名分の，その人がもつ愛着スタイル（安定型，不安型，回避型）と，性格検査による性格主要5因子の測定値が記録されています（図\@ref(fig:regression-data04)）。
 
 ```{r regression-data04, fig.cap='サンプルデータ', echo=FALSE}
 knitr::include_graphics("images/regression/data04.png")
@@ -1677,7 +1677,7 @@ knitr::include_graphics("images/regression/multinomial-results.png")
 
 ## Ordinal Outcomes：順序ロジスティック回帰{#sec:regression-ordinal}
 
-今度は次のサンプルデータ（[regression_data05.omv](data/omv/regression_data05.omv)）について考えてみましょう。このデータには，起床時の気分，睡眠時間，日中ストレス，日中の歩数が200件分記録されています（図\@ref(fig:regression-multinomial-results)）。
+今度は次のサンプルデータ（[regression_data05.omv](https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/regression_data05.omv)）について考えてみましょう。このデータには，起床時の気分，睡眠時間，日中ストレス，日中の歩数が200件分記録されています（図\@ref(fig:regression-multinomial-results)）。
 
 
 

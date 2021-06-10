@@ -6,18 +6,18 @@ language:
     tab: '表'
   ui:
     chapter_name: ['第','章']
-#rmd_files:
-#- index.Rmd
-#- 00-part1.Rmd
-#- 01-getting-started.Rmd
-#- 02-basics.Rmd
-#- 03-basics2.Rmd
-#- 04-part2.Rmd
-#- 04a-exploration.Rmd 
-#- 05-t-tests.Rmd
-#- 06-ANOVA.Rmd
-#- 07-Regression.Rmd
-#- 08-Frequencies.Rmd
-#- 09-Factor.Rmd
-#- 10-part3.Rmd
-#- 10a-Appendix.Rmd
+rmd_files:
+- index.Rmd
+- 00-part1.Rmd
+- 01-getting-started.Rmd
+- 02-basics.Rmd
+- 03-basics2.Rmd
+- 04-part2.Rmd
+- 04a-exploration.Rmd 
+- 05-t-tests.Rmd
+- 06-ANOVA.Rmd
+- 07-Regression.Rmd
+- 08-Frequencies.Rmd
+- 09-Factor.Rmd
+- 10-part3.Rmd
+- 10a-Appendix.Rmd

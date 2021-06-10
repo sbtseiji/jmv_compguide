@@ -36,7 +36,7 @@ out<-jmvReadWrite::jmvWrite(data01,'data/omv/exploration_data01.omv')
 
 まずは「`r infig('analysis-descriptives')` Exploration（探索）」ツールから見ていきましょう。このツールはデータを記述要約するためのものです。データの特徴を知るためには欠かせないツールですので，使い方をしっかり理解しましょう。
 
-この分析ツールの使い方を見るために，簡単なサンプルデータ（[exploration_data01.omv](data/omv/exploration_data01.omv)）を用いることにします（図\@ref(fig:exploration-sample)）。
+この分析ツールの使い方を見るために，簡単なサンプルデータ（[exploration_data01.omv](https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/exploration_data01.omv)）を用いることにします（図\@ref(fig:exploration-sample)）。
 
 ```{r exploration-sample, fig.cap='サンプルデータ', echo=FALSE}
 knitr::include_graphics("images/exploration/exploration-sample.png")

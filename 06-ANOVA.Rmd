@@ -55,7 +55,7 @@ out<-jmvReadWrite::jmvWrite(data01,'data/omv/anova_data01.omv')
 
 ### 考え方 {#sub:ANOVA-oneway-basics}
 
-ここでは，次のサンプルデータ（[anova_data01.omv](data/omv/anova_data01.omv)）を用いて分散分析の基本的な考え方について見ていくことにしましょう（図\@ref(fig:ANOVA-data01)）。
+ここでは，次のサンプルデータ（[anova_data01.omv](https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/anova_data01.omv)）を用いて分散分析の基本的な考え方について見ていくことにしましょう（図\@ref(fig:ANOVA-data01)）。
 
 ```{r ANOVA-data01, fig.cap='サンプルデータ', echo=FALSE}
 knitr::include_graphics("images/ANOVA/data01.png")
@@ -330,7 +330,7 @@ out<-jmvReadWrite::jmvWrite(data02,'data/omv/anova_data02.omv')
 
 分散分析の基本的な考え方については，すでに先ほどの1要因分散分析のところで説明しましたが，複数の要因による影響を分析する場合には，複数の要因それぞれによる単独の影響（*主効果*）の他に，それらの要因による組み合わせ効果である*交互作用*についても検討する必要があります。
 
-交互作用は複数要因の組み合わせ効果のことをいうわけですが，ではその「組み合わせ効果」とは具体的にどのようなもののことをいうのでしょうか。ここでは，次のサンプルデータ（[anova_data02.omv](data/omv/anova_data02.omv)）を用いて交互作用がどのようなものであるのかを簡単に見ておくことにしましょう（図\@ref(fig:ANOVA-data02)）。
+交互作用は複数要因の組み合わせ効果のことをいうわけですが，ではその「組み合わせ効果」とは具体的にどのようなもののことをいうのでしょうか。ここでは，次のサンプルデータ（[anova_data02.omv](https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/anova_data02.omv)）を用いて交互作用がどのようなものであるのかを簡単に見ておくことにしましょう（図\@ref(fig:ANOVA-data02)）。
 
 ```{r ANOVA-data02, fig.cap='サンプルデータ', echo=FALSE}
 knitr::include_graphics("images/ANOVA/data02.png")
@@ -1024,7 +1024,7 @@ out<-jmvReadWrite::jmvWrite(data03,'data/omv/anova_data03.omv')
 
 ### 考え方 {#sub:ANOVA-rm-basics}
 
-先ほども説明したように，分散分析が扱う「繰り返しあり」データには非常にさまざまなタイプのものがありますので，それらのすべてについて説明しようとすると，それだけでも1冊の本になってしまうほどです。ですので，ここでは比較的シンプルな次のデータ（[anova_data03.omv](data/omv/anova_data03.omv)）の場合について考えることにしましょう（図\@ref(fig:ANOVA-data03)）。
+先ほども説明したように，分散分析が扱う「繰り返しあり」データには非常にさまざまなタイプのものがありますので，それらのすべてについて説明しようとすると，それだけでも1冊の本になってしまうほどです。ですので，ここでは比較的シンプルな次のデータ（[anova_data03.omv](https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/anova_data03.omv)）の場合について考えることにしましょう（図\@ref(fig:ANOVA-data03)）。
 
 ```{r ANOVA-data03, fig.cap='サンプルデータ', echo=FALSE}
 knitr::include_graphics("images/ANOVA/data03.png")
@@ -1353,7 +1353,7 @@ out<-jmvReadWrite::jmvWrite(data04,'data/omv/anova_data04.omv')
 
 ### 考え方{#sub:ANOVA-ancova-basics}
 
-ここでは次の実験データについて考えてみましょう。勉強中のBGMが勉強効率にどのように影響するのかを調べるため，参加者75名をBGMなし，音楽のみのBGM，歌詞ありのBGMの3つの条件に25名ずつに振り分けて記憶課題を実施しました。記憶課題は，無意味つづり30個が記載されたリストを記憶し，その後，それらの無意味つづりを再生するというものです。なお，参加者を3つの条件に振り分ける際には，作業記憶容量の測定課題を実施し，各条件でその点数ができるだけ均等になるようにしました。次のサンプルデータ（[anova_data04.omv](data/omv/anova_data04.omv)）には，この実験の結果が入力されています（図\@ref(fig:ANOVA-data04)）。
+ここでは次の実験データについて考えてみましょう。勉強中のBGMが勉強効率にどのように影響するのかを調べるため，参加者75名をBGMなし，音楽のみのBGM，歌詞ありのBGMの3つの条件に25名ずつに振り分けて記憶課題を実施しました。記憶課題は，無意味つづり30個が記載されたリストを記憶し，その後，それらの無意味つづりを再生するというものです。なお，参加者を3つの条件に振り分ける際には，作業記憶容量の測定課題を実施し，各条件でその点数ができるだけ均等になるようにしました。次のサンプルデータ（[anova_data04.omv](https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/anova_data04.omv)）には，この実験の結果が入力されています（図\@ref(fig:ANOVA-data04)）。
 
 <!-- -->
 ```{r ANOVA-data04, fig.cap='サンプルデータ', echo=FALSE}
@@ -1512,7 +1512,7 @@ out<-jmvReadWrite::jmvWrite(data05,'data/omv/anova_data05.omv')
 
 ### 考え方 {#sub:ANOVA-mancova-basics}
 
-履修者数が100人を超えるような大規模な講義科目において，通常の教室での講義とオンラインでの講義の間で学生の満足度や理解度に違いがあるかどうかを調べたいとします。そこで，教室で実施されている授業とオンラインでリアルタイムに実施するライブ形式の授業，オンデマンドで動画配信を行う形式の授業のそれぞれから無作為に30科目を選び，それらの科目で満足度と理解度を測定しました。その結果がこのサンプルデータ（[anova-data05.omv](data/omv/anova_data05.omv)）です（図\@ref(fig:ANOVA-data05)）。
+履修者数が100人を超えるような大規模な講義科目において，通常の教室での講義とオンラインでの講義の間で学生の満足度や理解度に違いがあるかどうかを調べたいとします。そこで，教室で実施されている授業とオンラインでリアルタイムに実施するライブ形式の授業，オンデマンドで動画配信を行う形式の授業のそれぞれから無作為に30科目を選び，それらの科目で満足度と理解度を測定しました。その結果がこのサンプルデータ（[anova-data05.omv](https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/anova_data05.omv)）です（図\@ref(fig:ANOVA-data05)）。
 
 
 ```{r ANOVA-data05, fig.cap='サンプルデータ', echo=FALSE}
@@ -1786,7 +1786,7 @@ knitr::include_graphics("images/ANOVA/mancova-posthoc-results3.png")
 
 ### 考え方 {#sub:ANOVA-kw-basics}
 
-ここでは，[1要因分散分析](#sec:ANOVA-oneway)で用いたのと同じデータ（[anova_data01.omv](data/omv/anova_data01.omv)）を用いてクラスカル=ウォリス検定の考え方について見ていくことにしましょう（図\@ref(fig:ANOVA-data01-kw)）。
+ここでは，[1要因分散分析](#sec:ANOVA-oneway)で用いたのと同じデータ（[anova_data01.omv](https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/anova_data01.omv)）を用いてクラスカル=ウォリス検定の考え方について見ていくことにしましょう（図\@ref(fig:ANOVA-data01-kw)）。
 
 ```{r ANOVA-data01-kw, fig.cap='サンプルデータ', echo=FALSE}
 knitr::include_graphics("images/ANOVA/data01.png")
@@ -1893,7 +1893,7 @@ out<-jmvReadWrite::jmvWrite(data06,'data/omv/anova_data06.omv')
 
 ### 考え方{#sub:ANOVA-friedman-basics}
 
-ここでは，次のサンプルデータ（[anova_data06.omv](data/omv/anova_data06.omv)）を用いて，フリードマン検定の基本的な考え方を見ておきましょう。このデータには，空間についての記憶実験の成績が記録されています。この実験では，模型の観察（模型条件），VRによるインタラクティブな空間体験（VR条件），あらかじめ録画された動画視聴による空間体験（動画条件）の3つの条件それぞれで架空の都市空間を体験してもらい，その後，その空間にあった建物の位置や形などについての記憶テストを行いました（図\@ref(fig:ANOVA-data06)）。記憶課題の成績は，数値が大きいほど好成績であることを意味します。
+ここでは，次のサンプルデータ（[anova_data06.omv](https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/anova_data06.omv)）を用いて，フリードマン検定の基本的な考え方を見ておきましょう。このデータには，空間についての記憶実験の成績が記録されています。この実験では，模型の観察（模型条件），VRによるインタラクティブな空間体験（VR条件），あらかじめ録画された動画視聴による空間体験（動画条件）の3つの条件それぞれで架空の都市空間を体験してもらい，その後，その空間にあった建物の位置や形などについての記憶テストを行いました（図\@ref(fig:ANOVA-data06)）。記憶課題の成績は，数値が大きいほど好成績であることを意味します。
 
 ```{r ANOVA-data06, fig.cap='サンプルデータ', echo=FALSE}
 knitr::include_graphics("images/ANOVA/data06.png")

@@ -453,7 +453,7 @@ knitr::include_graphics("images/basics/data-filter-on-off.png")
 
 ## Exercise：調査票データの処理{#sec:practice-handling}
 
-ここまで，jamoviにおけるデータ操作方法の基本について一通り見てきましたので，ここでは実際の分析場面により近い形で実践してみましょう。まず，練習用データファイル（[basics_data01.omv](data/omv/basics_data01.omv)）をjamoviで開いてください。
+ここまで，jamoviにおけるデータ操作方法の基本について一通り見てきましたので，ここでは実際の分析場面により近い形で実践してみましょう。まず，練習用データファイル（[basics_data01.omv](https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/basics_data01.omv)）をjamoviで開いてください。
 
 
 ```{r}

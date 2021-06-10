@@ -52,7 +52,7 @@ knitr::include_graphics("images/ttests/population-sample.png")
 
 ### 分析手順 {#subsec:ttests-independent-analysis}
 
-ここでは次のサンプルデータ（[ttests_data01.omv](data/omv/ttests_data01.omv)）を用いて対応なしt検定の実施方法について見ていきましょう。このデータに含まれている変数は次のとおりです（図\@ref(fig:ttests-data01)）。データファイルには，グループ1とグループ2のそれぞれ20名ずつ，計40名の課題得点データが含まれています。
+ここでは次のサンプルデータ（[ttests_data01.omv](https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/ttests_data01.omv)）を用いて対応なしt検定の実施方法について見ていきましょう。このデータに含まれている変数は次のとおりです（図\@ref(fig:ttests-data01)）。データファイルには，グループ1とグループ2のそれぞれ20名ずつ，計40名の課題得点データが含まれています。
 
 ```{r}
 data01<-read.csv('data/ttest_data01.csv')
@@ -344,7 +344,7 @@ knitr::include_graphics("images/ttests/paired-t.png")
 
 ### 分析手順 {#subsec:ttests-paired-analysis}
 
-ここでは次のサンプルデータ（[ttests_data02.omv](data/omv/ttests_data02.omv)）を用いて対応ありt検定の実施方法を見ていきましょう。このデータは，20名の参加者を対象に，効率的な記憶法の訓練前と訓練後における記憶課題の成績を測定したものです。このデータファイルには，次の3つの変数値が格納されています（図\@ref(fig:ttests-data02)）。
+ここでは次のサンプルデータ（[ttests_data02.omv](https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/ttests_data02.omv)）を用いて対応ありt検定の実施方法を見ていきましょう。このデータは，20名の参加者を対象に，効率的な記憶法の訓練前と訓練後における記憶課題の成績を測定したものです。このデータファイルには，次の3つの変数値が格納されています（図\@ref(fig:ttests-data02)）。
 
 ```{r}
 data02<-read.csv('data/ttest_data02.csv')
@@ -460,7 +460,7 @@ knitr::include_graphics("images/ttests/one-sample-basic.png")
 
 ### 分析手順 {#subsec:ttests-one-analysis}
 
-ここでは次のサンプルデータ（[ttests_data03.omv](data/omv/ttests_data03.omv)）を用いて1標本t検定の実施方法を見ていきましょう（図\@ref(fig:ttests-data03)）。
+ここでは次のサンプルデータ（[ttests_data03.omv](https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/ttests_data03.omv)）を用いて1標本t検定の実施方法を見ていきましょう（図\@ref(fig:ttests-data03)）。
 
 
 ```{r}
@@ -553,7 +553,7 @@ knitr::include_graphics("images/ttests/one-results.png")
 
 この1標本t検定は，対応ありt検定と関係が深い分析手法です。対応ありt検定では，2つのグループ間でペアとなる測定値の差を求め，その測定値の差の平均値が0であるかどうかを検定します。このとき，「ペアとなる測定値の差」そのものを一種の測定変数とみなすと，これは「測定値の差」という変数の平均値が0であるかどうかを検定していることになり，1標本t検定とまったく同じになるのです。つまり，対応ありt検定は1標本t検定の特殊ケースなのです。
 
-そのことをここで確かめておきましょう。対応ありt検定のところで使用したサンプルデータ（[ttests_data02.omv](data/omv/ttests_data02.omv)）を再度開いてください（図\@ref(fig:ttests-data02a)）。
+そのことをここで確かめておきましょう。対応ありt検定のところで使用したサンプルデータ（[ttests_data02.omv](https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/ttests_data02.omv)）を再度開いてください（図\@ref(fig:ttests-data02a)）。
 
 ```{r ttests-data02a, fig.cap='対応ありt検定のサンプルデータ', echo=FALSE}
 knitr::include_graphics("images/ttests/data02.png")

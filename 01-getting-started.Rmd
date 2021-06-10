@@ -167,7 +167,8 @@ jamoviで開くことのできるデータファイルは，次の通りです�
 
 それでは，ファイルを開く練習をしましょう。まず，次の練習用データファイルをダウンロードしてください。
 
-+ 練習用データファイル1（[intro_data01.omv](https://github.com/sbtseiji/jmv_compguide/tree/master/data/omv/intro_data01.omv)）
++ 練習用データファイル1（[intro_data01.omv](https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/intro_data01.omv)）
+
 
 このファイルはjamoviのデータファイルなので，通常はこのファイルをダブルクリックすればjamoviで開くことができるのですが，ここではファイルメニューを使ってこのファイルを開いてみます。
 
@@ -203,9 +204,9 @@ knitr::include_graphics("images/intro/exercise-done.png")
 
 テキストファイル（`.csv`）やExcelファイル（`.xlsx`）として保存されているデータファイルの開き方も手順は同じです。次の２つのデータファイルをダウンロードしてください。
 
-+ 練習用データファイル2（[intro_data01.csv](data/csv/intro_data01.csv)）
++ 練習用データファイル2（[intro_data01.csv](https://github.com/sbtseiji/jmv_compguide/raw/main/data/csv/intro_data01.csv)）
 
-+ 練習用データファイル3（[intro_data01.xlsx](data/xlsx/intro_data01.xlsx)）
++ 練習用データファイル3（[intro_data01.xlsx](https://github.com/sbtseiji/jmv_compguide/raw/main/data/xlsx/intro_data01.xlsx)）
 
 この２つのデータファイルをそれぞれjamoviで開いてみましょう。テキストファイル（`.csv`）とExcelファイル（`.xlsx`）のどちらから先に開いても構いません。どちらの場合も，先ほどと同じ画面になるはずです。
 

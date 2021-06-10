@@ -439,7 +439,7 @@ knitr::include_graphics("images/frequencies/n-outcomes-goodness-results.png")
 
 ここでは，次の例を用いて独立性検定の考え方を見ていきましょう。
 
-成人男女各100人を対象に，「ショートケーキ」，「チーズケーキ」，「チョコレートケーキ」の中でどれが一番好きかを選んでもらいました。その結果をまとめたものがこのサンプルデータ（[frequencies_data03.omv](data/omv/frequencies_data03.omv)）です（図\@ref(fig:frequencies-data03)）。
+成人男女各100人を対象に，「ショートケーキ」，「チーズケーキ」，「チョコレートケーキ」の中でどれが一番好きかを選んでもらいました。その結果をまとめたものがこのサンプルデータ（[frequencies_data03.omv](https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/frequencies_data03.omv)）です（図\@ref(fig:frequencies-data03)）。
 
 ```{r}
 fq.data03<-read.csv('data/frequencies_data03.csv')
@@ -581,7 +581,7 @@ knitr::include_graphics("images/frequencies/chisq-results.png")
 
 ### 層別分析 {#sub:frequencies-chisq-layered}
 
-ここで，もう1つ別のデータをみてみましょう。次のサンプルデータ（[frequencies_data04.omv](data/omv/frequencies_data04.omv)）を開いてください。このデータは先ほどのデータとよく似ていますが，これは先ほどのデータに子供を対象に調査した結果を加えたものになっています（図\@ref(fig:frequencies-data04)）。
+ここで，もう1つ別のデータをみてみましょう。次のサンプルデータ（[frequencies_data04.omv](https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/frequencies_data04.omv)）を開いてください。このデータは先ほどのデータとよく似ていますが，これは先ほどのデータに子供を対象に調査した結果を加えたものになっています（図\@ref(fig:frequencies-data04)）。
 
 ```{r}
 fq.data04<-read.csv('data/frequencies_data04.csv')
@@ -1128,7 +1128,7 @@ knitr::include_graphics("images/frequencies/chisq-plots-bar-xaxis.png")
 
 ### 分析手順{sub:frequencies-mcnemar-procedure}
 
-ここでは，次のサンプルデータ（[frequencies_data05.omv](data/omv/frequencies_data05.omv)）を用いて分析を行いましょう。このデータファイルには以下の変数が含まれています（図\@ref(fig:frequencies-data05)）。
+ここでは，次のサンプルデータ（[frequencies_data05.omv](https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/frequencies_data05.omv)）を用いて分析を行いましょう。このデータファイルには以下の変数が含まれています（図\@ref(fig:frequencies-data05)）。
 
 ```{r}
 data05<-read.csv('data/frequencies_data05.csv')
@@ -1290,7 +1290,7 @@ knitr::include_graphics("images/frequencies/mcnemar-logodds.png")
 
 ### 基本手順{#sub:frequencies-loglin-procedure}
 
-ここでは，独立性検定の層別分析のところで用いたデータ（[frequencies_data04.omv](data/omv/frequencies_data04.omv)）で対数線形回帰分析の実施方法を見ていくことにしましょう。念のため，データファイルに含まれている変数の一覧を示しておきます。
+ここでは，独立性検定の層別分析のところで用いたデータ（[frequencies_data04.omv](https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/frequencies_data04.omv)）で対数線形回帰分析の実施方法を見ていくことにしましょう。念のため，データファイルに含まれている変数の一覧を示しておきます。
 
 :::{.jmvvar data-latex=""}
 + `性別`　性別（男，女）
