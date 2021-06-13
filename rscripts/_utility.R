@@ -41,7 +41,7 @@ blueback <- function(txt){
 
 groupbar <-function(txt){
   if(knitr::is_latex_output()){
-    x<-paste('\\colorbox{bar}{\\raisebox{-.25\\zh}{\\includegraphics[height=1\\zh]{images/assets/modules-analyses-arrow-r}}\\textcolor{gmoji2}{| ',txt,'}}',sep='')
+    x<-paste('\\fcolorbox{gline2}{bar}{\\raisebox{-.25\\zh}{\\includegraphics[height=1\\zh]{images/assets/modules-analyses-arrow-r}}\\textcolor{gmoji2}{| ',txt,'}}',sep='')
   } else {
     x<-paste('<span class="groupbar"><img src="images/assets/modules-analyses-arrow-r.svg" width=10pt/>| ',txt,"</span>",sep='')
   }

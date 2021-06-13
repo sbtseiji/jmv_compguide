@@ -123,6 +123,7 @@ dt{
   padding-left:.5ex;
   padding-right:.5ex;
   font-style: normal;	
+  border:solid 1px #6B6B6B;
 }
 
 img[alt=inline] { height: 2ex; }
