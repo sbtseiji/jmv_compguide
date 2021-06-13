@@ -7,8 +7,10 @@
 *.aux
 *.lof
 *.lot
+*.dcf
 *.gz
 *.ai
-*.R*
+*.Rproj*
+*.RData
+*.Rhistory
 _book
-.Rproj.user
