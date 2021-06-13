@@ -14,3 +14,4 @@
 *.RData
 *.Rhistory
 _book
+.Rproj.user

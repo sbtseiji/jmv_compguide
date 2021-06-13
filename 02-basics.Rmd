@@ -280,9 +280,6 @@ knitr::include_graphics("images/basics/data-variable-levels.png")
 
 なお，その下にある「Retain unused levels（未使用の水準を保持）」のスイッチを「オン」にした場合，データの修正などによって特定の水準値を含む行の数が0になった場合にもその水準値が保持されます。ここを「オフ」にした場合には，データ中に含まれていない水準値は「Levels」から削除されます。
 
-```{=latex}
-\clearpage
-```
 
 さて，これでサンプルデータの入力と設定は完了です。変数の設定画面を閉じるとスプレッドシートは図\@ref(fig:data-sample-data-complete)のようになっているはずです。
 

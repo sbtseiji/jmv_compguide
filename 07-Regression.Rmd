@@ -651,10 +651,6 @@ knitr::include_graphics("images/regression/lr-reference01.png")
 knitr::include_graphics("images/regression/lr-reference02.png")
 ```
 
-```{=latex}
-\clearpage
-```
-
 すると，図\@ref(fig:regression-lr-reference-results)のような結果が得られます。
 
 
