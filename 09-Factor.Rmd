@@ -116,13 +116,13 @@ knitr::include_graphics("images/factor/reliability-setting.png")
 ```
 
 :::{.jmvsettings data-latex=""}
-+ Items（項目）　分析対象の項目（変数）を指定します
-+ **Scale Statistics**（尺度統計量）　尺度全体についての統計量を算出します
-+ **Additional Options**（追加オプション）　追加の設定を行います
-+ **Item Statistics**（項目統計量）　各項目（変数）に関する統計量を算出します
-+ **Additional Options**（追加オプション）　結果表示に関するその他の設定です
-+ **Reverse Scaled Items**（逆転項目）　逆転項目に関する設定を行います
-+ **Save**（保存）　計算結果を変数値として保存します
++ Items（項目）　分析対象の項目（変数）を指定します。
++ **Scale Statistics**（尺度統計量）　尺度全体についての統計量を算出します。
++ **Additional Options**（追加オプション）　追加の設定を行います。
++ **Item Statistics**（項目統計量）　各項目（変数）に関する統計量を算出します。
++ **Additional Options**（追加オプション）　結果表示に関するその他の設定です。
++ `r groupbar('Reverse Scaled Items')`（逆転項目）　逆転項目に関する設定を行います。
++ `r groupbar('Save')`（保存）　計算結果を変数値として保存します。
 :::
 
 この画面で，内的一貫性の指標を算出したい質問の回答値が入った変数を指定します。通常は1つの尺度に含まれている質問すべてを指定しますが，その尺度が複数の下位尺度^[1つの尺度の中でさらに小区分に分けられているもののことです。たとえば，ある性格特性尺度が外向性尺度，神経症傾向尺度など複数の小尺度からなる場合，外向性尺度や神経症尺度のことをその性格特性尺度の下位尺度と呼びます。]から構成されている場合には，1つの下位尺度に含まれている質問のみを指定します。サンプルデータのメッセージアプリ志向尺度は「Q1」から「Q5」までの5つの質問で構成されていますので，これら5つを「Items（項目）」の領域に移動します（図\@ref(fig:factor-reliability-set-var)）。
@@ -169,10 +169,10 @@ knitr::include_graphics("images/factor/reliability-cronbach.png")
 ここには，次の4つの項目があります。
 
 :::{.jmvsettings data-latex=""}
-- Cronbach's α（クロンバックのアルファ）　尺度全体のクロンバックのアルファを算出します
-- McDonald's ω（マクドナルドのオメガ）　尺度全体のマクドナルドのオメガを算出します
-- Mean（平均値）　尺度全体の平均値を算出します
-- Standard deviation（標準偏差）　尺度全体の標準偏差を算出します
+- Cronbach's α（クロンバックのアルファ）　尺度全体のクロンバックのアルファを算出します。
+- McDonald's ω（マクドナルドのオメガ）　尺度全体のマクドナルドのオメガを算出します。
+- Mean（平均値）　尺度全体の平均値を算出します。
+- Standard deviation（標準偏差）　尺度全体の標準偏差を算出します。
 :::
 
 これらの項目すべてにチェックを入れると，結果の表は図\@ref(fig:factor-reliability-statistics-results)のようになります。
@@ -382,22 +382,23 @@ knitr::include_graphics("images/factor/pca-setting.png")
 
 :::{.jmvsettings data-latex=""}
 + **Method**（方法）
-  - Rotation（回転）　主成分の回転法を設定します
+  - Rotation（回転）　主成分の回転法を設定します。
 + **Number of Components**（主成分の個数）
-  - Based on parallel analysis（平行分析に基づいて決定）　平行分析の結果をもとに主成分の個数を決定します
-  - Based on eigenvalue（固有値に基づいて決定）　固有値の大きさが指定値以上主成分を採用します
-  - Fixed number（個数指定）　主成分の個数を直接指定します
+  - Based on parallel analysis（平行分析に基づいて決定）　平行分析の結果をもとに主成分の個数を決定します。
+  - Based on eigenvalue（固有値に基づいて決定）　固有値の大きさが指定値以上の主成分を採用します。
+  - Fixed number（個数指定）　主成分の個数を直接指定します。
 + **Assumption Checks**（前提チェック）
-  - Bartlett's test of sphericity（バートレットの球面性検定）　バートレットの球面性検定を実施します
-  - KMO measure of sampling adequacy（KMO標本妥当性指標）　標本妥当性指標（MSA）を算出します
+  - Bartlett's test of sphericity（バートレットの球面性検定）　バートレットの球面性検定を実施します。
+  - KMO measure of sampling adequacy（KMO標本妥当性指標）　標本妥当性指標（MSA）を算出します。
 + **Factor Loadings**（因子負荷）
-  - Hide loadings below ...（これ未満の負荷を隠す）　絶対値の小さい負荷量を非表示にします
-  - Sort loadings by size（負荷量の大きさで並び替え）　負荷量の絶対値が大きい順に変数を並び替えて表示します
+  - Hide loadings below ...（これ未満の負荷を隠す）　絶対値の小さい負荷量を非表示にします。
+  - Sort loadings by size（負荷量の大きさで並び替え）　負荷量の絶対値が大きい順に変数を並び替えて表示します。
 + **Additional Output**（追加の出力）
-  - Component summary（主成分の要約）　各主成分について要約量を算出します
-  - Component correlations（主成分の相関）　各主成分の間の相関を算出します
-  - Initial eigenvalues（回転前の初期値）　回転前の固有値とその寄与率，累積寄与率を算出します
-  - Scree plot（スクリープロット）　スクリープロットを表示します
+  - Component summary（主成分の要約）　各主成分について要約量を算出します。
+  - Component correlations（主成分の相関）　各主成分の間の相関を算出します。
+  - Initial eigenvalues（回転前の固有値）　回転前の固有値とその寄与率，累積寄与率を算出します。
+  - Scree plot（スクリープロット）　スクリープロットを表示します。
++ `r groupbar('Save')`（保存）　分析結果を新たな変数に保存します。
 :::
 
 この設定画面で，主成分分析の対象となる変数（「パスタ」から「ドリア」まで）を「Variables（変数）」欄に移動します（図\@ref(fig:factor-pca-set-var)）。
@@ -525,8 +526,8 @@ knitr::include_graphics("images/factor/pca-loadings.png")
 ```
 
 :::{.jmvsettings data-latex=""}
-- Hide loadings below ...（これ未満の負荷を隠す）　絶対値の小さい負荷量を非表示にします
-- Sort loadings by size（負荷量の順に並び替え）　負荷量の絶対値が大きい順に変数を並び替えて表示します
+- Hide loadings below ...（これ未満の負荷を隠す）　絶対値の小さい負荷量を非表示にします。
+- Sort loadings by size（負荷量の順に並び替え）　負荷量の絶対値が大きい順に変数を並び替えて表示します。
 :::
 
 ##### Hide loadings below：小さな負荷量を隠す{-}
@@ -554,15 +555,15 @@ knitr::include_graphics("images/factor/pca-additional.png")
 ```
 
 :::{.jmvsettings data-latex=""}
-- Component summary（主成分の要約）　各主成分について要約量を算出します
-- Component correlations（主成分の相関）　各主成分の間の相関を算出します
-- Initial eigenvalues（回転前の初期値）　回転前の固有値とその寄与率，累積寄与率を算出します
-- Scree plot（スクリープロット）　スクリープロットを表示します
+- Component summary（主成分の要約）　各主成分について要約量を算出します。
+- Component correlations（主成分の相関）　各主成分の間の相関を算出します。
+- Initial eigenvalues（回転前の固有値）　回転前の固有値とその寄与率，累積寄与率を算出します。
+- Scree plot（スクリープロット）　スクリープロットを表示します。
 :::
 
 ##### Component summary：主成分の要約{-}
 
-この項目は，抽出された主成分の固有値や寄与率についての情報を表示させるかどうかの設定です。この設定項目は，主成分に対して回転を行った場合にその回転後の主成分の情報を知りたい場合に使用します。主成分の回転を行わない場合は，この設定で表示される内容は「Initial eigenvalues（回転前の初期値）」の表の一部とまったく同じですので，今回のサンプルデータを用いた分析ではここは設定の必要はありません。
+この項目は，抽出された主成分の固有値や寄与率についての情報を表示させるかどうかの設定です。この設定項目は，主成分に対して回転を行った場合にその回転後の主成分の情報を知りたい場合に使用します。主成分の回転を行わない場合は，この設定で表示される内容は「Initial eigenvalues（回転前の固有値）」の表の一部とまったく同じですので，今回のサンプルデータを用いた分析ではここは設定の必要はありません。
 
 ##### Component correlations：主成分の相関{-}
 
@@ -605,7 +606,7 @@ knitr::include_graphics("images/factor/pca-results.png")
 
 基本的な分析が終わりましたので，ここからは主成分分析のその他の設定項目について見ていきましょう。
 
-#### Assumption Check：前提チェック{-#subsub:factor-pca-assumption}
+#### Assumption Checks：前提チェック{-#subsub:factor-pca-assumption}
 
 他の分析手法と同様に，主成分分析にも分析のための全体となる条件がいくつか存在します。それらの条件が満たされているかどうかは，「**Assumption Check**（前提チェック）」に含まれる項目を用いて確認できます（図\@ref(fig:factor-pca-assumption)）。
 
@@ -614,8 +615,8 @@ knitr::include_graphics("images/factor/pca-assumption.png")
 ```
 
 :::{.jmvsettings data-latex=""}
-- Bartlett's test of sphericity（バートレットの球面性検定）　バートレットの球面性検定を実施します
-- KMO measure of sampling adequacy（KMO標本妥当性指標）　標本妥当性指標（MSA）を算出します
+- Bartlett's test of sphericity（バートレットの球面性検定）　バートレットの球面性検定を実施します。
+- KMO measure of sampling adequacy（KMO標本妥当性指標）　標本妥当性指標（MSA）を算出します。
 :::
 
 ##### Bartlett's test of sphericity：バートレットの球面性検定{-}
@@ -809,9 +810,9 @@ knitr::include_graphics("images/factor/efa-extract.png")
 ```
 
 :::{.jmvsettings data-latex=""}
-+ Minimum residuals（最小残差法）　最小2乗法を用いて残差が最小となるように因子を抽出します
-+ Maximum likelihood（最尤法）　データの分布に多変量正規分布を仮定し，分析データを説明するモデルとしてもっともあり得そうな（最尤な）因子を抽出します
-+ Principal axis（主因子法）　主成分分析と同様の計算を繰り返し行い，計算結果を収束させていくことによって因子を抽出します
++ Minimum residuals（最小残差法）　最小2乗法を用いて残差が最小となるように因子を抽出します。
++ Maximum likelihood（最尤法）　データの分布に多変量正規分布を仮定し，分析データを説明するモデルとしてもっともあり得そうな（最尤な）因子を抽出します。
++ Principal axis（主因子法）　主成分分析と同様の計算を繰り返し行い，計算結果を収束させていくことによって因子を抽出します。
 :::
 
 ###### Minimum residuals：最小残差法{-#subsub:factor-fa-extraction-minres}
@@ -1229,11 +1230,11 @@ knitr::include_graphics("images/factor/cfa-option.png")
 
 :::{.jmvsettings data-latex=""}
 + **Mission Values Method**（欠損値の処理方法）
-  - Full information maximum likelihood（完全情報最尤推定法）　他の測定値から欠損値を推定した上で分析します
-  - Exclude cases listwise（データ行ごと除外）　欠損値が含まれるデータ行全体を分析から除外します
+  - Full information maximum likelihood（完全情報最尤推定法）　他の測定値から欠損値を推定した上で分析します。
+  - Exclude cases listwise（データ行ごと除外）　欠損値が含まれるデータ行全体を分析から除外します。
 + **Constraints**（制約）
-  - Factor variances = 1（因子の分散を1に固定）　因子の分散を1に固定した場合の計算結果を表示します
-  - Scale factor = scale first indicator（最初の変数の係数を基準として使用）　各因子の最初の変数の係数を1に固定した場合の計算結果を表示します
+  - Factor variances = 1（因子の分散を1に固定）　因子の分散を1に固定した場合の計算結果を表示します。
+  - Scale factor = scale first indicator（最初の変数の係数を基準として使用）　各因子の最初の変数の係数を1に固定した場合の計算結果を表示します。
 :::
 
 #### 欠損値の処理方法{-#subsub:factor-cfa-missing}
@@ -1265,14 +1266,14 @@ knitr::include_graphics("images/factor/cfa-estimates.png")
 
 :::{.jmvsettings data-latex=""}
 + **Results**（結果）
-  - Factor covariances（因子共分散）　因子の分散，および因子間の共分散または相関係数を算出します
-  - Factor intercepts（因子切片）　因子の切片についての推定量を算出します
-  - Residual covariances（残差共分散）　残差の分散，および指定した変数間での残差の共分散，または相関係数を算出します
-  - Factor intercepts（残差切片）　残差の切片についての推定量を算出します
+  - Factor covariances（因子共分散）　因子の分散，および因子間の共分散または相関係数を算出します。
+  - Factor intercepts（因子切片）　因子の切片についての推定量を算出します。
+  - Residual covariances（残差共分散）　残差の分散，および指定した変数間での残差の共分散，または相関係数を算出します。
+  - Residual intercepts（残差切片）　残差の切片についての推定量を算出します。
 + **Statistics**（統計量）
-  - Test statistics（検定統計量）　推定した各係数についての有意性検定の結果を表示します
-  - Confidence interval（信頼区間）　各係数について，信頼区間の算出を行います
-  - Standardized estimate（標準化推定値）　各係数について，標準化された値を算出します
+  - Test statistics（検定統計量）　推定した各係数についての有意性検定の結果を表示します。
+  - Confidence interval（信頼区間）　各係数について，信頼区間の算出を行います。
+  - Standardized estimate（標準化推定値）　各係数について，標準化された値を算出します。
 :::
 
 #### Results：結果 {-#subsub:factor-cfa-covariances}
@@ -1329,14 +1330,14 @@ knitr::include_graphics("images/factor/cfa-model-fit.png")
 
 :::{.jmvsettings data-latex=""}
 + **Test for Exact Fit**（適合度検定）
-  - $\chi^2$ test（$\chi^2$検定）　モデル適合度についての$\chi^2$検定の結果を表示します
+  - $\chi^2$ test（$\chi^2$検定）　モデル適合度についての$\chi^2$検定の結果を表示します。
 + **Fit Measures**（適合度指標）
-  - CFI（比較適合度指標）　モデルのあてはまりのよさについての指標を示します
-  - TLI（タッカー=ルイス指数）　モデルのあてはまりのよさについての指標を示します
-  - SRMR（標準化残差2乗平均平方根）　モデルの残差の大きさについての指標を示します
-  - RMSEA（近似誤差2乗平均平方根）　モデル残差の大きさについての指標を示します
-  - AIC（赤池情報量規準）　モデル残差の相対的な大きさについての情報を示します
-  - BIC（ベイズ情報量規準）　モデル残差の相対的な大きさについての情報を示します
+  - CFI（比較適合度指標）　モデルのあてはまりのよさについての指標を示します。
+  - TLI（タッカー=ルイス指数）　モデルのあてはまりのよさについての指標を示します。
+  - SRMR（標準化残差2乗平均平方根）　モデルの残差の大きさについての指標を示します。
+  - RMSEA（近似誤差2乗平均平方根）　モデル残差の大きさについての指標を示します。
+  - AIC（赤池情報量規準）　モデル残差の相対的な大きさについての情報を示します。
+  - BIC（ベイズ情報量規準）　モデル残差の相対的な大きさについての情報を示します。
 :::
 
 #### Test for Exact Fit：適合度検定{-}
@@ -1380,11 +1381,11 @@ knitr::include_graphics("images/factor/cfa-additional.png")
 
 :::{.jmvsettings data-latex=""}
 + **Post-Hoc ModelPerformance**（モデルの事後修正）
-  - Residuals observed correlation matrix（相関行列の残差）　モデルから算出される相関係数とデータから算出される相関係数の残差を求めます
-  - Modification indices（修正指数）　モデル適合度の向上につながりそうな修正候補を指数として示します
+  - Residuals observed correlation matrix（相関行列の残差）　モデルから算出される相関係数とデータから算出される相関係数の残差を求めます。
+  - Modification indices（修正指数）　モデル適合度の向上につながりそうな修正候補を指数として示します。
 
 + **Plots**（作図）
-  - Path diagram（パス図）　モデルのパス図を作成します
+  - Path diagram（パス図）　モデルのパス図を作成します。
 :::
 
 #### Post-Hoc Model Performance：モデルの事後修正 {-#subsub:factor-cfa-posthoc}

@@ -231,7 +231,7 @@ knitr::include_graphics("images/ttests/additional.png")
 + Effecr size（効果量）　平均値の差についての効果量を算出します。
   - Confidence interval（信頼区間）　効果量の信頼区間を算出します。
 + Descriptives（記述統計量）　従属変数について，グループごとの記述統計量を算出します。
-+ escriptives plots（記述統計量のグラフ）　従属変数の平均値と中央値についてのグラフを作成します。
++ Descriptives plots（記述統計量のグラフ）　従属変数の平均値と中央値についてのグラフを作成します。
 :::
 
 ##### Mean difference：平均値の差{-}
