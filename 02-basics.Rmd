@@ -82,7 +82,7 @@ knitr::include_graphics("images/basics/edit-tab.png")
 
 :::{.jmvribbon data-latex=""}
 + Clipboard（クリップボード）　Dataタブのボタンと同じです。
-+ Edit（編集）　**Data**タブのボタンと同じです。
++ Edit（編集）　Dataタブのボタンと同じです。
 + Font（書体）　文字を太字にしたり，斜体にしたりする際に使用します。
 + Paragraph（段落）　文字全体を中央揃えにしたり，箇条書きにしたりなど，段落の書式を変更する際に使用します。
 + Insert（挿入）　メモに数式を含めたい場合に使用します。数式はTeX形式で記述します^[厳密には[KaTeX](https://katex.org/docs/supported.html)というシステムの書式を使用しています。]。 
@@ -237,7 +237,7 @@ knitr::include_graphics("images/basics/data-variable-measure-type.png")
 
 ほとんどの場合，データ型についてはjamoviが自動的に判定してくれますので，設定の必要はないでしょう。何からの理由でデータ型を指定したい場合，データ変数の測定型と指定できるデータ型の関係は表\@ref(tab:measure-data-type)の通りです。
 
-```{r, echo=FALSE, message=FALSE}
+```{r, measure-data-type, echo=FALSE, message=FALSE}
   data <- data.frame(
     a = c('×','○','○'),
     b = c('○','○','○'),
@@ -246,7 +246,7 @@ knitr::include_graphics("images/basics/data-variable-measure-type.png")
   names(data)<-c('Decimal（小数型）','Integer（整数型）','Text（文字型）')
   row.names(data)<-c('Nominal（名義型）','Ordinal（順序型）','Continuous（連続型）')
   data %>% 
-  kable(align='ccc', caption = "データ変数の測定型とデータ型 \\label{tab:measure-data-type}", booktabs=T) #%>%
+  kable(align='ccc', caption = "データ変数の測定型とデータ型", booktabs=T) #%>%
 #  row_spec(0, background = bgcolor) # %>%
 ```
 
