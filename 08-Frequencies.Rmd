@@ -1126,7 +1126,7 @@ knitr::include_graphics("images/frequencies/chisq-plots-bar-xaxis.png")
 
 そこで，マクニマー検定では，観測データにおける右上のセルと左下のセルの値が互いにどれだけずれているかを検定統計量として算出し，そこから2つの試験の難易度に違いがあるといえるかどうかを判断します。
 
-### 分析手順{sub:frequencies-mcnemar-procedure}
+### 分析手順{#sub:frequencies-mcnemar-procedure}
 
 ここでは，次のサンプルデータ（[frequencies_data05.omv](https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/frequencies_data05.omv)）を用いて分析を行いましょう。このデータファイルには以下の変数が含まれています（図\@ref(fig:frequencies-data05)）。
 

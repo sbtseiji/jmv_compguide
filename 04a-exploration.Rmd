@@ -289,7 +289,7 @@ knitr::include_graphics("images/exploration/Exploration-descriptives-plots-bar-p
 
 #### Histograms：ヒストグラム{-#subsubsub:exp-plots-histograms}
 
-「**Histograms**」には，「Histogram（ヒストグラム）」と「Density（密度曲線）」の2つの項目があります。この2つは，組み合わせて使用することもできます。図\@ref(fig:Exploration-descriptives-plots-histograms)は，「体重」のヒストグラムと密度曲線，その2つを組み合わせた場合の結果のグラフです^[縦軸の「男」，「女」の部分が日本語だとうまく表示されず，□になってしまっているかもしれません。その場合の選択肢は，変数ラベルを「M」や「F」などのアルファベットに変更するか，これはこういうものだと思ってあきらめるかのいずれかです。]。ここでは性別をグループ変数として用いているので，男女別に図が作成されています。
+「**Histograms**」には，「Histogram（ヒストグラム）」と「Density（密度曲線）」の2つの項目があります。この2つは，組み合わせて使用することもできます。図\@ref(fig:Exploration-descriptives-plots-histograms)は，「体重」のヒストグラムと密度曲線，その2つを組み合わせた場合の結果のグラフです^[縦軸の「男」，「女」の部分が日本語だとうまく表示されず，□になってしまうかもしれません。その場合，変数ラベルを「M」や「F」などのアルファベットに変更するか，「男性」，「女性」のように，ラベルを2文字以上にしてください。]。ここでは性別をグループ変数として用いているので，男女別に図が作成されています。
 
 
 ```{r Exploration-descriptives-plots-histograms, fig.cap='ヒストグラム', echo=FALSE}
