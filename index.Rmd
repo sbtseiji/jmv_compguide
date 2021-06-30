@@ -61,6 +61,7 @@ infig <- function(img){
 
 
 * Version 1.0.0 2021年6月10日公開
+* Version 1.0.1 2021年6月30日
 
 <br/>
 <br/>
