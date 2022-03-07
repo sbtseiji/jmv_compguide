@@ -11,5 +11,9 @@
 	    "rulePaths": ["./prh.yml"]
 	  }
   },
-  "plugins": ["latex2e"]
+  "plugins": {
+    "@textlint/markdown": {
+        "extensions": [".Rmd"]
+    }
+  }
 }

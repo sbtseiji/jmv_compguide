@@ -1,51 +1,54 @@
 ```{r, echo =F,message=FALSE}
-  source('rscripts/_utility.R')
+  source("rscripts/_utility.R")
 ```
 
-# Factor：因子分析 {#ch:factor}
+# 因子分析 {#ch-factor}
 
-この章では，「`r infig('analysis-factor')`  Factor（因子分析）」ツールについて見ていきます。jamoviの基本構成では，ここには次の分析メニューが含まれています（図\@ref(fig:factor-menu)）。
+この章では，「`r infig("analysis-factor")`  因子分析」ツールについて見ていきます。jamoviの基本構成では，ここには次の分析メニューが含まれています（図\@ref(fig:factor-menu)）。
 
 ```{r}
-data01<-read.csv('data/factor_data01.csv')
+data01 <- read.csv("data/factor_data01.csv")
 
 # ID
-attributes(data01$ID)$`jmv-id`<-TRUE
+attributes(data01$ID)$`jmv-id` <- TRUE
 
 # 連続変数
-attributes(data01$Q1)$measureType<-c('Continuous')
-attributes(data01$Q2)$measureType<-c('Continuous')
-attributes(data01$Q3)$measureType<-c('Continuous')
-attributes(data01$Q4)$measureType<-c('Continuous')
-attributes(data01$Q5)$measureType<-c('Continuous')
+attributes(data01$Q1)$measureType <- c("Continuous")
+attributes(data01$Q2)$measureType <- c("Continuous")
+attributes(data01$Q3)$measureType <- c("Continuous")
+attributes(data01$Q4)$measureType <- c("Continuous")
+attributes(data01$Q5)$measureType <- c("Continuous")
 
-# 名義変数
-#data01$条件<-factor(data01$条件)
-#attributes(data01$条件)$levels<-c('なし','不一致','一致')
-#attributes(data01$条件)$values<-c(1,2,3)
-#attributes(data01$条件)$measureType<-c('Nominal')
 
-out<-jmvReadWrite::jmvWrite(data01,'data/omv/factor_data01.omv')
+# 説明
+attributes(data01$ID)$description <- "対象者のID"
+attributes(data01$Q1)$description <- "メッセージアプリをよく使う"
+attributes(data01$Q2)$description <- "メッセージアプリよりメールで連絡することのほうが多い"
+attributes(data01$Q3)$description <- "メッセージアプリでやりとりするのは楽しい"
+attributes(data01$Q4)$description <- "メッセージアプリは何かとめんどくさい"
+attributes(data01$Q5)$description <- "送信メッセージに反応がないとソワソワする"
+
+out <- jmvReadWrite::write_omv(data01, "data/omv/factor_data01.omv")
 
 ```
 
 
-```{r factor-menu, fig.cap='Factor（因子分析）のメニュー', echo=FALSE}
+```{r factor-menu, fig.cap="因子分析のメニュー", echo=FALSE}
 knitr::include_graphics("images/factor/factor-menu.png")
 ```
 
 :::{.jmvmenu data-latex=""}
-+ **Scale Analysis**（尺度分析）
-  - Reliability Analysis（信頼性分析）　尺度の内的一貫性についての指標を算出します。
-+ **Data Reduction**（データ縮約）
-  - Principal Component Analysis（主成分分析）　主成分分析を用いてデータを少数の主成分に集約します。
-  - Exploratory Factor Analysis（探索的因子分析）　複数の変数の背後にある共通因子を探索します。
-  - Confirmatory Factor Analysis（確認的因子分析）　想定される因子モデルがデータに適合しているかどうかを確かめます。
++ **尺度分析**
+  - 信頼性分析　尺度の内的一貫性についての指標を算出します。
++ **データ縮約**
+  - 主成分分析　主成分分析を用いてデータを少数の主成分に集約します。
+  - 探索的因子分析　複数の変数の背後にある共通因子を探索します。
+  - 確認的因子分析　想定される因子モデルがデータに適合しているかどうかを確かめます。
 :::
 
 それではまず，尺度分析の項目から見ていきましょう。
 
-## Reliability Analysis：信頼性分析{#sec:factor-reliability-analysis}
+## 信頼性分析{#sec-factor-reliability-analysis}
 
 ある体温計で数分間に3回繰り返して体温を測ったとき，1回目の測定では36.6度，2回目は36.5度，3回目は36.6度だったとしましょう。この体温計では，3回の測定値がほとんど同じです。そして別の体温計で同じように3回の測定を行ったとき，1回目の測定では36.2度，2回目には35.1度，3回目は38.2度だったとします。このような場合，1つ目の体温計と2つ目の体温計のどちらを信頼するかと聞かれたら，ほとんどの人は1つ目の体温計を選ぶことでしょう。2つ目の体温計は，測定値がコロコロ変わり，正しく測れているのかどうかもわからないからです。
 
@@ -74,14 +77,13 @@ knitr::include_graphics("images/factor/factor-menu.png")
 
 
 ```{r, factor-cronbach-alpha}
-alpha.cronbach %>% 
+alpha.cronbach %>%
   kable(
-    align="cc", 
+    align = "cc",
     linesep = "",
-    caption = "クロンバックのアルファの解釈の目安",booktabs=T)%>%
+    caption = "クロンバックのアルファの解釈の目安", booktabs = T) %>%
   kable_styling(latex_options = "HOLD_position")
 ```
-
 
 
 
@@ -89,7 +91,7 @@ alpha.cronbach %>%
 
 ここでは，このサンプルデータ（[factor_data01.omv](https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/factor_data01.omv)）を用いて尺度の内的一貫性について分析してみましょう。このデータは「メッセージアプリ志向尺度」を用いて測定されたもので，次の変数が含まれています。なお，各質問への回答は，いずれも「1:まったくあてはまらない」から「5:とてもよくあてはまる」までの5段階です（図\@ref(fig:factor-data01)）。
 
-```{r factor-data01, fig.cap='サンプルデータ', echo=FALSE}
+```{r factor-data01, fig.cap="サンプルデータ", echo=FALSE}
 knitr::include_graphics("images/factor/data01.png")
 ```
 
@@ -102,204 +104,215 @@ knitr::include_graphics("images/factor/data01.png")
 + `Q5`　「送信メッセージに反応がないとソワソワする」への回答値
 :::
 
-このデータについて信頼性分析を実施するには，Analysesタブの「`r infig('analysis-factor')`  Factor（因子分析）」から「Reliability Analysis（信頼性分析）」を選択します（図\@ref(fig:factor-reliability-menu)）。
+このデータについて信頼性分析を実施するには，分析タブの「`r infig("analysis-factor")`  因子分析」から「信頼性分析」を選択します（図\@ref(fig:factor-reliability-menu)）。
 
-```{r factor-reliability-menu, fig.cap='信頼性分析の実行', echo=FALSE}
+```{r factor-reliability-menu, fig.cap="信頼性分析の実行", echo=FALSE}
 knitr::include_graphics("images/factor/reliability-menu.png")
 ```
 
 すると，図\@ref(fig:factor-reliability-setting)のような設定画面が表示されます。
 
 
-```{r factor-reliability-setting, fig.cap='信頼性分析の設定', echo=FALSE}
+```{r factor-reliability-setting, fig.cap="信頼性分析の設定", echo=FALSE}
 knitr::include_graphics("images/factor/reliability-setting.png")
 ```
 
 :::{.jmvsettings data-latex=""}
-+ Items（項目）　分析対象の項目（変数）を指定します。
-+ **Scale Statistics**（尺度統計量）　尺度全体についての統計量を算出します。
-+ **Additional Options**（追加オプション）　追加の設定を行います。
-+ **Item Statistics**（項目統計量）　各項目（変数）に関する統計量を算出します。
-+ **Additional Options**（追加オプション）　結果表示に関するその他の設定です。
-+ `r groupbar('Reverse Scaled Items')`（逆転項目）　逆転項目に関する設定を行います。
-+ `r groupbar('Save')`（保存）　計算結果を変数値として保存します。
++ 項目　分析対象の項目（変数）を指定します。
++ **尺度統計量**　尺度全体についての統計量を算出します。
++ **項目統計量**　各項目（変数）に関する統計量を算出します。
++ **追加オプション**　結果表示に関するその他の設定です。
++ `r groupbar("逆転項目")`　逆転項目に関する設定を行います。
++ `r groupbar("保存")`　計算結果を変数値として保存します。
 :::
 
-この画面で，内的一貫性の指標を算出したい質問の回答値が入った変数を指定します。通常は1つの尺度に含まれている質問すべてを指定しますが，その尺度が複数の下位尺度^[1つの尺度の中でさらに小区分に分けられているもののことです。たとえば，ある性格特性尺度が外向性尺度，神経症傾向尺度など複数の小尺度からなる場合，外向性尺度や神経症尺度のことをその性格特性尺度の下位尺度と呼びます。]から構成されている場合には，1つの下位尺度に含まれている質問のみを指定します。サンプルデータのメッセージアプリ志向尺度は「Q1」から「Q5」までの5つの質問で構成されていますので，これら5つを「Items（項目）」の領域に移動します（図\@ref(fig:factor-reliability-set-var)）。
+この画面で，内的一貫性の指標を算出したい質問の回答値が入った変数を指定します。通常は1つの尺度に含まれている質問すべてを指定しますが，その尺度が複数の下位尺度^[1つの尺度の中でさらに小区分に分けられているもののことです。たとえば，ある性格特性尺度が外向性尺度，神経症傾向尺度など複数の小尺度からなる場合，外向性尺度や神経症尺度のことをその性格特性尺度の下位尺度と呼びます。]から構成されている場合には，1つの下位尺度に含まれている質問のみを指定します。サンプルデータのメッセージアプリ志向尺度は「Q1」から「Q5」までの5つの質問で構成されていますので，これら5つを「項目」の領域に移動します（図\@ref(fig:factor-reliability-set-var)）。
 
-```{r factor-reliability-set-var, fig.cap='分析対象の設定', echo=FALSE}
+```{r factor-reliability-set-var, fig.cap="分析対象の設定", echo=FALSE}
 knitr::include_graphics("images/factor/reliability-set-var.png")
 ```
 
 これで基本的な分析の設定は終わりです，といいたいところですが，残念ながらそうではありません。今回のデータでは，適切な分析結果を得るためにはあと少しだけ設定が必要です。これでなぜ分析設定が完了でないのかは，出力ウィンドウにある結果の表を見てみるとわかります（図\@ref(fig:factor-reliability-error)）。
 
-```{r factor-reliability-error, fig.cap='分析の設定上の問題', echo=FALSE}
+```{r factor-reliability-error, fig.cap="分析の設定上の問題", echo=FALSE}
 knitr::include_graphics("images/factor/reliability-error.png")
 ```
 
-まず，この結果ではクロンバックのアルファの値がマイナスになっており，これは明らかに計算が正しくありません。そして，この表の下には何やら注釈が長々と書かれています。この内容を訳して見てみると，「項目\`Q2\`と\`Q4\`には尺度全体と負の相関があるため，おそらく逆転の必要があります」と書かれています。
+まず，この結果ではクロンバックのアルファの値がマイナスになっており，これは明らかに計算が正しくありません。そして，この表の下には何やら注釈が長々と書かれています。この注を見てみると，「項目'Q2'および'Q4'は尺度全体と負の相関関係にあるため，逆転項目として処理したほうがよいでしょう」と書かれています。
 
-じつは，サンプルデータでは，「Q1」と「Q3」，「Q5」はメッセージアプリの使用が多いほど回答値が大きくなる質問なのですが，「Q2」と「Q4」はその逆で，メッセージアプリをあまり使わない人ほど回答値が大きくなるような，逆内容の質問なのです。このような，他の質問とは逆内容の質問を含む項目は*逆転項目*と呼ばれ，内的一貫性の分析においては，これらはそのままでは分析できません。
+実際，このサンプルデータでは，「Q1」と「Q3」，「Q5」はメッセージアプリの使用が多いほど回答値が大きくなる質問ですが，「Q2」と「Q4」はその逆で，メッセージアプリをあまり使わない人ほど回答値が大きくなるような，逆内容の質問です。このような，他の質問とは逆内容の質問を含む項目は*逆転項目*と呼ばれ，内的一貫性の分析においては，これらはそのままでは分析できません。
 
-### Reverse Scaled Items：逆転項目 {#sub:factor-reliability-reverse-scaled-items}
-尺度を構成する質問の中に逆転項目が含まれている場合には，分析設定画面の［Reverse Scaled Items（逆転項目）］の部分を展開し，それらを適切に設定する必要があります（図\@ref(fig:factor-reliability-reverse-items)）。
+### 逆転項目 {#sub:factor-reliability-reverse-scaled-items}
 
-```{r factor-reliability-reverse-items, fig.cap='逆転項目の設定画面', echo=FALSE}
+尺度を構成する質問の中に逆転項目が含まれている場合には，分析設定画面の［逆転項目］の部分を展開し，それらを適切に設定する必要があります（図\@ref(fig:factor-reliability-reverse-items)）。
+
+```{r factor-reliability-reverse-items, fig.cap="逆転項目の設定画面", echo=FALSE}
 knitr::include_graphics("images/factor/reliability-reverse-items.png")
 ```
 
 この画面の左側に通常の尺度項目が，右側に逆転項目が入るように，必要な変数を選択して移動します（図\@ref(fig:factor-reliability-reversed)）。
 
-```{r factor-reliability-reversed, fig.cap='逆転項目の設定', echo=FALSE}
+```{r factor-reliability-reversed, fig.cap="逆転項目の設定", echo=FALSE}
 knitr::include_graphics("images/factor/reliability-reversed.png")
 ```
 
 すると，図\@ref(fig:factor-reliability-cronbach)のように結果の表の下にあった注釈が消え，そして算出結果も0.84という正常な値になりました。
 
-```{r factor-reliability-cronbach, fig.cap='クロンバックのアルファの算出結果', echo=FALSE}
+```{r factor-reliability-cronbach, fig.cap="クロンバックのアルファの算出結果", echo=FALSE}
 knitr::include_graphics("images/factor/reliability-cronbach.png")
 ```
 
 この結果から，このメッセージアプリ志向尺度の内的一貫性の値は0.84で，十分な内的一貫性を持っているといえそうです。
 
-#### Scale Statistics：尺度統計量{-#subsub:factor-reliability-scale-statistics}
+#### 尺度統計量{-#subsub:factor-reliability-scale-statistics}
 
-さて，少し前後しましたが，ここからは分析設定の詳細についてみていくことにしましょう。設定画面の**Scale Statistics**の部分では，尺度全体についての内的一貫性を吟味するための指標を設定します。
+さて，少し前後しましたが，ここからは分析設定の詳細についてみていくことにしましょう。設定画面の**尺度統計量**の部分では，尺度全体についての内的一貫性を吟味するための指標を設定します。
 
 ここには，次の4つの項目があります。
 
 :::{.jmvsettings data-latex=""}
-- Cronbach's α（クロンバックのアルファ）　尺度全体のクロンバックのアルファを算出します。
-- McDonald's ω（マクドナルドのオメガ）　尺度全体のマクドナルドのオメガを算出します。
-- Mean（平均値）　尺度全体の平均値を算出します。
-- Standard deviation（標準偏差）　尺度全体の標準偏差を算出します。
+- クロンバックのα　尺度全体のクロンバックのアルファを算出します。
+- マクドナルドのω　尺度全体のマクドナルドのオメガを算出します。
+- 平均値　尺度全体の平均値を算出します。
+- 標準偏差　尺度全体の標準偏差を算出します。
 :::
 
 これらの項目すべてにチェックを入れると，結果の表は図\@ref(fig:factor-reliability-statistics-results)のようになります。
 
 <!--  -->
-```{r factor-reliability-statistics-results, fig.cap='さまざまな尺度統計量', echo=FALSE}
+```{r factor-reliability-statistics-results, fig.cap="さまざまな尺度統計量", echo=FALSE}
 knitr::include_graphics("images/factor/reliability-statistics-results.png")
 ```
 
 
 このうち，クロンバックのアルファについてはすでに説明しましたので，それ以外の項目について見ていきましょう。
 
-##### McDonald's ω：マクドナルドのオメガ{-}
+##### マクドナルドのω{-}
 
 クロンバックのアルファは計算は単純なのですが，その分，正確さにかける部分があり，近年とくにその問題点がたびたび指摘されるようになっています^[とはいえ，クロンバックのアルファは現在でも尺度の内的一貫性の指標として非常によく用いられています。]。そこで，その代替的な指標として近年注目を集めているのが*マクドナルドのオメガ*（ω）です。この値は，*オメガ係数*とも呼ばれます。
 
 クロンバックのアルファでは，尺度に含まれる各質問に対する回答値をそのまま単純に合計しますが，マクドナルドのオメガでは各質問への回答値が共通因子から受けている影響（因子負荷量）を考慮して重みづけを行ったうえで合計します。このオメガについても基本的な解釈の仕方はクロンバックのアルファと同様で，0.8を超える場合に内的一貫性が高いとみなされます。サンプルデータでは，クロンバックのアルファとマクドナルドのオメガはほぼ同じ値で，オメガを指標とした場合にも十分な内的一貫性があることが示されました。
 
-##### Mean，Standard deviation：平均値，標準偏差 {-}
+##### 平均値，標準偏差 {-}
 
-**Scale Statistics**の「Mean（平均値）」と「Standard deviation（標準偏差）」にチェックを入れると，尺度全体の回答値の平均と標準偏差が算出されます。
+**尺度統計量**の「平均値」と「標準偏差」にチェックを入れると，尺度全体の回答値の平均と標準偏差が算出されます。
 
 
-#### Item Statistics：項目統計量{-#subsub:factor-reliability-item-statistics}
+#### 項目統計量{-#subsub:factor-reliability-item-statistics}
 
-**Item Statistics**（項目統計量）には，尺度を構成する個別の質問項目について吟味するための項目が含まれています。
+**項目統計量**には，尺度を構成する個別の質問項目について吟味するための項目が含まれています。
 
 <!--  -->
 
 :::{.jmvsettings data-latex=""}
-- Cronbach's α (if item is dropped)　項目除外時のアルファ係数
-- McDonald's ω (if item is dropped)　項目除外時のオメガ係数
-- Mean（平均値）
-- Standard deviation（標準偏差）
-- item-rest correlation（I-R相関）
+- 項目除外時のクロンバックα
+- 項目除外時のマクドナルドω
+- 平均値
+- 標準偏差
+- I-R相関
 :::
 
 
 ここでも，すべての項目にチェックを入れてその結果を見てみましょう（図\@ref(fig:factor-reliability-item-statistics)）。
 
 <!--結果  -->
-```{r factor-reliability-item-statistics, fig.cap='項目ごとの統計量', echo=FALSE}
+```{r factor-reliability-item-statistics, fig.cap="項目ごとの統計量", echo=FALSE}
 knitr::include_graphics("images/factor/reliability-item-statistics.png")
 ```
 
-##### Cronbach's α (if item is dropped)：項目除外時のアルファ係数
+##### 項目除外時のクロンバックα
 
 この項目は，各質問項目を分析から除外した場合にクロンバックのアルファの値がどのように変化するかを示します。ここに表示されている値の中に尺度全体の値よりも大きなものがある場合，その項目を分析から除外することで尺度全体のアルファ係数が上昇することを意味します。今回の分析結果では，いずれの値も全体の値を下回っていますので，分析から除外すべき質問項目はなさそうです。
 
-##### McDonald's ω (if item is dropped)：項目除外時のオメガ係数
+##### 項目除外時のマクドナルドω
 
 この項目は，各質問項目を分析から除外した場合にマクドナルドのオメガの値がどのように変化するかを示します。ここに表示されている値の中に尺度全体の値よりも大きなものがある場合，その項目を分析から除外することで尺度全体のオメガ係数が上昇することを意味します。クロンバックのアルファの場合と同様に，この結果ではオメガの値はいずれも全体の値を下回っていますので，分析から除外すべき質問項目はなさそうです。
 
-##### Mean，Standard deviation：平均値，標準偏差 {-}
+##### 平均値，標準偏差 {-}
 
-ここでの「Mean（平均値）」と「Standard deviation（標準偏差）」は，「Q1」から「Q5」それぞれの平均値と標準偏差を表示します。
+ここでの「平均値」と「標準偏差」は，「Q1」から「Q5」それぞれの平均値と標準偏差を表示します。
 
-##### Item-rest correlation：I-R相関{-}
+##### I-R相関{-}
 
-一番下にある「Item-rest correlation（I-R相関）」の項目にチェックを入れると，*I-R相関*と呼ばれる指標が算出されます。I-R相関は，各質問項目の回答値とそれ以外の項目（rest）の合計値の間の相関係数です。このI-R相関が著しく低い場合には，その質問項目が他の質問項目と異なる回答傾向を持っている（一貫性が低い）ことが考えられます。今回の分析結果では，「Q1」から「Q5」の中にそのような傾向はみられません。
+一番下にある「I-R相関」の項目にチェックを入れると，*I-R相関*と呼ばれる指標が算出されます。I-R相関は，各質問項目（item）の回答値とそれ以外の項目（rest）の合計値の間の相関係数です。このI-R相関が著しく低い場合には，その質問項目が他の質問項目と異なる回答傾向を持っている（一貫性が低い）ことが考えられます。今回の分析結果では，「Q1」から「Q5」の中にそのような傾向はみられません。
 
-#### Additional Options：追加オプション{-}
+#### 追加オプション{-}
 
-**Additional Options**（追加オプション）にある「Correlation heatmap（相関ヒートマップ）」にチェックを入れると，相関行列を*ヒートマップ*の形で視覚化した図が作成されます。ヒートマップとは，相関係数の大きさや向きを色の違いや濃淡で示したもののことをいいます。1つの尺度に含まれる質問項目の数が多い場合，ヒートマップの形で視覚化することによって，他と傾向の異なる質問項目を見つけやすくなります（図\@ref(fig:factor-reliability-heatmap)）。
+**追加オプション**にある「相関ヒートマップ」にチェックを入れると，相関行列を*ヒートマップ*の形で視覚化した図が作成されます。ヒートマップとは，相関係数の大きさや向きを色の違いや濃淡で示したもののことをいいます。1つの尺度に含まれる質問項目の数が多い場合，ヒートマップの形で視覚化することによって，他と傾向の異なる質問項目を見つけやすくなります（図\@ref(fig:factor-reliability-heatmap)）。
 
-```{r factor-reliability-heatmap, fig.cap='相関係数のヒートマップ', echo=FALSE}
+```{r factor-reliability-heatmap, fig.cap="相関係数のヒートマップ", echo=FALSE}
 knitr::include_graphics("images/factor/reliability-heatmap.png")
 ```
 
 このヒートマップでは，正の相関係数が緑，負の相関係数が赤で，そして相関係数の絶対値が大きくなるほど緑または赤の色が濃くなる形で示されています。
 
 
-### Save：保存{#sub:factor-reliability-save}
+### 保存{#sub:factor-reliability-save}
 
-設定画面の一番下にある［Save（保存）］の項目では，逆転項目の処理を行ったうえで，各質問項目の回答値の合計または平均値を新たな変数として保存することができます（図\@ref(fig:factor-reliability-menu)）。
+設定画面の一番下にある`r groupbar("保存")`の項目では，逆転項目の処理を行ったうえで，各質問項目の回答値の合計または平均値を新たな変数として保存することができます（図\@ref(fig:factor-reliability-menu)）。
 
-```{r factor-reliability-save-scores, fig.cap='尺度得点の保存', echo=FALSE}
+```{r factor-reliability-save-scores, fig.cap="尺度得点の保存", echo=FALSE}
 knitr::include_graphics("images/factor/reliability-save-scores.png")
 ```
 
 :::{.jmvsettings data-latex=""}
-- Mean score（平均得点）　回答値（逆転処理済）の平均値を尺度得点として保存します。
-- Sum score（合計得点）　回答値（逆転処理済）の合計値を尺度得点として保存します。
+- 平均得点　回答値（逆転処理済）の平均値を尺度得点として保存します。
+- 合計得点　回答値（逆転処理済）の合計値を尺度得点として保存します。
 :::
 
 
-第\@ref(ch:basics)章の「[尺度得点の算出](sec-practice-handling.html#sub:basics2-scale-score)」では，計算変数を用いて尺度得点を変数に格納する方法を紹介しましたが，jamoviのバージョン1.8.0以降であれば，このようにして簡単に尺度得点を作成することができるのです。
+第\@ref(ch-basics)章の「[尺度得点の算出](sec-practice-handling.html#sub:basics2-scale-score)」では，計算変数を用いて尺度得点を変数に格納する方法を紹介しましたが，jamoviではこのようにして簡単に尺度得点を作成することもできるのです。
 
-このとき，「Mean score」にチェックを入れれば各質問項目への回答値の平均値が，「Sum score」にチェックを入れれば合計値が新たな変数として保存されます。
+このとき，「平均得点」にチェックを入れれば各質問項目への回答値の平均値が，「合計得点」にチェックを入れれば合計値が新たな変数として保存されます。
 
-## Principal Component Analysis：主成分分析{#sec:factor-pca}
+## 主成分分析{#sec-factor-pca}
 
 ここからは，数学的にデータを縮約する方法について見ていきましょう。
 
 データの縮約とは，たくさんあるデータを類似性などを基準に整理し，それらをより少数の意味あるまとまりとして集約することをいいます。質問紙調査などによる調査研究では，データとして何十種類もの質問文に対する回答値が得られるのが普通ですし，それ以外の場合にも，関心のある事象に関連した指標をできる限り幅広く集めて分析を行おうとすると，分析に使用する変数の種類は膨大になってしまいます。そこで，そのような場合には，多変量解析によって，そうした複雑なデータを，できるだけ元の情報を損なわないようにしながら可能な限り単純化し，理解可能なものに分類，整理しようとするわけです。
 
-このデータ縮約の方法の1つとして，*主成分分析*（PCA）があります。主成分分析では，以下に説明するような考え方で複数の変数がもつ情報を統合し，より少ない数の合成変数に集約するということを行います。
+このデータ縮約の方法の1つとして，*主成分分析*（PCA）があります。主成分分析では，次に説明するような考え方で複数の変数がもつ情報を統合し，より少ない数の合成変数に集約するということを行います。
 
 ### 考え方
 
 ここでは次のサンプルデータ（[factor_data02.omv](https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/factor_data02.omv)）を用いて主成分分析の基本的な考え方を見ておきましょう。このデータは，ある大学の学生男女計250人を対象に，食堂で提供されている代表的なメニュー6種類に対する満足度を「1:とても不満」から「7:非常に満足」までの7段階でたずねた結果です（図\@ref(fig:factor-data02)）。このデータを用い，この食堂で提供されているメニューに対する総合的な満足度について分析したいと思います。
 
 ```{r}
-data02<-read.csv('data/factor_data02.csv')
+data02 <- read.csv("data/factor_data02.csv")
 
 # ID
-attributes(data02$ID)$`jmv-id`<-TRUE
+attributes(data02$ID)$`jmv-id` <- TRUE
 
 # 連続変数
-attributes(data02$パスタ)$measureType<-c('Continuous')
-attributes(data02$カレー)$measureType<-c('Continuous')
-attributes(data02$ラーメン)$measureType<-c('Continuous')
-attributes(data02$カツ丼)$measureType<-c('Continuous')
-attributes(data02$オムライス)$measureType<-c('Continuous')
-attributes(data02$ドリア)$measureType<-c('Continuous')
+attributes(data02$パスタ)$measureType <- c("Continuous")
+attributes(data02$カレー)$measureType <- c("Continuous")
+attributes(data02$ラーメン)$measureType <- c("Continuous")
+attributes(data02$カツ丼)$measureType <- c("Continuous")
+attributes(data02$オムライス)$measureType <- c("Continuous")
+attributes(data02$ドリア)$measureType <- c("Continuous")
 
 # 名義変数
-data02$性別<-factor(data02$性別)
-attributes(data02$性別)$levels<-c('男','女')
-attributes(data02$性別)$values<-c(1,2)
-attributes(data02$性別)$measureType<-c('Nominal')
+data02$性別 <- factor(data02$性別)
+attributes(data02$性別)$levels <- c("男", "女")
+attributes(data02$性別)$values <- c(1, 2)
+attributes(data02$性別)$measureType <- c("Nominal")
 
-out<-jmvReadWrite::jmvWrite(data02,'data/omv/factor_data02.omv')
+# 説明
+attributes(data02$ID)$description <- "回答者のID"
+attributes(data02$性別)$description <- "回答者の性別"
+attributes(data02$パスタ)$description <- "パスタに対する満足度（1〜7）"
+attributes(data02$カレー)$description <- "カレーに対する満足度（1〜7）"
+attributes(data02$ラーメン)$description <- "ラーメンに対する満足度（1〜7）"
+attributes(data02$カツ丼)$description <- "カツ丼に対する満足度（1〜7）"
+attributes(data02$オムライス)$description <- "オムライスに対する満足度（1〜7）"
+attributes(data02$ドリア)$description <- "ドリアに対する満足度（1〜7）"
+
+
+out <- jmvReadWrite::write_omv(data02, "data/omv/factor_data02.omv")
 
 ```
 
-```{r factor-data02, fig.cap='サンプルデータ', echo=FALSE}
+```{r factor-data02, fig.cap="サンプルデータ", echo=FALSE}
 knitr::include_graphics("images/factor/data02.png")
 ```
 
@@ -318,7 +331,7 @@ knitr::include_graphics("images/factor/data02.png")
 
 ここに，r=0.8の正の相関関係にある2つの変数があるとします。相関係数が0.8の変数の値を散布図に示すと，おおよそ図\@ref(fig:factor-pca-scatter1)のようなものになります。
 
-```{r factor-pca-scatter1, fig.cap='相関r=0.8の2変数の散布図', echo=FALSE}
+```{r factor-pca-scatter1, fig.cap="相関r=0.8の2変数の散布図", echo=FALSE}
 knitr::include_graphics("images/factor/pca-scatter1.png")
 ```
 
@@ -327,7 +340,7 @@ knitr::include_graphics("images/factor/pca-scatter1.png")
 
 ここで，たとえばこの散布図に示されたデータの情報を横軸のみで表現した場合について考えてみましょう。縦軸のみで表現するということは，縦軸の値（変数2）は無視するということですので，ここでは変数2の値をすべて0として散布図上に示しなおします（図\@ref(fig:factor-pca-scatter2)）。
 
-```{r factor-pca-scatter2, fig.cap='データを横軸に集約した場合の散布図', echo=FALSE}
+```{r factor-pca-scatter2, fig.cap="データを横軸に集約した場合の散布図", echo=FALSE}
 knitr::include_graphics("images/factor/pca-scatter2.png")
 ```
 
@@ -335,19 +348,19 @@ knitr::include_graphics("images/factor/pca-scatter2.png")
 
 ただし，これでは単に変数2がもつ情報（y軸がもつ情報）を捨てているだけですので，2つの軸がもつ情報を1つの軸に集約したことによって，多くの情報が失われてしまいます（図\@ref(fig:factor-pca-scatter3)）。
 
-```{r factor-pca-scatter3, fig.cap='集約による情報の損失', echo=FALSE}
+```{r factor-pca-scatter3, fig.cap="集約による情報の損失", echo=FALSE}
 knitr::include_graphics("images/factor/pca-scatter3.png")
 ```
 
 そこで，もう少し工夫をしてみましょう。このように2変数間に正の相関がある場合，その散布図は右肩上がりの楕円形の形になります。その楕円の中央を，楕円の長いほうの軸にそって貫通するような直線を引き，その直線を軸として散布図上の情報を集約させてみます（図\@ref(fig:factor-pca-scatter4)）。
 
-```{r factor-pca-scatter4, fig.cap='情報の損失が少ない軸に集約', echo=FALSE}
+```{r factor-pca-scatter4, fig.cap="情報の損失が少ない軸に集約", echo=FALSE}
 knitr::include_graphics("images/factor/pca-scatter4.png")
 ```
 
 すると，先ほどの場合よりも失われる情報の量がずっと少なくなりました。このような形で情報を集約できれば，2つの軸で表現される情報を1つの軸で表現したとしても，もとの情報が多く損なわれてしまうということがありません。
 
-主成分分析では，このようにしてデータのもつ情報ができるだけ失われないようにしながら，もとのデータよりも少ない軸を用いてデータを表現しなおすということをするのです。
+主成分分析では，このようにしてデータのもつ情報ができるだけ失われないようにしながら，もとのデータよりも少ない軸を用いてデータを表現しなおすのです。
 
 このとき，この情報を集約する軸は，次のような式によって表現されます。
 
@@ -366,94 +379,94 @@ z = a_1 \times \text{変数}_1 + a_2 \times \text{変数}_2 + \cdots + a_n \time
 
 ### 基本手順 {#sub:factor-pca-procedure}
 
-主成分分析を実行するには，Analysesタブの「`r infig('analysis-factor')`  Factor（因子分析）」から「Principal Component Analysis（主成分分析）」を選択します（図\@ref(fig:factor-pca-menu)）。
+主成分分析を実行するには，分析タブの「`r infig("analysis-factor")`  因子分析」から「主成分分析」を選択します（図\@ref(fig:factor-pca-menu)）。
 
 
-```{r factor-pca-menu, fig.cap='主成分分析の実行', echo=FALSE}
+```{r factor-pca-menu, fig.cap="主成分分析の実行", echo=FALSE}
 knitr::include_graphics("images/factor/pca-menu.png")
 ```
 
 すると，図\@ref(fig:factor-pca-setting)のような設定画面が表示されます。
 
 <!-- -->
-```{r factor-pca-setting, fig.cap='主成分分析の設定画面', echo=FALSE}
+```{r factor-pca-setting, fig.cap="主成分分析の設定画面", echo=FALSE}
 knitr::include_graphics("images/factor/pca-setting.png")
 ```
 
 :::{.jmvsettings data-latex=""}
-+ **Method**（方法）
-  - Rotation（回転）　主成分の回転法を設定します。
-+ **Number of Components**（主成分の個数）
-  - Based on parallel analysis（平行分析に基づいて決定）　平行分析の結果をもとに主成分の個数を決定します。
-  - Based on eigenvalue（固有値に基づいて決定）　固有値の大きさが指定値以上の主成分を採用します。
-  - Fixed number（個数指定）　主成分の個数を直接指定します。
-+ **Assumption Checks**（前提チェック）
-  - Bartlett's test of sphericity（バートレットの球面性検定）　バートレットの球面性検定を実施します。
-  - KMO measure of sampling adequacy（KMO標本妥当性指標）　標本妥当性指標（MSA）を算出します。
-+ **Factor Loadings**（因子負荷）
-  - Hide loadings below ...（これ未満の負荷を隠す）　絶対値の小さい負荷量を非表示にします。
-  - Sort loadings by size（負荷量の大きさで並び替え）　負荷量の絶対値が大きい順に変数を並び替えて表示します。
-+ **Additional Output**（追加の出力）
-  - Component summary（主成分の要約）　各主成分について要約量を算出します。
-  - Component correlations（主成分の相関）　各主成分の間の相関を算出します。
-  - Initial eigenvalues（回転前の固有値）　回転前の固有値とその寄与率，累積寄与率を算出します。
-  - Scree plot（スクリープロット）　スクリープロットを表示します。
-+ `r groupbar('Save')`（保存）　分析結果を新たな変数に保存します。
++ **方法**
+  - 回転法　主成分の回転法を設定します。
++ **主成分数**
+  - 平行分析に基づく　平行分析の結果をもとに主成分の個数を決定します。
+  - 固有値に基づく　固有値の大きさが指定値以上の主成分を採用します。
+  - 数値指定　主成分の個数を直接指定します。
++ 前提チェック
+  - バートレットの球面性検定　バートレットの球面性検定を実施します。
+  - KMO標本妥当性指標　標本妥当性指標（MSA）を算出します。
++ **因子負荷**
+  - これ未満の負荷量を隠す　絶対値の小さい負荷量を非表示にします。
+  - 負荷量順に並び替え　負荷量の絶対値が大きい順に変数を並び替えて表示します。
++ **追加の出力**
+  - 主成分の要約量　各主成分について要約量を算出します。
+  - 主成分の相関　各主成分の間の相関を算出します。
+  - 回転前の固有値　回転前の固有値とその寄与率，累積寄与率を算出します。
+  - スクリープロット　スクリープロットを表示します。
++ `r groupbar("保存")`　分析結果を新たな変数に保存します。
 :::
 
-この設定画面で，主成分分析の対象となる変数（「パスタ」から「ドリア」まで）を「Variables（変数）」欄に移動します（図\@ref(fig:factor-pca-set-var)）。
+この設定画面で，主成分分析の対象となる変数（「パスタ」から「ドリア」まで）を「変数」欄に移動します（図\@ref(fig:factor-pca-set-var)）。
 
 <!-- -->
-```{r factor-pca-set-var, fig.cap='分析対象の変数を設定', echo=FALSE}
+```{r factor-pca-set-var, fig.cap="分析対象の変数を設定", echo=FALSE}
 knitr::include_graphics("images/factor/pca-set-var.png")
 ```
 
 
 これで基本的な分析手順は終わりです。ただし，主成分分析の結果は設定によって大きく変わりますので，結果の見方についての説明に入る前に，いくつかの設定項目について説明しておきたいと思います。
 
-#### Method：回転 {-#subsub:factor-pca-method}
+#### 回転法 {-#subsub:factor-pca-method}
 
 主成分分析の目的は，たくさんの変数をできるだけ少数の変数に集約することにあります。そのため，まずは分析に使用した変数全体が持っている情報を1つの軸に集約し，そこで拾いきれなかった情報を2つ目，3つ目の軸に集約していくというのがもともとの考え方です。
 
 しかし，情報の損失を最小限にすることだけを目的として軸を設定した場合，その軸が一体何を表しているのかが解釈困難になる場合もあります。心理学における研究の場合，多数ある変数を少数の軸に集約するだけでなく，それらの軸に対する解釈も重要な関心対象であることがよくあります。そのため，主成分分析の結果を解釈しやすくすることを目的として，分析で得られた軸に対して「*回転*」と呼ばれる操作を行う場合があります。
 
-jamoviの主成分分析では，分析設定画面の「**Method**（方法）」にある「Rotation（回転）」でこの回転方法についての設定ができるようになっており，初期設定値では，回転方法は「Varimax（バリマックス）」が指定されています。ここでは，この設定値を「None（回転なし）」に設定してください（図\@ref(fig:factor-pca-rotate)）。
+jamoviの主成分分析では，分析設定画面の「**方法**」にある「回転法」でこの回転方法についての設定ができるようになっており，初期設定値では，回転方法は「バリマックス」が指定されています。ここでは，この設定値を「なし」に設定してください（図\@ref(fig:factor-pca-rotate)）。
 
 
 
 <!-- -->
 <!-- -->
-```{r factor-pca-rotate, fig.cap='主成分のRotate（回転）を「None（なし）」に設定', echo=FALSE}
+```{r factor-pca-rotate, fig.cap="主成分の回転法を「なし」に設定", echo=FALSE}
 knitr::include_graphics("images/factor/pca-rotate.png")
 ```
 
-いわゆる「総合得点」を算出したい場合には，回転は「None（回転なし）」にしておきます。そうすることによって，軸を回転する前の主成分分析結果を得ることができるからです。なお，多変量解析の教科書の多くは，主成分分析では回転を行っていません。
+いわゆる「総合得点」を算出したい場合には，回転は「なし」にしておきます。そうすることによって，軸を回転する前の主成分分析結果を得ることができるからです。なお，多変量解析の教科書の多くは，主成分分析では回転を行っていません。
 
 「総合得点」を算出することよりも集約した軸の解釈が主な目的の場合には，適切な回転方法を選んで指定します。軸の回転方法については因子分析のところで説明するため，ここでは省略します。
 
 
-#### Number of Components：主成分の個数 {-#subsub:factor-pca-component}
+#### 主成分数 {-#subsub:factor-pca-component}
 
 主成分分析では，計算上は元の変数と同じ数だけ主成分が抽出されます。しかし，変数が多いからデータがもつ情報を少数の軸に縮約しようとしているのに，元の変数と同じ個数だけ主成分を抽出したのでは意味がありません。そこで実際の分析では，抽出された中から適切な個数の主成分だけを選んで使用するのですが，その際，主成分の「適切な個数」については，いくつかの判断方法があります。
 
-jamoviの「**Number of Components**（主成分の個数）」の設定項目には，次の3種類が用意されています。
+jamoviの「**主成分数**」の設定項目には，次の3種類が用意されています。
 
 <!-- -->
-```{r factor-pca-n-components, fig.cap='採用する主成分の個数の設定', echo=FALSE}
+```{r factor-pca-n-components, fig.cap="採用する主成分の個数の設定", echo=FALSE}
 knitr::include_graphics("images/factor/pca-n-components.png")
 ```
 
 :::{.jmvsettings data-latex=""}
-- Based on parallel analysis（平行分析を基準）
-- Based on eigenvalue（固有値を基準）
-- Fixed number（個数指定）
+- 平行分析に基づく
+- 固有値に基づく
+- 数値指定
 :::
 
 ここでは，これら3つの項目を中心に，適切な主成分の個数を判断する方法について見ていきましょう。
 
-###### Based on parallel analysis：平行分析を基準 {-#subsub:factor-pca-component-parallel}
+###### 平行分析に基づく {-#subsub:factor-pca-component-parallel}
 
-1つ目の「Based on parallel analysis（平行分析に基づいて決定）」では，*平行分析*と呼ばれる手法を用いて最適と考えられる主成分の個数を決定します。jamoviでは，この方法が初期設定値になっています。
+1つ目の「平行分析に基づく」では，*平行分析*と呼ばれる手法を用いて最適と考えられる主成分の個数を決定します。jamoviでは，この方法が初期設定値になっています。
 
 
 この方法では，まずコンピューターを用いて，分析データと変数の個数が同じで標本サイズも同じであるランダムなデータを複数発生させます。そして，それらを用いて主成分分析を行った場合の平均的な結果と，実際のデータを主成分分析した場合の結果を比較し，ランダムなデータの場合よりも*固有値*が大きい主成分を採用するという方法をとります。
@@ -466,7 +479,7 @@ knitr::include_graphics("images/factor/pca-n-components.png")
 
 その際，その軸がどの方向を向いているのかを表した値が，先ほどの主成分得点の式における係数の部分です。2変数の場合には，主成分得点の式は「\(z=a_1\times\text{変数}_1+a_2\times\text{変数}_2\)」という形になりますが，これはこの軸が，グラフの原点（横軸・縦軸ともに0）と，横軸の座標が\(a_1\)，縦軸の座標が\(a_2\)の点（\([{a_1}\ \ {a_2}]\)）を通る直線であることを意味しています。変数が3つの場合にも，主成分の軸はやはり原点（\([0\ \ 0\ \ 0]\)）と主成分得点の各係数を座標要素とする3次元空間中の点\([{a_1}\ \ {a_2}\ \ {a_3}]\)を通る直線になります（図\@ref(fig:factor-pca-eigenvector)）。
 
-```{r factor-pca-eigenvector, fig.cap='固有ベクトルと固有値', echo=FALSE}
+```{r factor-pca-eigenvector, fig.cap="固有ベクトルと固有値", echo=FALSE}
 knitr::include_graphics("images/factor/pca-eigenvector.png")
 ```
 
@@ -474,71 +487,71 @@ knitr::include_graphics("images/factor/pca-eigenvector.png")
 このとき，この主成分得点の式の係数で表現される\([{a_1\ \ a_2}]\)や\([{a_1\ \ a_2\ \ a_3}]\)は，数学的には分析対象データの相関行列（または分散共分散行列）の*固有ベクトル*と呼ばれるものになります。そして，その固有ベクトルにそった直線上にデータがどれだけ集約できているのか（その軸でどれだけのばらつきを表現できているか）を数値化したものが*固有値*です^[固有ベクトルと固有値についてのこのような説明は，数学的には適切ではないかもしれません。しかし，より正確な説明のためにはベクトルや行列の知識が必要となりますので，ここでは便宜的にこのように説明をしておきます。]。
 
 
-なお，「Based on parallel analysis」を選択した状態で「**Additional Output**（追加の出力）」にある「Scree plot（スクリープロット）」にチェックを入れると，平行分析におけるランダムなデータと実際のデータの固有値の変化を見ることができます（図\@ref(fig:factor-pca-parallel)）。
+なお，「平行分析に基づく」を選択した状態で「**追加の出力**」にある「スクリープロット」にチェックを入れると，平行分析におけるランダムなデータと実際のデータの固有値の変化を見ることができます（図\@ref(fig:factor-pca-parallel)）。
 
 <!--  -->
-```{r factor-pca-parallel, fig.cap='平行分析のスクリープロット', echo=FALSE}
+```{r factor-pca-parallel, fig.cap="平行分析のスクリープロット", echo=FALSE}
 knitr::include_graphics("images/factor/pca-parallel.png")
 ```
 
 
-###### Based on eigenvalue：固有値を基準 {-#subsub:factor-pca-component-eigen}
+###### 固有値に基づく {-#subsub:factor-pca-component-eigen}
 
-2つ目の「Based on eigenvalue（固有値を基準）」も非常によく用いられる方法です。一般に，この方法では「固有値が1以上」（これは一般に*カイザー基準*と呼ばれます）の主成分を採用します。SASやSPSSなどの統計ソフトでは，この基準が標準として設定されており，分析で算出される*固有値*の値が1を超える主成分の情報のみが結果に表示されます。
+2つ目の「固有値に基づく」も非常によく用いられる方法です。一般に，この方法では「固有値が1以上」（これは一般に*カイザー基準*と呼ばれます）の主成分を採用します。SASやSPSSなどの統計ソフトでは，この基準が標準として設定されており，分析で算出される*固有値*の値が1を超える主成分の情報のみが結果に表示されます。
 
-主成分分析で主成分の個数を決める基準として用いられるのはデータの*相関行列*についての固有値ですが，この値はその主成分に「変数何個分」の情報が集約されているかという形で解釈することができます。つまり，「固有値1以上」というのは，最低でも変数1個分の情報を持っているような主成分だけを採用するということなのです。この方法を用いる場合には，「Based on eigenvalue」を選択して「Eigenvalues greater than ...（これ以上の固有値）」の数値を「1」に設定します。
+主成分分析で主成分の個数を決める基準として用いられるのはデータの*相関行列*についての固有値ですが，この値はその主成分に「変数何個分」の情報が集約されているかという形で解釈することができます。つまり，「固有値1以上」というのは，最低でも変数1個分の情報を持っているような主成分だけを採用するということなのです。この方法を用いる場合には，「固有値に基づく」を選択して「固有値の最小基準値」を「1」に設定します。
 
-###### Fixed number：個数指定 {-#subsub:factor-pca-fixednumber}
+###### 数値指定 {-#subsub:factor-pca-fixednumber}
 
-それ以外の方法で主成分の個数を判断した場合には，その個数を「Fixed number（個数指定）」に指定することで，指定した個数の主成分を抽出することができます。
+それ以外の方法で主成分の個数を判断した場合には，その個数を「数値指定」に指定することで，指定した個数の主成分を抽出することができます。
 
 固有値の大きさや平行分析以外の方法で主成分の個数を判断するものとしては，たとえば*スクリープロット*と呼ばれる方法があります。
 
 主成分分析の主成分は，最初のものほど固有値が大きく，2番目の主成分，3番目の主成分と，順番が後ろの主成分になるにつれて固有値は小さくなっていきます。そしてこの各主成分の固有値の大きさをグラフに示したものがスクリープロットで，この方法では，グラフ上で固有値の変化が小さくなる手前までの主成分を採用するという方法をとります。
 
-スクリープロットを利用して主成分の個数を判断したい場合には，この「Fixed number」を選択した状態で，「**Additional Output**（追加の出力）」にある「Scree plot（スクリープロット）」にチェックを入れてスクリープロットを作成します（図\@ref(fig:factor-pca-scree)）。
+スクリープロットを利用して主成分の個数を判断したい場合には，この「数値指定」を選択した状態で，「**追加の出力**」にある「スクリープロット」にチェックを入れてスクリープロットを作成します（図\@ref(fig:factor-pca-scree)）。
 
-```{r factor-pca-scree, fig.cap='スクリープロットを用いた判断', echo=FALSE}
+```{r factor-pca-scree, fig.cap="スクリープロットを用いた判断", echo=FALSE}
 knitr::include_graphics("images/factor/pca-scree.png")
 ```
 
-今回のデータでは，3つ目の主成分以降は固有値の変化がほとんどありませんので，その手前の2つ目までの主成分を採用すると判断するわけです。そして，そのように判断したら，その主成分の個数（「2」）を「Fixed number」の数値入力欄に指定します。
+今回のデータでは，3つ目の主成分以降は固有値の変化がほとんどありませんので，その手前の2つ目までの主成分を採用すると判断するわけです。そして，そのように判断したら，その主成分の個数（「2」）を「数値指定」の数値入力欄に指定します。
 
-その他の基準としては，「累積寄与率が70〜80%以上」というものもあります。*寄与率*（または*分散説明率*）とは，データ全体のうち，その主成分に集約されている部分の割合のことで，各主成分の寄与率は，その主成分の固有値を分析に使用した変数の個数で割った値になります。この「累積寄与率が70〜80%以上」という基準は，最初の主成分から順に2番目，3番目と主成分の寄与率を合計していき，その合計値が0.7〜0.8以上になるところまでの主成分を採用するという方法です。
+その他の基準としては，「累積説明率が70〜80%以上」というものもあります。*説明率*（*寄与率*）とは，データ全体のうち，その主成分に集約されている部分の割合のことで，各主成分の説明率は，その主成分の固有値を分析に使用した変数の個数で割った値になります。この「累積説明率が70〜80%以上」という基準は，最初の主成分から順に2番目，3番目と主成分の説明率を合計していき，その合計値が0.7〜0.8以上になるところまでの主成分を採用するという方法です。
 
-この方法を用いる場合には，「**Additional Output**（追加の出力）」にある「Initial eigenvalues（回転前の固有値）」にチェックを入れます（図\@ref(fig:factor-pca-cumulative)）。すると，各主成分の寄与率（分散説明率）と，その主成分およびその手前の主成分の寄与率の合計値（*累積寄与率*）の表が出力されますので，そこから判断した主成分の個数を「Fixed number」の数値入力欄に指定します。
+この方法を用いる場合には，「**追加の出力**」にある「回転前の固有値」にチェックを入れます（図\@ref(fig:factor-pca-cumulative)）。すると，各主成分の分散説明率と，その主成分およびその手前の主成分の説明率の合計値（累積%）の表が出力されますので，そこから判断した主成分の個数を「数値指定」の数値入力欄に指定します。
 
-```{r factor-pca-cumulative, fig.cap='累積寄与率を基準とする判断', echo=FALSE}
+```{r factor-pca-cumulative, fig.cap="累積説明率を基準とする判断", echo=FALSE}
 knitr::include_graphics("images/factor/pca-cumulative.png")
 ```
 
 
-なお，これらの基準は，どれも絶対的なものではなく，主成分の適切な個数を判断する際の目安にすぎません。「固有値1以上」という基準では，主成分の個数が多すぎたり少なすぎたりする場合があります。また，分析の目的にもよるでしょうが，「累積寄与率70〜80%以上」という基準では，主成分の数が多くなりすぎる傾向があります。平行分析の場合にも，主成分の個数が少なめに判定されることがあるようです。そのため，これらの基準を参考にしながら，最終的には分析者の判断で適切と考えられる主成分の個数を決定することになります。
+なお，これらの基準は，どれも絶対的なものではなく，主成分の適切な個数を判断する際の目安にすぎません。「固有値1以上」という基準では，主成分の個数が多すぎたり少なすぎたりする場合があります。また，分析の目的にもよるでしょうが，「累積説明率70〜80%以上」という基準では，主成分の数が多くなりすぎる傾向があります。平行分析の場合にも，主成分の個数が少なめに判定されることがあるようです。そのため，これらの基準を参考にしながら，最終的には分析者の判断で適切と考えられる主成分の個数を決定することになります。
 
-なお，今回のサンプルデータの分析では，主成分の個数は平行分析に基づいて決定することにしましょう。ここでは，「**Number of Components**」は，初期設定値の「Based on parallel analysis（平行分析に基づいて決定）」にします。
+なお，今回のサンプルデータの分析では，主成分の個数は平行分析に基づいて決定することにしましょう。ここでは，「**主成分数**」は，初期設定値の「平行分析に基づく」にします。
 
-#### Factor loadings：因子負荷 {-#subsub:factor-pca-loadings}
+#### 因子負荷 {-#subsub:factor-pca-loadings}
 
-「**Factor Loadings**（因子負荷）」には，次の2つの項目が含まれています（図\@ref(fig:factor-pca-loadings)）。
+「**因子負荷**」には，次の2つの項目が含まれています（図\@ref(fig:factor-pca-loadings)）。
 
-```{r factor-pca-loadings, fig.cap='因子負荷の設定項目', echo=FALSE}
+```{r factor-pca-loadings, fig.cap="因子負荷の設定項目", echo=FALSE}
 knitr::include_graphics("images/factor/pca-loadings.png")
 ```
 
 :::{.jmvsettings data-latex=""}
-- Hide loadings below ...（これ未満の負荷を隠す）　絶対値の小さい負荷量を非表示にします。
-- Sort loadings by size（負荷量の順に並び替え）　負荷量の絶対値が大きい順に変数を並び替えて表示します。
+- これ未満の負荷量を隠す　絶対値の小さい負荷量を非表示にします。
+- 負荷量順に並び替え　負荷量の絶対値が大きい順に変数を並び替えて表示します。
 :::
 
-##### Hide loadings below：小さな負荷量を隠す{-}
+##### これ未満の負荷量を隠す{-}
 
-1つ目の「Hide loadings below」の項目は，結果の表の中に絶対値が小さな負荷量を表示しないようにするための設定です。分析に使用する変数や主成分の数が多い場合，主成分とほとんど関連がない部分については数値を非表示にしてしまったほうが，主成分と各変数との関係を把握しやすくなります。そのため，jamoviの初期設定では，負荷量の絶対値が0.3未満の場合にその部分が非表示になるように設定されています。
+1つ目の「これ未満の負荷量を隠す」の項目は，結果の表の中に絶対値が小さな負荷量を表示しないようにするための設定です。分析に使用する変数や主成分の数が多い場合，主成分とほとんど関連がない部分については数値を非表示にしてしまったほうが，主成分と各変数との関係を把握しやすくなります。そのため，jamoviの初期設定では，負荷量の絶対値が0.3未満の場合にその部分が非表示になるように設定されています。
 
 今回の分析結果ではそのような値は1つもありませんでしたが，結果の表の中に数値が表示されていない部分がある場合には，それらの負荷量はここで設定されている基準値よりも小さいということです。
 
-なお，分析の過程では確かに小さい負荷量は非表示のほうが見やすいかもしれませんが，レポートや論文に結果を報告する際には，それら小さな負荷量も含めて報告するほうがよいでしょう。その場合には，「Hide loadings below」の値を「0」にすることですべての負荷量を表示させることができます。
+なお，分析の過程では確かに小さい負荷量は非表示のほうが見やすいかもしれませんが，レポートや論文に結果を報告する際には，それら小さな負荷量も含めて報告するほうがよいでしょう。その場合には，「これ未満の負荷量を隠す」の値を「0」にすることですべての負荷量を表示させることができます。
 
-##### Sort loadings by size：負荷量の大きさで並び替え{-}
+##### 負荷量順に並び替え{-}
 
 この項目は，分析に使用した変数を負荷量の大きさの順に並び替えて表示させるかどうかについての設定です。分析に使用する変数が多い場合や，抽出した主成分の個数が多い場合などは，このチェックをオンにしておくと結果が見やすくなります。
 
@@ -546,41 +559,41 @@ knitr::include_graphics("images/factor/pca-loadings.png")
 
 
 
-#### Additional Output：追加の出力 {-#sub:factor-pca-additional}
+#### 追加の出力 {-#sub:factor-pca-additional}
 
-「**Additional Output**（追加の出力）」には，次の4つの項目が含まれています（図\@ref(fig:factor-pca-additional)）。
+「**追加の出力**」には，次の4つの項目が含まれています（図\@ref(fig:factor-pca-additional)）。
 
-```{r factor-pca-additional, fig.cap='追加の出力', echo=FALSE}
+```{r factor-pca-additional, fig.cap="追加の出力", echo=FALSE}
 knitr::include_graphics("images/factor/pca-additional.png")
 ```
 
 :::{.jmvsettings data-latex=""}
-- Component summary（主成分の要約）　各主成分について要約量を算出します。
-- Component correlations（主成分の相関）　各主成分の間の相関を算出します。
-- Initial eigenvalues（回転前の固有値）　回転前の固有値とその寄与率，累積寄与率を算出します。
-- Scree plot（スクリープロット）　スクリープロットを表示します。
+- 主成分の要約量　各主成分について要約量を算出します。
+- 主成分の相関　各主成分の間の相関を算出します。
+- 回転前の固有値　回転前の固有値とその寄与率，累積寄与率を算出します。
+- スクリープロット　スクリープロットを表示します。
 :::
 
-##### Component summary：主成分の要約{-}
+##### 主成分の要約{-}
 
-この項目は，抽出された主成分の固有値や寄与率についての情報を表示させるかどうかの設定です。この設定項目は，主成分に対して回転を行った場合にその回転後の主成分の情報を知りたい場合に使用します。主成分の回転を行わない場合は，この設定で表示される内容は「Initial eigenvalues（回転前の固有値）」の表の一部とまったく同じですので，今回のサンプルデータを用いた分析ではここは設定の必要はありません。
+この項目は，抽出された主成分の固有値や寄与率についての情報を表示させるかどうかの設定です。この設定項目は，主成分に対して回転を行った場合にその回転後の主成分の情報を知りたい場合に使用します。主成分の回転を行わない場合は，この設定で表示される内容は「回転前の固有値」の表の一部とまったく同じですので，今回のサンプルデータを用いた分析ではここは設定の必要はありません。
 
-##### Component correlations：主成分の相関{-}
+##### 主成分の相関{-}
 
 この項目は，主成分の間の相関係数を算出するための設定項目です。主成分に対して回転操作を行った場合には，その回転方法によって主成分の間に相関が見られることがあるのですが，主成分に対して回転を行わない場合，それぞれの主成分は互いに**独立**（相関0）になりますので，今回の分析ではここも設定の必要はありません。
 
-##### Initial eigenvalues：回転前の固有値{-}
+##### 回転前の固有値{-}
 
-主成分の[個数指定](#subsub:factor-pca-fixednumber)のところで説明したように，「Initial eigenvalues（回転前の固有値）」にチェックを入れると，抽出直後の各主成分の固有値と*寄与率*（分散説明率），そしてその主成分までの寄与率の合計（*累積寄与率*）が表示されます。
+主成分の[数値指定](#subsub:factor-pca-fixednumber)のところで説明したように，「回転前の固有値」にチェックを入れると，抽出直後の各主成分の固有値と*分散説明率*（寄与率），そしてその主成分までの寄与率の合計（累積%）が表示されます。
 
-##### Scree plot：スクリープロット{-}
+##### スクリープロット{-}
 
-すでに[平行分析](#subsub:factor-pca-component-parallel)や主成分の[個数指定](#subsub:factor-pca-fixednumber)のところで説明したように，「Scree plot（スクリープロット）」にチェックを入れると固有値の*スクリープロット*
+すでに[平行分析](#subsub:factor-pca-component-parallel)や主成分の[数値指定](#subsub:factor-pca-fixednumber)のところで説明したように，「スクリープロット」にチェックを入れると固有値の*スクリープロット*
 が作成されます。
 
-なお，この「Scree plot」の項目は，「**Number of Components**」で3つのうちのどれが選択されているかによって少しずつ表示が異なります。「**Number of Components**」で「Based on parallel analysis」が選択されている場合には，分析データとランダムなデータについてのスクリープロットが1つのグラフに示されますが，ここが「Based on eigenvalue」になっている場合には，「Eigenvalue greater than」で指定された位置に点線が示されます。また，「**Number of Components**」が「Fixed number」になっている場合には，固有値のみがグラフ上に示されます（図\@ref(fig:factor-pca-scree-plots)）。
+なお，この「スクリープロット」の項目は，「**主成分数**」で3つのうちのどれが選択されているかによって少しずつ表示が異なります。「**主成分数**」で「平行分析に基づく」が選択されている場合には，分析データとランダムなデータについてのスクリープロットが1つのグラフに示されますが，ここが「固有値に基づく」になっている場合には，「固有値の最小基準値」で指定された位置に点線が示されます。また，「**主成分数**」が「数値指定」になっている場合には，固有値のみがグラフ上に示されます（図\@ref(fig:factor-pca-scree-plots)）。
 
-```{r factor-pca-scree-plots, fig.cap='スクリープロットのバリエーション', echo=FALSE}
+```{r factor-pca-scree-plots, fig.cap="スクリープロットのバリエーション", echo=FALSE}
 knitr::include_graphics("images/factor/pca-scree-plots.png")
 ```
 
@@ -590,36 +603,36 @@ knitr::include_graphics("images/factor/pca-scree-plots.png")
 
 主成分の個数は平行分析を基準に決定し，主成分の回転は行わないという設定で分析をすると，その結果は図\@ref(fig:factor-pca-results)のようになります。
 
-```{r factor-pca-results, fig.cap='主成分分析の結果', echo=FALSE}
+```{r factor-pca-results, fig.cap="主成分分析の結果", echo=FALSE}
 knitr::include_graphics("images/factor/pca-results.png")
 ```
 
-この表の「**Component**」の部分に示されているのは*主成分負荷量*と呼ばれる値で，これは各変数と主成分との間の相関関係を示しています。この値は，その主成分の固有値の平方根と固有ベクトルを掛け合わせることによって求められます。
+この表の「主成分」の部分に示されているのは*主成分負荷量*と呼ばれる値で，これは各変数と主成分との間の相関関係を示しています。この値は，その主成分の固有値の平方根と固有ベクトルを掛け合わせることによって求められます。
 
 回転を行わない主成分分析の場合，1つ目の主成分は全体を総合するような（総合得点的な）ものになることが多いのですが，今回の結果でも，第1主成分はどの変数の値とも0.5から0.7程度の正の相関関係にあり，メニュー全体に対する総合的な満足度を反映した軸といえるようなものになっています。つまり，この主成分の得点が高い人ほど全体的に満足度が高く，主成分得点が低い人ほど全体的に満足度が低い傾向にあるということです。
 
 これに対し，第2主成分ではカレーとラーメン，カツ丼に対する負荷量がプラスになっており，それ以外がマイナスであることから，この主成分の得点が高い人ほどカレーやラーメンなどのいわゆる「がっつり」したにメニューに対する満足度が高く，この主成分の得点が低い人ほどパスタやオムライスなどの洋食メニューに対する満足度が高くなく傾向にあることがわかります。このことから，この第2主成分は，がっつり志向かどうかという，志向性の違いを表しているといえるでしょう。
 
-結果の表の「**Uniqueness**（*独自性*）」の部分は，各変数がもつ情報のうち，この2つの主成分に集約しきれなかった情報の割合を示しています。この独自性の値に，たとえば0.8（80%）を超えるようなものが含まれている場合，その変数は主成分に情報がうまく集約できていないことを意味します。今回の分析結果では，どの変数も独自性は0.3前後ですので，2つの主成分に60%から70%程度の情報が集約できていることになります。これは分析結果としては十分な値でしょう。
+結果の表の「*独自性*」の部分は，各変数がもつ情報のうち，この2つの主成分に集約しきれなかった情報の割合を示しています。この独自性の値に，たとえば0.8（80%）を超えるようなものが含まれている場合，その変数は主成分に情報がうまく集約できていないことを意味します。今回の分析結果では，どの変数も独自性は0.3前後ですので，2つの主成分に60%から70%程度の情報が集約できていることになります。これは分析結果としては十分な値でしょう。
 
 ### 分析の詳細設定 {#sub:factor-pca-details}
 
 基本的な分析が終わりましたので，ここからは主成分分析のその他の設定項目について見ていきましょう。
 
-#### Assumption Checks：前提チェック{-#subsub:factor-pca-assumption}
+#### 前提チェック{-#subsub:factor-pca-assumption}
 
-他の分析手法と同様に，主成分分析にも分析のための全体となる条件がいくつか存在します。それらの条件が満たされているかどうかは，「**Assumption Check**（前提チェック）」に含まれる項目を用いて確認できます（図\@ref(fig:factor-pca-assumption)）。
+他の分析手法と同様に，主成分分析にも分析のための全体となる条件がいくつか存在します。それらの条件が満たされているかどうかは，「**前提チェック**」に含まれる項目を用いて確認できます（図\@ref(fig:factor-pca-assumption)）。
 
-```{r factor-pca-assumption, fig.cap='前提チェック', echo=FALSE}
+```{r factor-pca-assumption, fig.cap="前提チェック", echo=FALSE}
 knitr::include_graphics("images/factor/pca-assumption.png")
 ```
 
 :::{.jmvsettings data-latex=""}
-- Bartlett's test of sphericity（バートレットの球面性検定）　バートレットの球面性検定を実施します。
-- KMO measure of sampling adequacy（KMO標本妥当性指標）　標本妥当性指標（MSA）を算出します。
+- バートレットの球面性検定　バートレットの球面性検定を実施します。
+- KMO標本妥当性指標　標本妥当性指標（MSA）を算出します。
 :::
 
-##### Bartlett's test of sphericity：バートレットの球面性検定{-}
+##### バートレットの球面性検定{-}
 
 この項目にチェックを入れると，*バートレットの球面性検定*と呼ばれる検定が実施されます。
 
@@ -627,41 +640,41 @@ knitr::include_graphics("images/factor/pca-assumption.png")
 
 この検定のチェックをオンにすると，図\@ref(fig:factor-pca-bartlett)のような結果が得られます。
 
-```{r factor-pca-bartlett, fig.cap='球面性検定の結果', echo=FALSE}
+```{r factor-pca-bartlett, fig.cap="球面性検定の結果", echo=FALSE}
 knitr::include_graphics("images/factor/pca-bartlett.png")
 ```
 
 
-この検定は，「分析データの相関行列が*単位行列*である」という仮説に対して検定を行っています。単位行列というのは，相関行列の対角（同じ変数同士の相関係数の部分）が1で，それ以外の要素（相関係数）がすべて0である状態です。つまり，この検定結果が有意である場合，「少なくとも1組以上の変数間に0でない相関がある」ということになります。今回の分析データに対する検定結果は有意（p<.001）ですから，分析のための最低限の条件は満たしていることになります。
+この検定は，「分析データの相関行列が*単位行列*である」という仮説に対して検定を行っています。単位行列というのは，相関行列の対角（同じ変数同士の相関係数の部分）が1で，それ以外の要素（相関係数）がすべて0である状態です。つまり，この検定結果が有意である場合，「少なくとも1組以上の変数間に0でない相関がある」ということになります。今回の分析データに対する検定結果は有意（p&lt;.001）ですから，分析のための最低限の条件は満たしていることになります。
 
-##### KMO measure of sampling adequacy：KMO標本妥当性指標{-}
+##### KMO標本妥当性指標{-}
 
-「KMO measure of sampling adequacy（KMO標本妥当性指標）」の項目は，カイザー=マイヤー=オルキン（KMO）の標本妥当性指標（*KMO標本妥当性指標*または*KMO指標*）と呼ばれる値の算出を行います（図\@ref(fig:factor-pca-KMO)）。
+「KMO標本妥当性指標」の項目は，カイザー=マイヤー=オルキン（KMO）の標本妥当性指標（*KMO標本妥当性指標*または*KMO指標*）と呼ばれる値の算出を行います（図\@ref(fig:factor-pca-KMO)）。
 
-```{r factor-pca-KMO, fig.cap='KMO標本妥当性指標', echo=FALSE}
+```{r factor-pca-KMO, fig.cap="KMO標本妥当性指標", echo=FALSE}
 knitr::include_graphics("images/factor/pca-KMO.png")
 ```
 
 この値は，変数間の相関および偏相関の情報をもとに算出されたもので，分析データに主成分として集約可能な部分がありそうな程度を示しています。この値の大きさについての大まかな目安は表\@ref(tab:factor-pca-KMO-table)のとおりです。
 
 ```{r factor-pca-KMO-table}
-KMO.interpretation %>% 
-  kable(align="cc", caption = "KMOの解釈の目安", linesep = "", booktabs=T,escape=F)%>%
+KMO.interpretation %>%
+  kable(align = "cc", caption = "KMOの解釈の目安", linesep = "", booktabs = T, escape = F) %>%
   kable_styling(latex_options = "HOLD_position")
 ```
 
-この値はデータ全体と各変数それぞれについて算出されますが，主成分分析を実施するには，次の表のように全体のKMO指標が0.8以上であることが望ましく，少なくとも0.6以上である必要があるとされます。もし全体指標の値が小さい場合には、個別指標の値が小さな変数を分析から除外するなどの対応をとります。
+この値はデータ全体と各変数それぞれについて算出されますが，主成分分析を実施するには，次の表のように全体のKMO指標が0.8以上であることが望ましく，少なくとも0.6以上である必要があるとされます。もし全体指標の値が小さい場合には，個別指標の値が小さな変数を分析から除外するなどの対応をとります。
 
 今回のデータについてのKMO指標は0.69でやや低めですが，分析に適さないというほどではなさそうです。
 
-### Save：保存{#sub:factor-pca-save}
+### 保存{#sub:factor-pca-save}
 
-jamoviのバージョン1.8.0からは，分析結果を新たな変数として保存することができるようになりました。これにより，主成分分析では，各対象者について各主成分の主成分得点を算出し，それを別の分析に使用することが可能になっています。
+主成分分析では，各対象者について各主成分の主成分得点を算出し，それを別の分析に使用することが可能です。
 
-主成分得点の保存はとても簡単で，分析設定画面の`r groupbar('Save')`（保存）を展開して「Component scores（主成分得点）」にチェックを入れてからデータを確認すると，新たに「Score Component 1」と「Score Component 2」という変数が追加されていることがわかります（図\@ref(fig:factor-pca-save)）。
+主成分得点の保存はとても簡単で，分析設定画面の`r groupbar("保存")`を展開して「主成分得点」にチェックを入れるだけです。この操作をしてからデータを確認すると，新たに「主成分得点1」と「主成分得点2」という変数が追加されていることがわかります（図\@ref(fig:factor-pca-save)）。
 
 <!-- -->
-```{r factor-pca-save, fig.cap='主成分得点の保存', echo=FALSE}
+```{r factor-pca-save, fig.cap="主成分得点の保存", echo=FALSE}
 knitr::include_graphics("images/factor/pca-save.png")
 ```
 
@@ -680,31 +693,31 @@ z = a_1 \times \text{パスタ} + a_2 \times \text{カレー} + \cdots + a_6 \ti
 
 さて，分析で得た2つの主成分について主成分得点が求まりましたので，これらの値を使ってさらに別の分析を行ってみましょう。このサンプルデータには，食堂で提供されている代表メニューに対する満足度の他に，回答者の性別についての情報も含まれています。そこで，食堂で提供されているメニューに対する全体的な満足度やメニューに対する好みに男女差が見られるかどうかを見てみることにしましょう。
 
-Analysesタブの「`r infig('analysis-ttest')` T-Tests（t検定）」から「Independent Samples T-Test（対応なしt検定）」の項目を選択し，設定画面の「Dependent Variables（従属変数）」の欄に先ほど算出した2つの主成分得点を，「Grouping Variable（グループ変数）」の部分に「性別」を設定します（図\@ref(fig:factor-pca-t-test-setting)）。
+分析タブの「`r infig("analysis-ttest")` t検定」から「対応なしt検定」を選択し，設定画面の「従属変数」の欄に先ほど算出した2つの主成分得点を，「グループ変数」の部分に「性別」を設定します（図\@ref(fig:factor-pca-t-test-setting)）。
 
 
 <!-- -->
-```{r factor-pca-t-test-setting, fig.cap='主成分得点を用いたt検定', echo=FALSE}
+```{r factor-pca-t-test-setting, fig.cap="主成分得点を用いたt検定", echo=FALSE}
 knitr::include_graphics("images/factor/pca-t-test-setting.png")
 ```
 
-また，男児それぞれにおける各主成分得点の平均値を見るために，「**Additional Statistics**（追加の統計量）」の部分で「Descriptives（記述統計）」にもチェックを入れておきましょう（図\@ref(fig:factor-pca-ttest-descriptive)）。
+また，男児それぞれにおける各主成分得点の平均値を見るために，「**追加の統計量**」で「記述統計」にもチェックを入れておきましょう（図\@ref(fig:factor-pca-ttest-descriptive)）。
 
 <!-- -->
-```{r factor-pca-ttest-descriptive, fig.cap='t検定と同時に記述統計量を算出', echo=FALSE}
+```{r factor-pca-ttest-descriptive, fig.cap="t検定と同時に記述統計量を算出", echo=FALSE}
 knitr::include_graphics("images/factor/pca-ttest-descriptive.png")
 ```
 
 そして得られた結果が図\@ref(fig:factor-pca-ttest-results)です。
 
 <!-- -->
-```{r factor-pca-ttest-results, fig.cap='主成分得点のt検定の結果', echo=FALSE}
+```{r factor-pca-ttest-results, fig.cap="主成分得点のt検定の結果", echo=FALSE}
 knitr::include_graphics("images/factor/pca-ttest-results.png")
 ```
 
 この結果から，主成分1の主成分得点（食堂のメニューに対する全体的な満足度）は男女差が有意ではありませんが，主成分2の主成分得点（がっつり志向）においては男女差が有意になっています。また，算出された記述統計量からは，男性の主成分得点2の平均値は女性よりも高い値となっていますので，男性のほうがラーメンやカレー，カツ丼へといった「がっつり系」メニューへの志向が強く，女性はパスタやオムライス，ドリアなどの洋食メニューへの志向が強いことがわかります。
 
-## Exploratory Factor Analysis：探索的因子分析{#sec:factor-efa}
+## 探索的因子分析{#sec-factor-efa}
 
 ここまで見てきた主成分分析は，複数の変数を総合した得点を作成することによってそこに情報を集約し，変数の数を減らすという手法でした。これに対し，因子分析では，複数の変数の背後にある少数の*共通因子*を探し出すことによって，データの構造を単純化し，理解しやすくする方法です。
 
@@ -718,7 +731,7 @@ knitr::include_graphics("images/factor/pca-ttest-results.png")
 
 たとえば，これら10教科の成績の相関係数が図\@ref(fig:factor-efa-basics)のようなものになっていたとしましょう。
 
-```{r factor-efa-basics, fig.cap='10教科の相関係数の例', echo=FALSE}
+```{r factor-efa-basics, fig.cap="10教科の相関係数の例", echo=FALSE}
 knitr::include_graphics("images/factor/efa-basics.png")
 ```
 
@@ -751,7 +764,40 @@ knitr::include_graphics("images/factor/efa-basics.png")
 ここからは，次のサンプルデータ（[factor_data03.omv](https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/factor_data03.omv)）を用いて探索的因子分析の分析手順についてみていくことにしましょう（図\@ref(fig:factor-data03)）。
 <!-- -->
 
-```{r factor-data03, fig.cap='サンプルデータ', echo=FALSE}
+```{r}
+data03 <- read.csv("data/factor_data03.csv")
+
+# ID
+attributes(data03$ID)$`jmv-id` <- TRUE
+
+# 連続変数
+attributes(data03$Q1)$measureType <- c("Continuous")
+attributes(data03$Q2)$measureType <- c("Continuous")
+attributes(data03$Q3)$measureType <- c("Continuous")
+attributes(data03$Q4)$measureType <- c("Continuous")
+attributes(data03$Q5)$measureType <- c("Continuous")
+attributes(data03$Q6)$measureType <- c("Continuous")
+attributes(data03$Q7)$measureType <- c("Continuous")
+attributes(data03$Q8)$measureType <- c("Continuous")
+attributes(data03$Q9)$measureType <- c("Continuous")
+
+# 説明
+attributes(data03$ID)$description <- "回答者のID"
+attributes(data03$Q1)$description <- "関心がある対象については徹底して調べ尽くすほうだ"
+attributes(data03$Q2)$description <- "好きなものを手に入れるためなら手間やお金は惜しまない"
+attributes(data03$Q3)$description <- "趣味に関連するアイテムやグッズなどは全部集めたくなる"
+attributes(data03$Q4)$description <- "現実の人間よりフィクションのキャラクターのほうがよいと思うことがある"
+attributes(data03$Q5)$description <- "人といるより趣味の時間のほうが楽しい"
+attributes(data03$Q6)$description <- "人とは直接話すよりオンラインでやりとりするほうがいい"
+attributes(data03$Q7)$description <- "熱くなりすぎて周りに引かれることがある"
+attributes(data03$Q8)$description <- "趣味について話し出すととまらない"
+attributes(data03$Q9)$description <- "熱中しすぎて我を忘れることがある"
+
+out <- jmvReadWrite::write_omv(data03, "data/omv/factor_data03.omv")
+
+```
+
+```{r factor-data03, fig.cap="サンプルデータ", echo=FALSE}
 knitr::include_graphics("images/factor/data03.png")
 ```
 
@@ -773,66 +819,66 @@ knitr::include_graphics("images/factor/data03.png")
 + `Q9`　熱中しすぎて我を忘れることがある
 :::
 
-探索的因子分析の実施には，Analysesタブの「`r infig('analysis-factor')`  Factor（因子分析）」から「Exploratory Factor Analysis（探索的因子分析）」を選択します（図\@ref(fig:factor-efa-menu)）。
+探索的因子分析の実施には，分析タブの「`r infig("analysis-factor")`  因子分析」から「探索的因子分析」を選択します（図\@ref(fig:factor-efa-menu)）。
 
-```{r factor-efa-menu, fig.cap='探索的因子分析の実行', echo=FALSE}
+```{r factor-efa-menu, fig.cap="探索的因子分析の実行", echo=FALSE}
 knitr::include_graphics("images/factor/efa-menu.png")
 ```
 
 すると，次の設定画面が表示されます。画面の構成は，主成分分析のものと非常によく似ています（図\@ref(fig:factor-efa-setting)）。
 
-```{r factor-efa-setting, fig.cap='探索的因子分析の設定画面', echo=FALSE}
+```{r factor-efa-setting, fig.cap="探索的因子分析の設定画面", echo=FALSE}
 knitr::include_graphics("images/factor/efa-setting.png")
 ```
 
-ここで，分析に使用する観測変数（質問）を右側の「Variables（変数）」欄に移動したら基本的な分析設定は終了です（図\@ref(fig:factor-efa-set-var)）。
+ここで，分析に使用する観測変数（質問）を右側の「変数」欄に移動したら基本的な分析設定は終了です（図\@ref(fig:factor-efa-set-var)）。
 
-```{r factor-efa-set-var, fig.cap='分析する変数を設定', echo=FALSE}
+```{r factor-efa-set-var, fig.cap="分析する変数を設定", echo=FALSE}
 knitr::include_graphics("images/factor/efa-set-var.png")
 ```
 
 ただし，主成分分析の場合と同様，あるいはそれ以上に，因子分析の結果は分析の設定によって異なります。そのため，分析結果を見る前に，因子分析の各設定項目について説明していきたいと思います。
 
-また，因子分析においてもそれぞれの回答者について*因子得点*を算出することがあるのですが，現在のところ，jamoviの探索的因子分析には因子得点の算出機能はありません。
+また，因子分析においても，それぞれの回答者について*因子得点*を算出することができます。
 
-#### Method：方法{-#subsub:factor-efa-method}
+#### 方法{-#subsub:factor-efa-method}
 
 データの中から共通因子をとり出すことを因子の**抽出**といいますが，この因子抽出の方法にはさまざまなものがあり，そしてどれを用いるかによって結果が少しずつ変わってきます。また，因子分析の場合，その抽出した因子に対してまず例外なく**回転**と呼ばれる操作が行われます。そして，その回転の方法によっても，分析結果が大きく変わります。
 
 そこで，ここではこれら因子分析の結果に大きく影響するこれらの設定項目について見ていくことにします。
 
-##### Extraction：因子抽出{-#subsub:factor-fa-extraction}
+##### 抽出法{-#subsub:factor-fa-extraction}
 
-**Method**の「Extraction（因子抽出）」の項目では，因子の抽出方法について設定を行います。今回のサンプルデータの分析では，因子の抽出は初期設定どおり「Minimum residuals（最小残差法）」で行うことにしますが，jamoviで使用可能な因子抽出法には次の3つの選択肢がありますので，ここではそれらについて簡単に説明しておくことにします（図\@ref(fig:factor-efa-extract)）。
+**方法**の「抽出法」の項目では，因子の抽出方法について設定を行います。今回のサンプルデータの分析では，因子の抽出は初期設定どおり「最小残差法」で行うことにしますが，jamoviで使用可能な因子抽出法には次の3つの選択肢がありますので，ここではそれらについて簡単に説明しておくことにします（図\@ref(fig:factor-efa-extract)）。
 
-```{r factor-efa-extract, fig.cap='因子抽出法', echo=FALSE}
+```{r factor-efa-extract, fig.cap="因子抽出法", echo=FALSE}
 knitr::include_graphics("images/factor/efa-extract.png")
 ```
 
 :::{.jmvsettings data-latex=""}
-+ Minimum residuals（最小残差法）　最小2乗法を用いて残差が最小となるように因子を抽出します。
-+ Maximum likelihood（最尤法）　データの分布に多変量正規分布を仮定し，分析データを説明するモデルとしてもっともあり得そうな（最尤な）因子を抽出します。
-+ Principal axis（主因子法）　主成分分析と同様の計算を繰り返し行い，計算結果を収束させていくことによって因子を抽出します。
++ 最小残差法　最小2乗法を用いて残差が最小となるように因子を抽出します。
++ 最尤法　データの分布に多変量正規分布を仮定し，分析データを説明するモデルとしてもっともあり得そうな（最尤な）因子を抽出します。
++ 主因子法　主成分分析と同様の計算を繰り返し行い，計算結果を収束させていくことによって因子を抽出します。
 :::
 
-###### Minimum residuals：最小残差法{-#subsub:factor-fa-extraction-minres}
+###### 最小残差法{-#subsub:factor-fa-extraction-minres}
 
-jamoviで用意されている因子抽出法のうち，「Minimum residuals（*最小残差法*）」は「*重みづけなし最小2乗法*（Ordinary least squares: OLS）」とも呼ばれる手法で，因子分析モデルとデータの間の残差が最小になるような形で因子の抽出を行います。この方法は，標本サイズが小さめのデータなど，比較的どのようなデータに対しても因子をうまく抽出することができるとされている方法です。
+jamoviで用意されている因子抽出法のうち，「*最小残差法*」は「*重みづけなし最小2乗法*（OLS）」とも呼ばれる手法で，因子分析モデルとデータの間の残差が最小になるような形で因子の抽出を行います。この方法は，標本サイズが小さめのデータなど，比較的どのようなデータに対しても因子をうまく抽出することができるとされている方法です。
 
-###### Maximum likelihood：最尤法{-}
+###### 最尤法{-}
 
-2つ目の「Maximum likelihood（*最尤法*）」は，データの分布に*多変量正規分布*と呼ばれる分布を仮定することによって，その分析データの説明モデルとしてもっともあり得そうな因子を抽出するという方法をとります。近年，多くの研究で用いられるようになった手法であり，数学的にも洗練された方法であるとされますが，計算途中で計算不能になってしまうケースが最小残差法などに比べて多く発生します。また，適切な結果を得るためには十分な標本サイズが必要とされます。
+2つ目の「*最尤法*」は，データの分布に*多変量正規分布*と呼ばれる分布を仮定することによって，その分析データの説明モデルとしてもっともあり得そうな因子を抽出するという方法をとります。近年，多くの研究で用いられるようになった手法であり，数学的にも洗練された方法であるとされますが，計算途中で計算不能になってしまうケースが最小残差法などに比べて多く発生します。また，適切な結果を得るためには十分な標本サイズが必要とされます。
 
-###### Principal axis：主因子法{-}
+###### 主因子法{-}
 
-3つ目の「Principal axis（*主因子法*）」は，主成分分析と同様に相関係数の*固有ベクトル*と**固有値**の計算を行うことによって因子を抽出する方法です。ただし，主成分分析ではこの計算は1度しか行われませんが，主因子法では最初の計算で得られた結果をもとに各変数に対する*共通性*を算出し，その共通性の値を相関行列の対角（同じ変数同士の相関で値がつねに1.0になる部分）をその共通性の値で置き換えたうえで，再度固有ベクトルと固有値の計算を行う，という手順を複数回繰り返します。最終的に，共通性の値の変化があらかじめ設定した基準値より小さくなった（固有値の値が安定した）ところで計算をストップし，その結果を因子として抽出します。
+3つ目の「*主因子法*」は，主成分分析と同様に相関係数の*固有ベクトル*と*固有値*の計算を行うことによって因子を抽出する方法です。ただし，主成分分析ではこの計算は1度しか行われませんが，主因子法では最初の計算で得られた結果をもとに各変数に対する*共通性*を算出し，その共通性の値を相関行列の対角（同じ変数同士の相関で値がつねに1.0になる部分）をその共通性の値で置き換えたうえで，再度固有ベクトルと固有値の計算を行う，という手順を複数回繰り返します。最終的に，共通性の値の変化があらかじめ設定した基準値より小さくなった（固有値の値が安定した）ところで計算をストップし，その結果を因子として抽出します。
 
-この主因子法は，最小残差法と同様に，比較的どのようなデータであっても因子を抽出できることが知られています。また，比較的計算が単純であるということから，コンピューターの計算能力がそれほど発達していなかった頃によく用いられてきた方法です。
+この主因子法は，最小残差法と同様に，比較的どのようなデータであっても因子を抽出できることが知られています。また，計算が単純であるということから，コンピューターの計算能力がそれほど発達していなかった頃によく用いられてきた方法です。
 
-なお，この主因子法で反復計算を行わず，共通性の初期値を1.0にして（つまり相関行列そのままで）固有値の計算を行って因子を抽出する方法は「*主成分法*^[ややこしいですが，この相関行列を用いて反復計算を行わずに因子抽出する場合を「主因子法」と呼び，反復計算を行う場合を「*反復主因子法*」と呼んで区別することもあります。]」と呼ばれ，その結果はjamoviの「Principal Component Analysis（主成分分析）」を用いた場合の分析結果と同じになります。
+なお，この主因子法で反復計算を行わず，共通性の初期値を1.0にして（つまり相関行列そのままで）固有値の計算を行って因子を抽出する方法は「*主成分法*^[ややこしいですが，この相関行列を用いて反復計算を行わずに因子抽出する場合を「主因子法」と呼び，反復計算を行う場合を「*反復主因子法*」と呼んで区別することもあります。]」と呼ばれ，その結果はjamoviの「主成分分析」を用いた場合の分析結果と同じになります。
 
 
-##### Rotation：回転{-#subsub:factor-fa-rotation}
+##### 回転法{-#subsub:factor-fa-rotation}
 
 因子分析の目的は，たくさんの変数の背後にある共通因子を見つけ出し，それらがどのような因子であるかを解釈することにあります。しかし，因子分析の結果は，そのままでは解釈困難なことがほとんどです。そこで，この因子の解釈を容易にするために行われるのが因子の「回転」と呼ばれる操作です。
 
@@ -840,14 +886,14 @@ jamoviで用意されている因子抽出法のうち，「Minimum residuals（
 
 <!-- -->
 
-```{r factor-efa-factor-example, fig.cap='因子抽出直後の状態の例', echo=FALSE}
+```{r factor-efa-factor-example, fig.cap="因子抽出直後の状態の例", echo=FALSE}
 knitr::include_graphics("images/factor/efa-factor-example.png")
 ```
 
 
 しかし，たとえば次の図のように，各教科の相対的な位置関係は保ったままでグラフの軸を回転させると，国語や英語などの教科は横軸の近くに，数学や物理などの教科は他の教科は縦軸の近くに集まるようになります（図\@ref(fig:factor-efa-factor-example2)）。
 
-```{r factor-efa-factor-example2, fig.cap='因子の回転', echo=FALSE}
+```{r factor-efa-factor-example2, fig.cap="因子の回転", echo=FALSE}
 knitr::include_graphics("images/factor/efa-factor-example2.png")
 ```
 
@@ -861,97 +907,98 @@ knitr::include_graphics("images/factor/efa-factor-example2.png")
 
 <!--  -->
 
-因子の回転方法にはじつにさまざまなものがありますが，jamoviではそのうち次の6つが利用できるようになっています。今回のサンプルデータの分析では，因子の回転法についても初期設定どおり「Oblimin（オブリミン法）」で行うことにしますが，以下に各回転方法について簡単に説明を加えておきます（図\@ref(fig:factor-efa-factor-rotation)）。
+因子の回転方法にはじつにさまざまなものがありますが，jamoviではそのうち次の6つが利用できるようになっています。今回のサンプルデータの分析では，因子の回転法についても初期設定どおり「オブリミン法」で行うことにしますが，次に各回転方法について簡単に説明を加えておきます（図\@ref(fig:factor-efa-factor-rotation)）。
 
 <!-- -->
 
-```{r factor-efa-factor-rotation, fig.cap='因子の回転方法', echo=FALSE}
+```{r factor-efa-factor-rotation, fig.cap="因子の回転方法", echo=FALSE}
 knitr::include_graphics("images/factor/efa-factor-rotation.png")
 ```
 
 :::{.jmvsettings data-latex=""}
-+ None（回転なし）
-+ Varimax（バリマックス法）
-+ Quartimax（クォーティマックス法）
-+ Promax（プロマックス法）
-+ Oblimin（オブリミン法）
-+ Simplimax（シンプリマックス法）
++ なし　因子の回転は行いません。
++ バリマックス　直交回転におけるもっとも一般的な手法です。因子ごとの因子負荷量2乗の分散を最大化します。
++ クォーティマックス　直交回転における手法の1つです。変数ごとの因子負荷量2乗の分散を最大化します。
++ プロマックス　斜交回転における代表的な手法の1つです。バリマックス回転の結果をもとに斜交回転を行います。
++ オブリミン　斜交回転における手法の1つです。各因子間の因子負荷2乗の共分散を最小化します。
++ シンプリマックス　斜交回転における手法の1つです。因子負荷が0に近い値になる箇所の個数を指定して因子を回転させます。
 :::
 
-###### None：回転なし{-#fa-efa-rotation-none}
-これは因子回転を行わないという設定です。何らかの理由で途中の計算結果を参照したい場合などを除いて，因子分析において回転を「None」にすることはおそらくほとんどないでしょう。
+###### なし{-#fa-efa-rotation-none}
+これは因子回転を行わないという設定です。何らかの理由で途中の計算結果を参照したい場合などを除いて，因子分析において回転を「なし」にすることはおそらくほとんどないでしょう。
 
-###### Varimax：バリマックス法{-#fa-efa-rotation-varimax}
-バリマックス法は*直交回転*におけるもっとも一般的な手法です。この回転方法では，因子ごとに因子負荷量（の2乗）の分散が最大になるように，つまり，ある因子について，特定の変数に対しては負荷量の絶対値が大きく，他の因子に対しては小さくなるようにして因子軸を回転させます。
+###### バリマックス{-#fa-efa-rotation-varimax}
+バリマックス法は*直交回転*におけるもっとも一般的な手法です。この回転方法では，因子ごとに因子負荷量2乗の分散が最大になるように，つまり，ある因子について，特定の変数に対しては負荷量の絶対値が大きく，他の因子に対しては小さくなるようにして因子軸を回転させます。
 
-###### Quatimax：クォーティマックス法{-#fa-efa-rotation-quartimax}
-クォーティマックス法も*直交回転*における手法の1つです。この方法では，それぞれの変数に対する各因子の負荷量にメリハリがつくようにして因子の軸を回転させます。この方法は，どの変数に対しても1つ目の因子の負荷量が高くなりがちで，すべての変数に対して影響を与える全般因子的なものが抽出されやすいことが知られています。
+###### クォーティマックス{-#fa-efa-rotation-quartimax}
+クォーティマックス（コーティマックス）法も*直交回転*における手法の1つです。この方法では，それぞれの変数に対する各因子の負荷量にメリハリがつくようにして因子の軸を回転させます。この方法は，どの変数に対しても1つ目の因子の負荷量が高くなりがちで，すべての変数に対して影響を与える全般因子的なものが抽出されやすいことが知られています。
 
 
-###### Promax：プロマックス法{-#fa-efa-rotation-promax}
+###### プロマックス{-#fa-efa-rotation-promax}
 プロマックス法は*斜交回転*における代表的な手法の1つです。この回転方法では，まずバリマックス回転によって得られた因子負荷を4乗^[統計ソフトによっては，4乗でなく3乗するものもあります。]して因子負荷量のメリハリを強調した状態を作成し，最終的な結果をそれに近づけるようにして因子の回転を行います。
 
 「斜交回転といえばプロマックス法」といえるほどによく使用される回転方法ですが，この方法はあくまでも簡便法であり，適切な結果を得るには別の回転法が望ましいとする考えもあります。
 
 
-###### Oblimin：オブリミン法{-#fa-efa-rotation-oblimin}
+###### オブリミン{-#fa-efa-rotation-oblimin}
 
-オブリミン法は*斜交回転*における手法の1つです。この方法では，各因子間で因子負荷（の2乗）の共分散が最小になるような形で因子の回転を行います。なお，オブリミン法はいくつかの斜交回転法をひとまとめにした総称で，jamoviの「Oblimin（オブリミン法）」の結果は，そのうちの*クォーティミン法*による回転結果と一致します。
+オブリミン法は*斜交回転*における手法の1つです。この方法では，各因子間で因子負荷2乗の共分散が最小となるように因子の回転を行います。なお，オブリミン法はいくつかの斜交回転法をひとまとめにした総称で，jamoviの「オブリミン法」の結果は，そのうちの*クォーティミン法*（Quartimin）による回転結果と一致します。
 
 
-###### Simplimax：シンプリマックス法{-#fa-efa-rotation-simplimax}
+###### シンプリマックス{-#fa-efa-rotation-simplimax}
 
-シンプリマックス法も*斜交回転*における手法の1つです。この方法では，因子負荷行列（各変数に対する因子負荷量をまとめた表）において「因子負荷が0」である箇所が特定の個数になるように回転させます。「因子負荷が0」である箇所の個数を指定して分析できる統計ソフトもありますが，jamoviで「Simplimax（シンプリマックス法）」による回転を行った場合，「因子負荷量が0」の箇所が分析に使用した変数と同じ個数になるような形で回転が行われます。
+シンプリマックス法も*斜交回転*における手法の1つです。この方法では，因子負荷行列（各変数に対する因子負荷量をまとめた表）において「因子負荷が0」である箇所が特定の個数になるように回転させます。「因子負荷が0」である箇所の個数を指定して分析できる統計ソフトもありますが，jamoviで「シンプリマックス」による回転を行った場合，「因子負荷量0」に近い値となる箇所が分析に使用した変数と同じ個数になるような形で回転が行われます。
 
-#### Number of Factors：因子の個数{-#subsub:factor-efa-number-of-factors}
+#### 因子数{-#subsub:factor-efa-number-of-factors}
+
 主成分分析の場合と同様に，因子分析においても計算上は分析に使用する変数と同じ個数だけ因子を抽出することができます。実際の分析では，その中からとくに重要な因子だけをとり出して解釈することになります。因子の個数の決め方はすでに主成分分析のところで説明したのとまったく同じですので，ここでは説明は省略します。
 
-なお，サンプルデータの分析では，因子の個数は平行分析によって決める（Based on parallel analysis）ことにします。その結果，3つの因子が抽出されたはずです。
+なお，サンプルデータの分析では，因子の個数は平行分析によって決める（平行分析に基づく）ことにします。その結果，3つの因子が抽出されたはずです。
 
-#### Assumption Checks：前提チェック{-#subsub:factor-efa-assumption-checks}
+#### 前提チェック{-#subsub:factor-efa-assumption-checks}
 
 因子分析の前提についても，設定に含まれている項目やその使用方法，解釈の方法は主成分分析のところで説明したのと同一です。詳細は主成分分析における前提チェックの項目を参照してください。
 
-#### Factor Loadings：因子負荷量{-#subsub:factor-efa-factor-loadings}
+#### 因子負荷量{-#subsub:factor-efa-factor-loadings}
 
-因子負荷量の項目についても，設定項目やその使用方法は主成分分析のところで説明したのと同じです。ここでは，結果の解釈をしやすくするために「Sort loadings by size（負荷量の大きさで並び替え）」にチェックを入れておくことにします。
+因子負荷量の項目についても，設定項目やその使用方法は主成分分析のところで説明したのと同じです。ここでは，結果の解釈をしやすくするために「負荷量順に並び替え」にチェックを入れておくことにします。
 
-#### Additional Output：追加の出力{-#sub:factor-efa-additional-output}
+#### 追加の出力{-#sub:factor-efa-additional-output}
 
-「**Additional Output**（追加の出力）」には，以下の項目が含まれています（図\@ref(fig:factor-efa-additional-output)）。
+「**追加の出力**」には，次の項目が含まれています（図\@ref(fig:factor-efa-additional-output)）。
 
-```{r factor-efa-additional-output, fig.cap='追加の出力', echo=FALSE}
+```{r factor-efa-additional-output, fig.cap="追加の出力", echo=FALSE}
 knitr::include_graphics("images/factor/efa-additional-output.png")
 ```
 
 <!-- -->
 :::{.jmvsettings data-latex=""}
-+ Factor summary（因子の要約）
-+ Factor correlations（因子の相関）
-+ Model fit measures（モデル適合度指標）
-+ Initial eigenvalues（回転前の固有値）
-+ Scree plot（スクリープロット）
++ 因子の要約量
++ 因子の相関
++ モデル適合度指標
++ 回転前の固有値
++ スクリープロット
 :::
 
-##### Factor summary：因子の要約{-#subsub:factor-efa-factor-summary} 
-最初の「Factor summary（因子の要約）」の項目にチェックを入れると，因子に関する要約情報として図\@ref(fig:factor-efa-factor-summary)のような結果が表示されます。
+##### 因子の要約量{-#subsub:factor-efa-factor-summary}
+最初の「因子の要約量」の項目にチェックを入れると，因子に関する要約情報として図\@ref(fig:factor-efa-factor-summary)のような結果が表示されます。
 
 <!-- -->
-```{r factor-efa-factor-summary, fig.cap='因子の要約', echo=FALSE}
+```{r factor-efa-factor-summary, fig.cap="因子の要約量", echo=FALSE}
 knitr::include_graphics("images/factor/efa-factor-summary.png")
 ```
 
 
-このうち，「SS Loadings（負荷量2乗和）」は各因子の因子負荷量の2乗値の合計で，これはその因子で説明できる情報の量を表します。その隣の「% of Variance」は，データ全体の分散のうち，その因子によって説明される情報量の割合（*因子寄与率*），一番右端の「Cumulative %（累積寄与率）」はその因子までの寄与率の合計です。
+このうち，「負荷量2乗和」は各因子の因子負荷量の2乗値の合計で，これはその因子で説明できる情報の量を表します。その隣の「分散説明率（%）」は，データ全体の分散のうち，その因子によって説明される情報量の割合（*因子寄与率*），一番右端の「累積%（累積寄与率）」はその因子までの寄与率の合計です。
 
-この表は，因子抽出法を「Minimum residuals（最小残差法）」，因子の回転法を「Oblimin（オブリミン法）」にして分析した結果についての因子の要約ですが，この結果からは，3つの因子がそれぞれ比較的均等な割合でデータを説明できていることがわかります。また，3つの因子による累積寄与率は57.65%で，これら3つの因子でデータ全体の6割近くを説明できていることから十分といえるでしょう。
+この表は，因子抽出法を「最小残差法」，因子の回転法を「オブリミン法」にして分析した結果についての因子の要約ですが，この結果からは，3つの因子がそれぞれ比較的均等な割合でデータを説明できていることがわかります。また，3つの因子による累積寄与率は57.65%で，これら3つの因子でデータ全体の6割近くを説明できていることから十分といえるでしょう。
 
-##### Factor correlations：因子の相関{-#subsub:factor-efa-factor-correlations} 
+##### 因子の相関{-#subsub:factor-efa-factor-correlations}
 
-「Factor correlations（因子の相関）」にチェックを入れると，各因子間の相関係数が図\@ref(fig:factor-efa-factor-correlations)のように相関行列の形で表示されます。
+「因子の相関」にチェックを入れると，各因子間の相関係数が図\@ref(fig:factor-efa-factor-correlations)のように相関行列の形で表示されます。
 
 <!-- -->
-```{r factor-efa-factor-correlations, fig.cap='因子の相関', echo=FALSE}
+```{r factor-efa-factor-correlations, fig.cap="因子の相関", echo=FALSE}
 knitr::include_graphics("images/factor/efa-factor-correlations.png")
 ```
 
@@ -959,57 +1006,106 @@ knitr::include_graphics("images/factor/efa-factor-correlations.png")
 この相関行列から，3つの因子の間には互いに中程度からやや弱めの正の相関があることがわかります。
 
 
-##### Model fit measures：モデル適合度指標{-#subsub:factor-efa-fit-measures} 
+##### モデル適合度指標{-#subsub:factor-efa-fit-measures}
 
-「Model fit measures（モデル適合度指標）」の項目にチェックを入れると，図\@ref(fig:factor-efa-factor-model-fit)のような表が追加で作成されます。
+「モデル適合度指標」の項目にチェックを入れると，図\@ref(fig:factor-efa-factor-model-fit)のような表が追加で作成されます。
 
 <!-- -->
-```{r factor-efa-factor-model-fit, fig.cap='モデル適合度指標', echo=FALSE}
+```{r factor-efa-factor-model-fit, fig.cap="モデル適合度指標", echo=FALSE}
 knitr::include_graphics("images/factor/efa-factor-model-fit.png")
 ```
 
 この表には，左から順にRMSEA，RMSEAの90%信頼区間，TLI，BIC，モデルに対する$\chi^2$適合度検定の結果が表示されています。
 
-一番左のRMSEA（*近似誤差2乗平均平方根*）は，回帰分析のところで出てきた*誤差2乗平均平方根*（RMSE）（ 第\@ref(ch:regression)章の[Model Fit（モデル適合度）](#sub:regression-LR-modelfit)を参照）の近似値で，この値が小さいほど，分析によって得られた因子モデルとデータのずれ（残差）が小さいことを意味します。一般には，このRMSEAの値が0.05未満の場合にモデルの適合度が良好であるとみなされます。また，RMSEAについては90%（95%ではない点に注意）の信頼区間と合わせて報告されるのが一般的です。
+一番左のRMSEA（*近似誤差2乗平均平方根*）は，回帰分析のところで出てきたRMSE（*誤差2乗平均平方根*，第\@ref(ch-regression)章の[モデル適合度](#sub:regression-LR-modelfit)を参照）の近似値で，この値が小さいほど，分析によって得られた因子モデルとデータのずれ（残差）が小さいことを意味します。一般には，このRMSEAの値が0.05未満の場合にモデルの適合度が良好であるとみなされます。また，RMSEAについては90%（95%ではない点に注意）の信頼区間と合わせて報告されるのが一般的です。
 
 
 その隣のTLIは*タッカー=ルイス指数*と呼ばれる値で，これは*独立モデル*（因子と各変数の間の関係をまったく考えないモデル）に対して分析モデルのあてはまりがどれだけ改善されているかを示します。一般には，この値が0.95以上である場合にあてはまりがよいとみなされます。
 
 TLIの隣のBIC（*ベイズ情報量規準*）は，回帰分析のモデル適合度のところで説明した値と同じものです。この値はモデルのあてはまりのよさを相対的に示す数値で，この値1つだけでは，モデルが十分に適合しているかどうかの判断はできません。
 
-表の一番右端の「Model Test（モデルの検定）」の部分には，モデルとデータのずれの大きさについての$\chi^2$適合度検定の結果が示されています。この検定は「モデルとデータのずれは0である」という帰無仮説に対するものなので，この検定結果が「有意でない」ことが望ましいといえます。ただし，この$\chi^2$の値は標本サイズが大きいほど，また分析に使用する変数の個数が多いほど有意になりやすい傾向にあるため，この検定結果が有意だったからといって，必ずしもモデルがデータに適合していないというわけではありません。
+表の一番右端の「モデルの検定」の部分には，モデルとデータのずれの大きさについての$\chi^2$適合度検定の結果が示されています。この検定は「モデルとデータのずれは0である」という帰無仮説に対するものなので，この検定結果が「有意でない」ことが望ましいといえます。ただし，この$\chi^2$の値は標本サイズが大きいほど，また分析に使用する変数の個数が多いほど有意になりやすい傾向にあるため，この検定結果が有意だったからといって，必ずしもモデルがデータに適合していないというわけではありません。
 
 今回のサンプルデータの分析結果では，RMSEAは0.01と非常に小さく，TLIは1.00，$\chi^2$検定の結果も有意ではありませんので，モデルの適合度は十分なと考えてよいでしょう。
 
-##### Initial eigenvalues：回転前の固有値{-#subsub:factor-efa-initial-eigenvalues} 
+##### 回転前の固有値{-#subsub:factor-efa-initial-eigenvalues}
 
 この設定項目にチェックを入れると，因子回転前の固有値に関する情報が表示されます。この設定項目で表示される内容は主成分分析の場合と同じですので，説明は省略します。
 
-##### Scree plot：スクリープロット{-#subsub:factor-efa-scree-plot}
+##### スクリープロット{-#subsub:factor-efa-scree-plot}
 
 スクリープロットについても主成分分析の場合と同じですので説明は省略します。
+
+### 保存{#sub:factor-efa-save}
+
+因子分析でも，各対象者について各因子の因子得点を算出し，それを別の分析に使用することが可能です。設定画面の一番下にある`r groupbar("保存")`を展開すると「因子得点」の設定項目がありますので，ここにチェックを入れると因子得点が新たな変数として作成されます（図\@ref(fig:factor-efa-save)）。
+
+```{r factor-efa-save, fig.cap="因子得点の推定法", echo=FALSE}
+ knitr::include_graphics("images/factor/efa-save.png")
+```
+
+ただし，主成分得点と違って因子得点は答えが1つに決まらないため，これをどのように算出するかについては複数とおりの考え方があり，それぞれの方法で算出される因子得点の性質が少しずつ異なります。jamoviに用意されている因子得点の算出方法は，次の5つです。
+
+<!-- -->
+:::{.jmvsettings data-latex=""}
++ サーストン　真の因子得点との相関が最大となる因子得点を算出します。
++ バートレット　真の因子得点の不偏推定値となる因子得点を算出します。
++ テン・ベルヘ　因子の相関をできるだけ正確に反映させた因子得点を算出します。
++ アンダーソン=ルビン　直交する因子で因子得点間の相関が0になるような因子得点を算出します。
++ ハーマン　「理想化された」測定値をもとに因子得点を算出します。
+:::
+
+なお，ここで作成される因子得点は，いわゆる「洗練された（refined）」因子得点です。因子得点として因子の負荷が大きい項目の合計点や平均点を用いる方法もよく用いられますが^[これらの方法は「洗練されていない（non-refined）」因子得点などと呼ばれることもあります。]，それらの得点は新たな「計算変数」として作成するか，[信頼性分析](#sec-factor-reliability-analysis)の機能を用いて合成変数を作成するなどの方法を用いてください。
+
+###### サーストン {-}
+
+サーストン法は*回帰法*とも呼ばれる方法で，回帰モデルを用いて因子の得点を推定しようとする方法です。より具体的には，変数間の相関行列の逆行列と因子負荷行列を使って因子得点算出のための係数を作成し，この係数を（標準化済みの）各測定値に掛けて因子得点を算出します。
+
+なお，探索的因子分析で抽出される因子は平均値が0，分散が1になるように標準化されていますが，この因子得点の平均は0，分散は回帰モデルの重相関係数の2乗に等しくなり，1にはなりません。また，この方法は，対応する因子と因子得点の間の相関が最大になるように因子得点を算出しますが，他の因子との関係については正確さがやや欠けるため，直交回転された因子についての因子得点であっても，因子得点間の相関が0にならない場合があります。
+
+サーストン法（回帰法）は因子得点算出の方法としてはおそらくもっとも一般的な手法で，他の多くの統計ソフトでも採用されています。
+
+
+###### バートレット {-}
+
+バートレット法は，サーストン法に改良を加えたもので，共通因子による影響のみを考慮して因子得点を算出します。この方法で算出された因子得点は，「真の」因子得点の*不偏推定値*^[数学上，その平均値が母集団の実際の値と同値になるようにして計算された値のことです。]になりますが，直交因子の因子得点間の相関が完全に0になるわけではありません。また，この方法による因子得点も，因子ごとの平均値は0になりますが，分散は1にはなりません。
+
+
+###### テン・ベルヘ {-}
+
+テン・ベルヘ法は，斜交回転された因子の相関をできるだけ正確に反映させるような形で算出される因子得点で，アンダーソン=ルビンの因子得点を斜交回転に拡張したような性質を持ちます。アンダーソン=ルビンの因子得点と同様に，この因子得点の平均値は0，分散は1になりますが，バートレット法の因子得点のような不偏推定値にはなっていません。
+
+###### アンダーソン=ルビン {-}
+
+アンダーソン=ルビン法は，直交する因子の因子得点間の相関が0になるようにして算出される因子得点です。また，この因子得点の平均値は0，分散は1になりますが，バートレット法の因子得点のような不偏推定値にはなっていません。
+
+###### ハーマン {-}
+
+ハーマン法は，測定値そのものではなく，因子分析結果から再構築された「理想化された」測定値を用いて因子得点を算出します。この方法は回帰法の修正版で，因子得点の平均値は0になりますが，分散は1にはなりません。
+
+
 
 
 ### 分析結果{#sub:factor-efa-results}
 
-サンプルデータについて，「Minimum residuals（最小残差法）」で3因子（因子数は平行分析で決定）を抽出し，「Oblimin（オブリミン法）」で回転した結果は図\@ref(fig:factor-efa-factor-results)のとおりです。なお，結果の表示については**Factor Loadings**（因子負荷量）の設定項目で「Sort loadings by size（負荷量の大きさで並び替え）」にチェックを入れて変数の表示順序を因子負荷量の大きさ順に並び替えてあります。
+サンプルデータについて，「最小残差法」で3因子（因子数は平行分析で決定）を抽出し，「オブリミン法」で回転した結果は図\@ref(fig:factor-efa-factor-results)のとおりです。なお，結果の表示については**因子負荷**の設定項目で「負荷量順に並び替え」にチェックを入れて変数の表示順序を因子負荷量の大きさ順に並び替えてあります。
 
-また，因子間の相関係数についても，**Additional Output**（追加の出力）で「Factor correlations（因子相関）」にチェックを入れて算出してあります。
+また，因子間の相関係数についても，**追加の出力**で「因子の相関」にチェックを入れて算出してあります。
 
 <!-- -->
-```{r factor-efa-factor-results, fig.cap='探索的因子分析の結果', echo=FALSE}
+```{r factor-efa-factor-results, fig.cap="探索的因子分析の結果", echo=FALSE}
 knitr::include_graphics("images/factor/efa-factor-results.png")
 ```
 
-この結果の表には，それぞれの質問項目に対する各因子の負荷量と，各質問項目の独自性（Uniqueness）の値が示されています。このようにして各変数に対する因子負荷をまとめたものは*因子パターン行列*と呼ばれます。因子の回転を行わない場合や直交回転を用いた場合には，これらの値は因子と各変数の間の相関係数と同じになりますが，斜交回転の場合にはそうではありませんので，その点には注意が必要です。
+この結果の表には，それぞれの質問項目に対する各因子の負荷量と，各質問項目の独自性の値が示されています。このようにして各変数に対する因子負荷をまとめたものは*因子パターン行列*と呼ばれます。因子の回転を行わない場合や直交回転を用いた場合には，これらの値は因子と各変数の間の相関係数と同じになりますが，斜交回転の場合にはそうではありませんので，その点には注意が必要です。
 
-では，分析結果を見てみましょう。まず，どの質問項目においても独自性（Uniqueness）が極端に高いことはありませんので，これらの質問への回答は抽出した共通因子で説明できていると考えてよさそうです。もし，分析の結果において独自性が0.8を上回るような質問項目（観測変数）があった場合には，それらは分析から除外したほうがよいでしょう。
+では，分析結果を見てみましょう。まず，どの質問項目においても独自性が極端に高いことはありませんので，これらの質問への回答は抽出した共通因子で説明できていると考えてよさそうです。もし，分析の結果において独自性が0.8を上回るような質問項目（観測変数）があった場合には，それらは分析から除外したほうがよいでしょう。
 
 また，この表では因子負荷量の絶対値が0.3未満のものは非表示になっています。このようにしてみると，`Q7`から`Q9`は因子1のみから強い負荷を，`Q4`から`Q6`は因子2のみから強い負荷を受けているというように，この分析結果が*単純構造*に近いものになっていることがよくわかります。
 
 今回の分析ではそのような質問項目（観測変数）はありませんでしたが，もし，単純構造を乱すような観測変数，つまり複数の因子の負荷が高い変数が含まれている場合には，それらを分析から除外して再分析することもありますし，分析の目的によっては，そのような変数をそのままにしておく場合もあります。ただし，そのように複数の因子にまたがる変数が多数あるような場合には，分析結果の解釈には注意が必要です。
 
-なお，分析結果を解釈する際には，このように絶対値の小さい負荷量は非表示にしたほうが単純構造に何ているかどうかの確認がしやすいのですが，論文やレポートに結果を報告する際には，設定画面の**Factor Loadings**（因子負荷量）の「Hide loadings below ...（これ未満の負荷を隠す）」に0を入力し，すべての負荷量を表示されるようにしたほうがよいでしょう。
+なお，分析結果を解釈する際には，このように絶対値の小さい負荷量は非表示にしたほうが単純構造になっているかどうかの確認がしやすいのですが，論文やレポートに結果を報告する際には，設定画面の**因子負荷**の「これ未満の負荷量を隠す」に0を入力し，すべての負荷量を表示されるようにしたほうがよいでしょう。
 
 
 #### 因子の解釈{-#subsub:factor-efa-factor-interpretation}
@@ -1052,7 +1148,7 @@ knitr::include_graphics("images/factor/efa-factor-results.png")
 
 
 
-## Confirmatory Factor Analysis：確認的因子分析{#sec:factor-cfa}
+## 確認的因子分析{#sec-factor-cfa}
 
 探索的因子分析によって得られる因子は，あくまでも分析に使用したデータに基づくものであって，それが普遍的な真実であるというわけではない点には注意が必要です。探索的因子分析の結果というのは一般に不安定なことが多く，分析に使用する変数が増えたり減ったりした場合や，別の集団を対象とした調査結果を分析した場合などには，抽出される因子の結果が変わることもよくあるのです。
 
@@ -1066,8 +1162,41 @@ knitr::include_graphics("images/factor/efa-factor-results.png")
 
 そして，このような構造が，海外のオタクにおいてもあてはまるといえるかどうかを知りたいとしましょう。そこで，前回の調査で使用した9つの質問を英訳し，英語圏に住む成人400名を対象に調査を実施しました。その結果がこのサンプルデータ（[factor_data04.omv](https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/factor_data04.omv)）に入力されています（図\@ref(fig:factor-data04)）。
 
+```{r}
+data04 <- read.csv("data/factor_data04.csv")
+
+# ID
+attributes(data04$ID)$`jmv-id` <- TRUE
+
+# 連続変数
+attributes(data04$Q1)$measureType <- c("Continuous")
+attributes(data04$Q2)$measureType <- c("Continuous")
+attributes(data04$Q3)$measureType <- c("Continuous")
+attributes(data04$Q4)$measureType <- c("Continuous")
+attributes(data04$Q5)$measureType <- c("Continuous")
+attributes(data04$Q6)$measureType <- c("Continuous")
+attributes(data04$Q7)$measureType <- c("Continuous")
+attributes(data04$Q8)$measureType <- c("Continuous")
+attributes(data04$Q9)$measureType <- c("Continuous")
+
+# 説明
+attributes(data04$ID)$description <- "回答者のID"
+attributes(data04$Q1)$description <- "I'm a thorough researcher when it comes to a subject I'm interested in."
+attributes(data04$Q2)$description <- "I'm willing to spend a lot of time and money to get what I want."
+attributes(data04$Q3)$description <- "I want to collect all the items and goods related to my hobby."
+attributes(data04$Q4)$description <- "Sometimes I think fictional characters are better than real people."
+attributes(data04$Q5)$description <- "I enjoy my hobbies more than being with people."
+attributes(data04$Q6)$description <- "It's better to communicate with people online than in person."
+attributes(data04$Q7)$description <- "Sometimes I get too enthusiastic and stun the people around me."
+attributes(data04$Q8)$description <- "I can't stop talking about my hobbies."
+attributes(data04$Q9)$description <- "Sometimes I get so absorbed that I lose control of myself."
+out <- jmvReadWrite::write_omv(data04, "data/omv/factor_data04.omv")
+
+```
+
+
 <!-- -->
-```{r factor-data04, fig.cap='サンプルデータ', echo=FALSE}
+```{r factor-data04, fig.cap="サンプルデータ", echo=FALSE}
 knitr::include_graphics("images/factor/data04.png")
 ```
 
@@ -1093,7 +1222,7 @@ knitr::include_graphics("images/factor/data04.png")
 <!-- -->
 
 
-```{r factor-cfa-model1, fig.cap='収集欲求因子と観測変数の関係', echo=FALSE}
+```{r factor-cfa-model1, fig.cap="収集欲求因子と観測変数の関係", echo=FALSE}
 knitr::include_graphics("images/factor/cfa-model1.png")
 ```
 
@@ -1104,14 +1233,14 @@ knitr::include_graphics("images/factor/cfa-model1.png")
 
 <!-- -->
 
-```{r factor-cfa-model2, fig.cap='非社交性因子，熱中傾向因子と観測変数の関係', echo=FALSE}
+```{r factor-cfa-model2, fig.cap="非社交性因子，熱中傾向因子と観測変数の関係", echo=FALSE}
 knitr::include_graphics("images/factor/cfa-model2.png")
 ```
 
 また，これらの因子の間には，中程度からやや弱目の相関関係がありました。相関関係はお互いに関連があるということなので，ここではパスを両矢印で示します（図\@ref(fig:factor-cfa-model3)）。
 
 <!-- -->
-```{r factor-cfa-model3, fig.cap='共通因子間の関係', echo=FALSE}
+```{r factor-cfa-model3, fig.cap="共通因子間の関係", echo=FALSE}
 knitr::include_graphics("images/factor/cfa-model3.png")
 ```
 
@@ -1121,46 +1250,45 @@ knitr::include_graphics("images/factor/cfa-model3.png")
 
 確認的因子分析は，一般に高価な専用ソフトウェアを使用するか，分析モデルをコンピュータープログラムのような形で書き表して実行するような形でしか利用できない場合がほとんどですが，jamoviではこれを驚くほど簡単に実行することができます。
 
-jamoviで確認的因子分析を実行するには，Analysesタブの「`r infig('analysis-factor')`  Factor（因子分析）」から「Confirmatory Factor Analysis（確認的因子分析）」を選択します（図\@ref(fig:factor-cfa-menu)）。
+jamoviで確認的因子分析を実行するには，分析タブの「`r infig("analysis-factor")`  因子分析」から「確認的因子分析」を選択します（図\@ref(fig:factor-cfa-menu)）。
 
-```{r factor-cfa-menu, fig.cap='確認的因子分析の実行', echo=FALSE}
+```{r factor-cfa-menu, fig.cap="確認的因子分析の実行", echo=FALSE}
 knitr::include_graphics("images/factor/cfa-menu.png")
 ```
 
 すると，次の設定画面が表示されます（図\@ref(fig:factor-cfa-setting)）。
 
-```{r factor-cfa-setting, fig.cap='確認的因子分析の設定画面', echo=FALSE}
+```{r factor-cfa-setting, fig.cap="確認的因子分析の設定画面", echo=FALSE}
 knitr::include_graphics("images/factor/cfa-setting.png")
 ```
 
-この画面右側の「Factors（因子）」の部分に，分析モデルにそって変数を設定します。
+この画面右側の「因子」の部分に，分析モデルにそって変数を設定します。
 
-初期状態では，「Factors」の部分には「Factor 1」しかありませんが，その下にある「+ Add New Factor（新しい因子を追加）」をクリックすると，因子を追加することができます。今回の分析モデルには3つの因子がありますので，`r blueback('+ Add New Factor')`を2回クリックして因子を2つ追加します（図\@ref(fig:factor-cfa-add-factors)）。
+初期状態では，「因子」の部分には「因子1」しかありませんが，その下にある`r blueback("因子を追加")`をクリックすると，因子を追加することができます。今回の分析モデルには3つの因子がありますので，`r blueback("因子を追加")`を2回クリックして因子を2つ追加します（図\@ref(fig:factor-cfa-add-factors)）。
 
 <!-- -->
-```{r factor-cfa-add-factors, fig.cap='因子を2つ追加', echo=FALSE}
+```{r factor-cfa-add-factors, fig.cap="因子を2つ追加", echo=FALSE}
 knitr::include_graphics("images/factor/cfa-add-factors.png")
 ```
 
-
-次に，作成した因子の名前を設定します。因子の名前は「Factor 1」や「Factor 2」のままでも計算上は問題ありませんが，結果を見間違えたりしないよう，きちんと因子名を設定しておいたほうがよいでしょう。ここでは，「Factor 1」を「収集」，「Factor 2」を「非社交」，「Factor 3」を「熱中」としておきます（図\@ref(fig:factor-cfa-rename-factors)）。
+次に，作成した因子の名前を設定します。因子の名前は「因子1」や「因子2」のままでも計算上は問題ありませんが，結果を見間違えたりしないよう，きちんと因子名を設定しておいたほうがよいでしょう。ここでは，「因子1」を「収集」，「因子2」を「非社交」，「因子3」を「熱中」としておきます（図\@ref(fig:factor-cfa-rename-factors)）。
 
 <!-- -->
-```{r factor-cfa-rename-factors, fig.cap='因子の名前を変更', echo=FALSE}
+```{r factor-cfa-rename-factors, fig.cap="因子の名前を変更", echo=FALSE}
 knitr::include_graphics("images/factor/cfa-rename-factors.png")
 ```
 
-因子名の設定が終わったら，それぞれの因子に関連する変数を指定していきます。まず，「収集」因子の負荷が高いと考えられるのは「Q1」，「Q2」，「Q3」の3つですので，この3つを「収集」の「drag variables here（ここに変数をドラッグ）」の部分にマウスでドラッグして移動します（図\@ref(fig:factor-cfa-set-vars)）。
+因子名の設定が終わったら，それぞれの因子に関連する変数を指定していきます。まず，「収集」因子の負荷が高いと考えられるのは「Q1」，「Q2」，「Q3」の3つですので，この3つを「収集」の「変数をここにドラッグ」の部分にマウスでドラッグして移動します（図\@ref(fig:factor-cfa-set-vars)）。
 
 <!-- -->
-```{r factor-cfa-set-vars, fig.cap='因子1に変数を設定', echo=FALSE}
+```{r factor-cfa-set-vars, fig.cap="因子1に変数を設定", echo=FALSE}
 knitr::include_graphics("images/factor/cfa-set-vars.png")
 ```
 
 同様にして，「非社交」と「熱中」因子も変数を指定します（図\@ref(fig:factor-cfa-set-vars2)）。
 
 <!-- -->
-```{r factor-cfa-set-vars2, fig.cap='すべての因子に変数を設定', echo=FALSE}
+```{r factor-cfa-set-vars2, fig.cap="すべての因子に変数を設定", echo=FALSE}
 knitr::include_graphics("images/factor/cfa-set-vars2.png")
 ```
 
@@ -1171,22 +1299,22 @@ knitr::include_graphics("images/factor/cfa-set-vars2.png")
 それでは分析結果について見てみましょう。基本設定による分析では，図\@ref(fig:factor-cfa-results)のような結果が表示されます。いろいろな値が表示されているので，1つ1つ見ていきましょう。
 
 <!-- -->
-```{r factor-cfa-results, fig.cap='確認的因子分析の結果', echo=FALSE}
+```{r factor-cfa-results, fig.cap="確認的因子分析の結果", echo=FALSE}
 knitr::include_graphics("images/factor/cfa-results.png")
 ```
 
-1つ目の「Factor Loadings（因子負荷量）」の表には，それぞれの因子から観測変数（各質問）への負荷量の推定値（**Estimate**），標準誤差（**SE**），標準得点（**Z**），有意確率（**p**）が示されています。この結果では，すべての値で負荷量の推定値が1を超えていますが，これは分析結果に問題があるわけではなく，この負荷量の値が標準化されていないものだからです。
+1つ目の「因子負荷」の表には，それぞれの因子から観測変数（各質問）への負荷量の推定値，標準誤差，標準得点（Z），有意確率（p）が示されています。この結果では，すべての値で負荷量の推定値が1を超えていますが，これは分析結果に問題があるわけではなく，この負荷量の値が標準化されていないものだからです。
 
-この結果では，それぞれの因子負荷量について「因子負荷が0である」という帰無仮説を用いた検定の結果が示されており，いずれの検定も有意確率（p）は「<.001」で有意になっています。
+この結果では，それぞれの因子負荷量について「因子負荷が0である」という帰無仮説を用いた検定の結果が示されており，いずれの検定も有意確率（p）は「&lt;.001」で有意になっています。
 
-2つ目の「Factor Covariances（因子共分散）」の表には，「Estimate（推定値）」の部分に因子の分散および因子間の共分散の値が示されています。なお，この表では各因子の分散は1.00に固定されており，この表に示されているのは因子間の相関係数になっています。各因子間の相関係数についても，因子負荷と同様に標準誤差（SE）と標準得点（Z），有意確率（p）の値が示されており，それぞれの有意性検定（帰無仮説：相関係数は0である）の結果を見ることができます。
+2つ目の「因子共分散」の表には，「推定値」の部分に因子の分散および因子間の共分散の値が示されています。なお，この表では各因子の分散は1.00に固定されており，この表に示されているのは因子間の相関係数になっています。各因子間の相関係数についても，因子負荷と同様に標準誤差と標準得点（Z），有意確率（p）の値が示されており，それぞれの有意性検定（帰無仮説：相関係数は0である）の結果を見ることができます。
 
-3つ目と4つ目の表には，この分析モデルのデータへの適合度に関する情報が表示されています。3つ目の表はモデルとデータのずれの大きさについての検定で，これは探索的因子分析の「[Model fit measures（モデル適合度指標）](#subsub:factor-efa-fit-measures)」の部分で説明したものと同じです。この検定では$\chi^2$が小さく，検定結果が有意でないことが望ましい結果です。今回の分析結果では有意確率p=0.492で検定結果は有意ではありませんので，分析モデルとデータのずれは0でないといえるほど大きなものでない（ずれは小さい）といえます。
+3つ目と4つ目の表には，この分析モデルのデータへの適合度に関する情報が表示されています。3つ目の表はモデルとデータのずれの大きさについての検定で，これは探索的因子分析の「[モデル適合度指標](#subsub:factor-efa-fit-measures)」の部分で説明したものと同じです。この検定では$\chi^2$が小さく，検定結果が有意でないことが望ましい結果です。今回の分析結果では有意確率p=0.492で検定結果は有意ではありませんので，分析モデルとデータのずれは0でないといえるほど大きなものでない（ずれは小さい）といえます。
 
-その下の「Fit Measures（適合度指標）」には，モデルのデータの適合度に関する代表的な指標が示されています（図\@ref(fig:factor-cfa-results2)）。
+その下の「適合度指標」には，モデルのデータの適合度に関する代表的な指標が示されています（図\@ref(fig:factor-cfa-results2)）。
 
 <!-- -->
-```{r factor-cfa-results2, fig.cap='適合度関連の結果', echo=FALSE}
+```{r factor-cfa-results2, fig.cap="適合度関連の結果", echo=FALSE}
 knitr::include_graphics("images/factor/cfa-results2.png")
 ```
 
@@ -1195,117 +1323,116 @@ knitr::include_graphics("images/factor/cfa-results2.png")
 
 表の1つ目のCFI（*比較適合度指標*）は，TLIと同様に*独立モデル*（因子と各変数の間の関係をまったく考えないモデル）に比べてどの程度あてはまりが改善しているかを0から1までの数値になるようにして算出した値で，この値が1に近いほどモデルがデータにうまくあてはまっていることを意味します。一般に，この値が0.90または0.95以上である場合に適合度が高いとみなされます。
 
-この分析結果では，適合度指標はCFI=1.00，TLI=1.00，RMSEA=0.00 [0.00-0.04]で，いずれも適合のよさを示しています。したがって，今回の外国人を対象としたデータの場合にも，前回の分析結果で得られた3つの共通因子でうまく説明ができる，つまり，外国人の場合にも日本人と同じオタク傾向の3因子モデルがあてはまるということになります。
+この分析結果では，適合度指標はCFI=1.00，TLI=1.00，RMSEA=0.00[0.00-0.04]で，いずれも適合のよさを示しています。したがって，今回の外国人を対象としたデータの場合にも，前回の分析結果で得られた3つの共通因子でうまく説明ができる，つまり，外国人の場合にも日本人と同じオタク傾向の3因子モデルがあてはまるということになります。
 
 
-では，ここからは分析の詳細設定について見ていきましょう。以下の設定を適切に使用することで，分析結果についてのより詳しい情報が得られます。
+では，ここからは分析の詳細設定について見ていきましょう。次の設定を適切に使用することで，分析結果についてのより詳しい情報が得られます。
 
-### Residual Covariances：残差共分散{#sub:factor-cfa-residual-covariances}
+### 残差共分散{#sub:factor-cfa-residual-covariances}
 
-`r groupbar('Residual Covariances')`（残差共分散）の設定項目は，因子によって説明しきれない残差（独自因子）の間で共分散（または相関係数）を算出したい場合に使用します。この項目を展開すると、図\@ref(fig:factor-cfa-residual-covariance)のような画面が表示されます。
+`r groupbar("残差共分散")`の設定項目は，因子によって説明しきれない残差（独自因子）の間で共分散（または相関係数）を算出したい場合に使用します。この項目を展開すると，図\@ref(fig:factor-cfa-residual-covariance)のような画面が表示されます。
 
 <!-- -->
-```{r factor-cfa-residual-covariance, fig.cap='残差共分散の設定', echo=FALSE}
+```{r factor-cfa-residual-covariance, fig.cap="残差共分散の設定", echo=FALSE}
 knitr::include_graphics("images/factor/cfa-residual-covariance.png")
 ```
 
 
-この*残差共分散*（*誤差共分散*とも呼ばれます）を算出するには，ここで残差の共分散を算出したい変数のペアを選択し，それを右側の「Residual Covariances（残差共分散）」の欄に移動します。なお，「`r infig('analysis-regression')` Regression（回帰分析）」メニューの「Correlation Matrix（相関行列）」で相関係数を算出する場合とは異なり，ここでは共分散を算出させたい変数のペアを個別に指定する必要があります（図\@ref(fig:factor-cfa-residual-covariance2)）。
+この*残差共分散*（*誤差共分散*とも呼ばれます）を算出するには，ここで残差の共分散を算出したい変数のペアを選択し，それを右側の「残差共分散」の欄に移動します。なお，「`r infig("analysis-regression")` 回帰分析」メニューの「相関行列」で相関係数を算出する場合とは異なり，ここでは共分散を算出させたい変数のペアを個別に指定する必要があります（図\@ref(fig:factor-cfa-residual-covariance2)）。
 
-```{r factor-cfa-residual-covariance2, fig.cap='残差共分散の設定の例', echo=FALSE}
+```{r factor-cfa-residual-covariance2, fig.cap="残差共分散の設定の例", echo=FALSE}
 knitr::include_graphics("images/factor/cfa-residual-covariance2.png")
 ```
 
 
 残差共分散を算出するのはモデルの適合度を向上させるためであることがほとんどだと思われますが，残差共分散は因子で説明しきれない部分における変数間の関係であるため，残差共分散を多数算出する必要がある場合には，必要な因子がモデルの中に組み込まれていないなど，想定する因子モデルに問題がある可能性があります。
 
-### Options：オプション{#sub:factor-cfa-options}
-`r groupbar('Options')`（オプション）では，分析における欠損値の扱いと，計算上の制約条件についての設定を行います（図\@ref(fig:factor-cfa-option)）。
+### オプション{#sub:factor-cfa-options}
+`r groupbar("オプション")`では，分析における欠損値の扱いと，計算上の制約条件についての設定を行います（図\@ref(fig:factor-cfa-option)）。
 
 
-```{r factor-cfa-option, fig.cap='Options（オプション）の設定', echo=FALSE}
+```{r factor-cfa-option, fig.cap="オプションの設定", echo=FALSE}
 knitr::include_graphics("images/factor/cfa-option.png")
 ```
 
 
 :::{.jmvsettings data-latex=""}
-+ **Mission Values Method**（欠損値の処理方法）
-  - Full information maximum likelihood（完全情報最尤推定法）　他の測定値から欠損値を推定した上で分析します。
-  - Exclude cases listwise（データ行ごと除外）　欠損値が含まれるデータ行全体を分析から除外します。
-+ **Constraints**（制約）
-  - Factor variances = 1（因子の分散を1に固定）　因子の分散を1に固定した場合の計算結果を表示します。
-  - Scale factor = scale first indicator（最初の変数の係数を基準として使用）　各因子の最初の変数の係数を1に固定した場合の計算結果を表示します。
++ **欠損値の処理**
+  - 完全情報最尤推定法　他の測定値から欠損値を推定した上で分析します。
+  - 行全体を除外　欠損値が含まれるデータ行全体を分析から除外します。
++ **制約**
+  - 因子の分散を1に固定　因子の分散を1に固定した場合の計算結果を表示します。
+  - 最初の係数を1に固定　各因子の最初の変数の係数を1に固定した場合の計算結果を表示します。
 :::
 
 #### 欠損値の処理方法{-#subsub:factor-cfa-missing}
 
 今回のサンプルデータには含まれていませんが，分析データに**欠損値**（データが欠落している部分）がある場合，その欠損値をどのように扱うかによって分析結果に影響が生じます。jamoviの確認的因子分析では，分析データに欠損値が含まれている場合，その値を*完全情報最尤推定法*と呼ばれる方法によって他のデータ値から推定し，その値を欠損部分に代入することによって分析を行います。
 
-欠損値に対して推定値を代入せず，欠損のままにしておきたい場合には，「Exclude cases listwise（データ行ごと除外）」に設定を変更してください。完全情報最尤推定法による補完を行うのと，欠損がある場合にデータ行ごと分析から除外するのとでどちらがよいかは一概にはいえませんが，近年，とくに確認的因子分析においては，完全情報最尤推定法など，何らかの形で欠損値を補完して分析することが多いようです。
+欠損値に対して推定値を代入せず，欠損のままにしておきたい場合には，「行全体を除外」に設定を変更してください。完全情報最尤推定法による補完を行うのと，欠損がある場合にデータ行ごと分析から除外するのとでどちらがよいかは一概にはいえませんが，近年，とくに確認的因子分析においては，完全情報最尤推定法など，何らかの形で欠損値を補完して分析することが多いようです。
 
 #### 推定における制約{-#subsub:factor-cfa-constraints}
 
 探索的因子分析でも，何らかの形で計算のための条件や前提を設定しないことには計算結果が1つに定まらなかったのと同様に，確認的因子分析でもまったくの条件なしにはモデルに関する推定ができません。
 
-計算結果を収束させるために，確認的因子分析では「因子の分散を1」に固定するか，「各因子の最初の係数（負荷量）を1」にするか，いずれかの方法で計算を行います。jamoviの分析設定では，ここは「Factor variances = 1（因子の分散を1に固定）」が初期設定値になっています。その場合，当然ですが表示される計算結果ではすべての因子で分散が1になります。
+計算結果を収束させるために，確認的因子分析では「因子の分散を1」に固定するか，「各因子の最初の係数（負荷量）を1」にするか，いずれかの方法で計算を行います。jamoviの分析設定では，「因子の分散を1に固定」が初期設定値になっています。その場合，当然ですが表示される計算結果ではすべての因子で分散が1になります。
 
-もし因子の分散という情報が分析上重要である場合には，「Scale factor = scale first indicator（最初の変数の係数を基準として使用）」に設定して計算を行うことになるでしょう。その場合，各因子の分散の値は算出されますが，各因子の最初の変数では，その係数（因子負荷量）はすべて1になります。
+もし因子の分散という情報が分析上重要である場合には，「最初の係数を1に固定」に設定して計算を行うことになるでしょう。その場合，各因子の分散の値は算出されますが，各因子の最初の変数では，その係数（因子負荷量）はすべて1になります。
 
 なお，分析結果として標準化された推定値（**標準化推定値**）を使用する場合には，どちらの場合も最終的な計算結果は同じになります。
 
-### Estimates：推定値{#sub:factor-cfa-estimates}
+### 推定値{#sub:factor-cfa-estimates}
 
-`r groupbar('Estimates')`（推定値）では，因子や残差の推定値に関する設定を行います（図\@ref(fig:factor-cfa-estimates)）。
+`r groupbar("推定値")`では，因子や残差の推定値に関する設定を行います（図\@ref(fig:factor-cfa-estimates)）。
 
 
-```{r factor-cfa-estimates, fig.cap='Estimates（推定値）の設定', echo=FALSE}
+```{r factor-cfa-estimates, fig.cap="推定値の設定", echo=FALSE}
 knitr::include_graphics("images/factor/cfa-estimates.png")
 ```
 
 <!-- -->
 
 :::{.jmvsettings data-latex=""}
-+ **Results**（結果）
-  - Factor covariances（因子共分散）　因子の分散，および因子間の共分散または相関係数を算出します。
-  - Factor intercepts（因子切片）　因子の切片についての推定量を算出します。
-  - Residual covariances（残差共分散）　残差の分散，および指定した変数間での残差の共分散，または相関係数を算出します。
-  - Residual intercepts（残差切片）　残差の切片についての推定量を算出します。
-+ **Statistics**（統計量）
-  - Test statistics（検定統計量）　推定した各係数についての有意性検定の結果を表示します。
-  - Confidence interval（信頼区間）　各係数について，信頼区間の算出を行います。
-  - Standardized estimate（標準化推定値）　各係数について，標準化された値を算出します。
++ **結果**
+  - 因子共分散　因子の分散，および因子間の共分散または相関係数を算出します。
+  - 因子の切片　因子の切片についての推定量を算出します。
+  - 残差共分散　残差の分散，および指定した変数間での残差の共分散，または相関係数を算出します。
+  - 残差の切片　残差の切片についての推定量を算出します。
++ **統計量**
+  - 検定統計量　推定した各係数についての有意性検定の結果を表示します。
+  - 信頼区間　各係数について，信頼区間の算出を行います。
+  - 標準化推定値　各係数について，標準化された値を算出します。
 :::
 
-#### Results：結果 {-#subsub:factor-cfa-covariances}
+#### 結果 {-#subsub:factor-cfa-covariances}
 
-この画面の**Results**（結果）の部分では，因子と各観測変数の残差の分散・共分散と切片の算出結果を表示するかどうかについての設定を行います。
+この画面の**結果**の部分では，因子と各観測変数の残差の分散・共分散と切片の算出結果を表示するかどうかについての設定を行います。
 
-この設定で「Factor covariances（因子共分散）」にチェックを入れた場合には，各因子の分散と，因子間の共分散または相関係数が表示されます。このとき，先ほどの［Options（オプション）］のところで推定のための制約を「Factor variances = 1（因子の分散を1に固定）」に設定した場合には，結果に表示される値は各因子の分散（すべて1.00で固定）と，因子間の相関係数になります。これに対し，制約条件を「Scale factor = scale first indicator（最初の変数の係数を基準として使用）」に設定した場合には，結果の表には各因子の分散と因子間の共分散の値が表示されます。
+この設定で「因子共分散」にチェックを入れた場合には，各因子の分散と，因子間の共分散または相関係数が表示されます。このとき，先ほどの`r groupbar("オプション")`のところで推定のための制約を「因子の分散を1に固定」に設定した場合には，結果に表示される値は各因子の分散（すべて1.00で固定）と，因子間の相関係数になります。これに対し，制約条件を「最初の係数を1に固定」に設定した場合には，結果の表には各因子の分散と因子間の共分散の値が表示されます。
 
-その下の「Factor intercepts（因子切片）」の部分にチェックを入れると，**因子の切片**（因子の平均値）についての情報が表示されるのですが，jamoviの現在のバージョンでは確認的因子分析で複数グループのデータを同時に分析するといったことはできませんので，この値はいずれの因子においても1.00で固定になります。そのため，この項目については現在のところ使い道はありません。
+その下の「因子の切片」の部分にチェックを入れると，*因子の切片*（因子の平均値）についての情報が表示されるのですが，jamoviの現在のバージョンでは確認的因子分析で複数グループのデータを同時に分析するといったことはできませんので，この値はいずれの因子においても1.00で固定になります。そのため，この項目については現在のところ使い道はありません。
 
-3つ目の「Residual covariances（残差共分散）」の項目にチェックを入れると，各観測変数の残差の分散が表示されます。また，`r groupbar('Residual Covariances')`（残差共分散）の設定で共分散を算出するように設定した場合には，設定した観測変数のペアについて，算出された共分散の値が表示されます。
+3つ目の「残差共分散」の項目にチェックを入れると，各観測変数の残差の分散が表示されます。また，`r groupbar("残差共分散")`の設定で共分散を算出するように設定した場合には，設定した観測変数のペアについて，算出された共分散の値が表示されます。
 
-一番下の「Residual intercepts（残差切片）」の部分にチェックを入れると**残差の切片**についての情報が表示されるのですが，その推定値および標準誤差は，どのような場合にもすべて観測変数の平均値と標準誤差の値に等しくなります（図\@ref(fig:factor-cfa-estimates-results)）。そのため，この項目についても今のところ使い道はなさそうです。
+一番下の「残差の切片」の部分にチェックを入れると**残差の切片**についての情報が表示されるのですが，その推定値および標準誤差は，どのような場合にもすべて観測変数の平均値と標準誤差の値に等しくなります（図\@ref(fig:factor-cfa-estimates-results)）。そのため，この項目についても今のところ使い道はなさそうです。
 
-```{r factor-cfa-estimates-results, fig.cap='各設定項目の出力結果の例', echo=FALSE}
+```{r factor-cfa-estimates-results, fig.cap="各設定項目の出力結果の例", echo=FALSE}
 knitr::include_graphics("images/factor/cfa-estimates-results.png")
 ```
 
 
 
-#### Statistics：統計量 {-#subsub:factor-cfa-statistics}
+#### 統計量 {-#subsub:factor-cfa-statistics}
 
-`r groupbar('Estimates')`（推定値）右側の**Statistics**（統計量）の部分では，係数の推定に関する設定を行うことができます。1つ目の「Test statistics（検定統計量）」にチェックを入れると，算出した係数（分散や共分散も含む）の推定値について，その係数が0でないかどうかの有意性検定の結果が表示されます。確認的因子分析では，いずれの係数についても標準得点zを用いた検定が行われます。
+`r groupbar("推定値")`右側の**統計量**の部分では，係数の推定に関する設定を行うことができます。1つ目の「検定統計量」にチェックを入れると，算出した係数（分散や共分散も含む）の推定値について，その係数が0でないかどうかの有意性検定の結果が表示されます。確認的因子分析では，いずれの係数についても標準得点zを用いた検定が行われます。
 
-2つ目の「Confidence interval（信頼区間）」にチェックを入れると，それぞれの係数について指定した幅の信頼区間が表示されます。
+2つ目の「信頼区間」にチェックを入れると，それぞれの係数について指定した幅の信頼区間が表示されます。
 
-
-3つ目の「Standardized estimate（標準化推定値）」にチェックを入れると，各係数を標準化した値が表示されます。この標準化推定値の値は，［Options（オプション）］のところで計算上の制約として「Factor variances = 1（因子の分散を1に固定）」を選択した場合にも「Scale factor = scale first indicator（最初の変数の係数を基準として使用）」を選択した場合にも同じになります（図\@ref(fig:factor-cfa-standardized)）。
-
+3つ目の「標準化推定値」にチェックを入れると，各係数を標準化した値が表示されます。この標準化推定値の値は，`r groupbar("オプション")`のところで計算上の制約として「因子の分散を1に固定」を選択した場合にも「最初の係数を1に固定」を選択した場合にも同じになります（図\@ref(fig:factor-cfa-standardized)）。
 
 
-```{r factor-cfa-standardized, fig.cap='標準化推定値', echo=FALSE}
+
+```{r factor-cfa-standardized, fig.cap="標準化推定値", echo=FALSE}
 knitr::include_graphics("images/factor/cfa-standardized.png")
 ```
 
@@ -1313,44 +1440,44 @@ knitr::include_graphics("images/factor/cfa-standardized.png")
 心理学の研究論文では，確認的因子分析の結果を報告する際にはこの標準化推定値を用いることが多いようです。考え方説明のところで用いた因子モデルの図に標準化推定値を示すと，分析結果は図\@ref(fig:factor-cfa-result-model)のようになります。
 
 
-```{r factor-cfa-result-model, fig.cap='分析結果のパス図', echo=FALSE}
+```{r factor-cfa-result-model, fig.cap="分析結果のパス図", echo=FALSE}
 knitr::include_graphics("images/factor/cfa-result-model.png")
 ```
 
 
 
-### Model Fit：モデル適合度{#sub:factor-cfa-model-fit}
+### モデル適合度{#sub:factor-cfa-model-fit}
 
-`r groupbar('Model Fit')`（モデル適合度）では，モデル全体の適合度に関する情報の設定を行います（図\@ref(fig:factor-cfa-model-fit)）。
+`r groupbar("モデル適合度")`では，モデル全体の適合度に関する情報の設定を行います（図\@ref(fig:factor-cfa-model-fit)）。
 
-```{r factor-cfa-model-fit, fig.cap='モデル適合度の設定項目', echo=FALSE}
+```{r factor-cfa-model-fit, fig.cap="モデル適合度の設定項目", echo=FALSE}
 knitr::include_graphics("images/factor/cfa-model-fit.png")
 ```
 
 
 :::{.jmvsettings data-latex=""}
-+ **Test for Exact Fit**（適合度検定）
-  - $\chi^2$ test（$\chi^2$検定）　モデル適合度についての$\chi^2$検定の結果を表示します。
-+ **Fit Measures**（適合度指標）
-  - CFI（比較適合度指標）　モデルのあてはまりのよさについての指標を示します。
-  - TLI（タッカー=ルイス指数）　モデルのあてはまりのよさについての指標を示します。
-  - SRMR（標準化残差2乗平均平方根）　モデルの残差の大きさについての指標を示します。
-  - RMSEA（近似誤差2乗平均平方根）　モデル残差の大きさについての指標を示します。
-  - AIC（赤池情報量規準）　モデル残差の相対的な大きさについての情報を示します。
-  - BIC（ベイズ情報量規準）　モデル残差の相対的な大きさについての情報を示します。
++ **適合度検定**
+  - $\chi^2$検定　モデル適合度についての$\chi^2$検定の結果を表示します。
++ **適合度指標**
+  - CFI　モデルのあてはまりのよさについての指標（比較適合度指標）を示します。
+  - TLI　モデルのあてはまりのよさについての指標（タッカー=ルイス指数）を示します。
+  - SRMR　モデルの残差の大きさについての指標（標準化残差2乗平均平方根）を示します。
+  - RMSEA　モデル残差の大きさについての指標（近似誤差2乗平均平方根）を示します。
+  - AIC　モデル残差の相対的な大きさについての情報（赤池情報量規準）を示します。
+  - BIC　モデル残差の相対的な大きさについての情報（ベイズ情報量規準）を示します。
 :::
 
-#### Test for Exact Fit：適合度検定{-}
+#### 適合度検定{-}
 
-画面左側の「**Test for Exact Fit**（適合度検定）」の部分では，モデルの適合度に関して$\chi^2$検定を行うかどうかを設定できます。この検定では，「このモデルはデータがもつ情報を完全に説明できている（モデルによる残差が0である）」が帰無仮説ですので，この検定結果は有意にならない（pが0.05より大きい）ことが望ましいという点に注意してください。
+画面左側の「**適合度検定**」の部分では，モデルの適合度に関して$\chi^2$検定を行うかどうかを設定できます。この検定では，「このモデルはデータがもつ情報を完全に説明できている（モデルによる残差が0である）」が帰無仮説ですので，この検定結果は有意にならない（pが0.05より大きい）ことが望ましいという点に注意してください。
 
 今回のサンプルデータでは\(\chi^2(\textsf{21})=\textsf{17.37}\)で，有意確率p=0.688ですから，検定結果は有意ではありません。したがって，分析モデルでデータをうまく説明できている（モデルとデータのずれは大きくない）といえます。
 
 なお，探索的因子分析のところでも説明しましたが，この$\chi^2$検定の結果は分析に使用する観測変数がたくさんある場合や標本サイズが大きい場合には有意になりやすい傾向があります。そのため，この検定結果が有意になっていたらだめだというわけでは必ずしもありません。モデルの適合度は，他の適合度指標と合わせて総合的に判断します。
 
-#### Fit Measures：適合度指標{-}
+#### 適合度指標{-}
 
-画面右側の**Fit Measures**（適合度指標）の部分では，適合度指標として表示させる値を選択します。
+画面右側の**適合度指標**の部分では，適合度指標として表示させる値を選択します。
 
 ##### CFI，TLI {-}
 
@@ -1362,56 +1489,56 @@ SRMRとRMSEAは残差の大きさに関する指標で，これらは0に近い�
 
 ##### AIC，BIC {-}
 
-AICとBICについては，回帰分析の`r groupbar('Model Fit')`（[モデル適合度](#sub:regression-LR-modelfit)
-）のところで説明したとおりです。これらはモデルの残差の大きさを表す値ですが，この値未満であればよいというようなものではなく，複数のモデル候補の間で相対的にあてはまりのよさを判断するための指標です。いくつかのモデル候補がある場合には，その中でこれらの値がもっとも小さくなるモデルを選択するのが一般的です。
+AICとBICについては，回帰分析の[モデル適合度](#sub:regression-LR-modelfit)
+で説明したとおりです。これらはモデルの残差の大きさを表す値ですが，この値未満であればよいというようなものではなく，複数のモデル候補の間で相対的にあてはまりのよさを判断するための指標です。いくつかのモデル候補がある場合には，その中でこれらの値がもっとも小さくなるモデルを選択するのが一般的です。
 
 このように，確認的因子分析ではさまざまなモデル適合度指標を算出することができるのですが，逆にいえばこれは，この値さえ求めておけばよいというような定番の指標がないということでもあります。研究論文でも，モデル適合度の指標として$\chi^2$検定の結果，あてはまりのよさの指標（CFIやTLI）を1つ以上，残差の大きさの指標（SRMRやRMSEA）を1つ以上の3種類の指標をセットで報告するのが一般的です。
 
 また，適合度指標としてどれを報告するかには流行（？）のようなものもあり，あてはまりのよさの指標として少し前まではGFIとAGFIという指標が報告されることが多かったのですが，近年ではそうでもないようです。少なくとも，それらの指標はjamoviのオプションには含まれていません。
 
-### Additional Output：追加の出力{#sub:factor-cfa-additional-output}
+### 追加の出力{#sub:factor-cfa-additional-output}
 
-`r groupbar('Additional Output')`（追加の出力）では，分析結果に基づいてモデルの適合度を向上させるための参考指標などについて設定することができます（図\@ref(fig:factor-cfa-additional)）。
+`r groupbar("追加の出力")`では，分析結果に基づいてモデルの適合度を向上させるための参考指標などについて設定することができます（図\@ref(fig:factor-cfa-additional)）。
 
 
 
-```{r factor-cfa-additional, fig.cap='追加の出力に関する設定項目', echo=FALSE}
+```{r factor-cfa-additional, fig.cap="追加の出力に関する設定項目", echo=FALSE}
 knitr::include_graphics("images/factor/cfa-additional.png")
 ```
 
 :::{.jmvsettings data-latex=""}
-+ **Post-Hoc ModelPerformance**（モデルの事後修正）
-  - Residuals observed correlation matrix（相関行列の残差）　モデルから算出される相関係数とデータから算出される相関係数の残差を求めます。
-  - Modification indices（修正指数）　モデル適合度の向上につながりそうな修正候補を指数として示します。
++ **モデルの事後修正**
+  - 相関行列の残差　モデルから算出される相関係数とデータから算出される相関係数の残差を求めます。
+  - 修正指数　モデル適合度の向上につながりそうな修正候補を指数として示します。
 
-+ **Plots**（作図）
-  - Path diagram（パス図）　モデルのパス図を作成します。
++ **グラフ**
+  - パス図　モデルのパス図を作成します。
 :::
 
-#### Post-Hoc Model Performance：モデルの事後修正 {-#subsub:factor-cfa-posthoc}
+#### モデルの事後修正 {-#subsub:factor-cfa-posthoc}
 
 今回のサンプルデータではモデルに十分な適合度がありましたが，実際の分析場面では適合度が十分とはいえない結果になる場合もあるでしょう。その場合，モデルのどの部分に問題があるのかを調べることで，モデルの適合度を向上させられることがあります。
 
-##### Residuals observed correlation matrix：相関行列の残差{-}
+##### 相関行列の残差{-}
 
-そのための参考指標の1つが，モデルから算出される観測変数間の相関係数と，実際のデータにおける観測変数間の相関係数の間の残差です。相関係数の残差を算出するには，「Residuals observed correlation matrix（相関行列の残差）」の部分にチェックを入れます。またその際，「Highlight values above...（これより大きな値を強調）」に指定されている数値より大きな絶対値の部分が赤色の文字で強調表示されます（図\@ref(fig:factor-cfa-residual-correlation)）。
+そのための参考指標の1つが，モデルから算出される観測変数間の相関係数と，実際のデータにおける観測変数間の相関係数の間の残差です。相関係数の残差を算出するには，「相関行列の残差」の部分にチェックを入れます。またその際，「これ以上の値を強調」に指定されている数値より大きな絶対値の部分が赤色の文字で強調表示されます（図\@ref(fig:factor-cfa-residual-correlation)）。
 
 <!-- -->
-```{r factor-cfa-residual-correlation, fig.cap='相関行列の残差', echo=FALSE}
+```{r factor-cfa-residual-correlation, fig.cap="相関行列の残差", echo=FALSE}
 knitr::include_graphics("images/factor/cfa-residual-correlation.png")
 ```
 
 
 この相関係数の残差に大きな値（たとえば0.1を超えるようなもの）がある場合には，分析モデルではその関係がうまく説明できていないということになります。そうした部分が特定の変数（表の列または行）に集中しているようであれば，その変数を分析から除外してみたり，モデルにおけるその変数の扱いを修正したりすることによってモデルの適合度が向上するかもしれません。
 
-##### Modification indices：修正指標{-}
+##### 修正指標{-}
 
-また，「Modification indices（修正指数）」にチェックを入れると，分析に使用したモデルには含まれていない関係（パス）について，それらを加えたときにモデル適合度がどの程度向上するかを示す*修正指数*が算出されます。jamoviの初期設定では，この修正指数が3を超える部分が赤色で強調されるようになっていますが，この値は「Highlight values above...（これより大きな値を強調）」の数値を指定することによって変更可能です。
+また，「修正指数」にチェックを入れると，分析に使用したモデルには含まれていない関係（パス）について，それらを加えたときにモデル適合度がどの程度向上するかを示す*修正指数*が算出されます。jamoviの初期設定では，この修正指数が3を超える部分が赤色で強調されるようになっていますが，この値は「これ以上の値を強調」の数値を指定することによって変更可能です。
 
 今回の分析結果について修正指数を算出してみると，図\@ref(fig:factor-cfa-residual-modification-indices)のような結果になります。
 
 <!-- -->
-```{r factor-cfa-residual-modification-indices, fig.cap='モデル修正指数', echo=FALSE}
+```{r factor-cfa-residual-modification-indices, fig.cap="モデル修正指数", echo=FALSE}
 knitr::include_graphics("images/factor/cfa-residual-modification-indices.png")
 ```
 
@@ -1423,16 +1550,13 @@ knitr::include_graphics("images/factor/cfa-residual-modification-indices.png")
 
 そもそも，確認的因子分析はすでにある仮説モデルでデータをうまく説明できるかどうかを確認することを目的とした分析です。分析結果が思わしくなかったからといって，データに合わせて大幅に探索的にモデルを修正していくのは決して好ましいとはいえないでしょう。モデルの修正は，元の仮説で想定される範囲を超えない程度に留めておくことが重要です。
 
-#### Plots：作図 {-}
-なお，モデルに複数の修正を加えた場合，そのままではそのモデルがどのような形になっているのかを把握することが困難になっていきます。その場合，**Plots**（作図）の部分にある「Path diagram（パス図）」にチェックを入れて，モデルを図示してみるとよいでしょう。「**Plots**（作図）」の項目にチェックを入れると，図\@ref(fig:factor-cfa-plots-diagram)のように各因子と観測変数の関係，因子間の相関，残差間の相関を図示してくれます。
+#### グラフ {-}
+なお，モデルに複数の修正を加えた場合，そのままではそのモデルがどのような形になっているのかを把握することが困難になっていきます。その場合，**グラフ**の部分にある「パス図」にチェックを入れて，モデルを図示してみるとよいでしょう。「**グラフ**」の項目にチェックを入れると，図\@ref(fig:factor-cfa-plots-diagram)のように各因子と観測変数の関係，因子間の相関，残差間の相関を図示してくれます。
 
 
-```{=latex}
-\clearpage
-```
 
 <!-- -->
-```{r factor-cfa-plots-diagram, fig.cap='モデルのパス図', echo=FALSE}
+```{r factor-cfa-plots-diagram, fig.cap="モデルのパス図", echo=FALSE}
 knitr::include_graphics("images/factor/cfa-plots-diagram.png")
 ```
 

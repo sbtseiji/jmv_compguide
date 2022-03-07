@@ -1,5 +1,0 @@
-jest.config.js
-husky.config.js
-lint-staged.config.js
-lib/
-*.json
