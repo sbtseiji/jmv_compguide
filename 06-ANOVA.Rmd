@@ -341,7 +341,7 @@ out <- jmvReadWrite::write_omv(data02, "data/omv/anova_data02.omv")
 
 分散分析の基本的な考え方については，すでに先ほどの1要因分散分析のところで説明しましたが，複数の要因による影響を分析する場合には，複数の要因それぞれによる単独の影響（*主効果*）の他に，それらの要因による組み合わせ効果である*交互作用*についても検討する必要があります。
 
-交互作用は複数要因の組み合わせ効果のことをいうわけですが，ではその「組み合わせ効果」とは具体的にどのようなもののことをいうのでしょうか。ここでは，次のサンプルデータ（[anova_data02.omv](https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/anova_data02.omv)）を用いて交互作用がどのようなものであるのかを簡単に見ておくことにしましょう（図\@ref(fig:ANOVA-data02)）。
+交互作用は複数要因の組み合わせ効果のことをいうわけですが，ではその「組み合わせ効果」とは具体的にどのようなもののことをいうのでしょうか。ここでは，次のサンプルデータ（[anova_data02.omv](https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/anova_data02.omv)）を用いて交互作用がどのようなものであるのかを簡単に見ておくことにしましょう（図\@ref(fig:ANOVA-data02)）^[Windows版のjamoviでは，変数名に日本語が含まれている際に正しく分析できません。以下の内容は，サンプルデータの変数名を英数字に変更したうえで実行してください。]。
 
 ```{r ANOVA-data02, fig.cap="サンプルデータ", echo=FALSE}
 knitr::include_graphics("images/ANOVA/data02.png")
@@ -1050,7 +1050,7 @@ out <- jmvReadWrite::write_omv(data03, "data/omv/anova_data03.omv")
 
 ### 考え方 {#sub:ANOVA-rm-basics}
 
-先ほども説明したように，分散分析が扱う「繰り返しあり」データには非常にさまざまなタイプのものがありますので，それらのすべてについて説明しようとすると，それだけでも1冊の本になってしまうほどです。ですので，ここでは比較的シンプルな次のデータ（[anova_data03.omv](https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/anova_data03.omv)）の場合について考えることにしましょう（図\@ref(fig:ANOVA-data03)）。
+先ほども説明したように，分散分析が扱う「繰り返しあり」データには非常にさまざまなタイプのものがありますので，それらのすべてについて説明しようとすると，それだけでも1冊の本になってしまうほどです。ですので，ここでは比較的シンプルな次のデータ（[anova_data03.omv](https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/anova_data03.omv)）の場合について考えることにしましょう（図\@ref(fig:ANOVA-data03)）^[Windows版のjamoviでは，変数名に日本語が含まれている際に正しく分析できません。以下の内容は，サンプルデータの変数名を英数字に変更したうえで実行してください。]。
 
 ```{r ANOVA-data03, fig.cap="サンプルデータ", echo=FALSE}
 knitr::include_graphics("images/ANOVA/data03.png")
@@ -1382,7 +1382,7 @@ out <- jmvReadWrite::write_omv(data04, "data/omv/anova_data04.omv")
 
 ### 考え方{#sub:ANOVA-ancova-basics}
 
-ここでは次の実験データについて考えてみましょう。勉強中のBGMが勉強効率にどのように影響するのかを調べるため，参加者75名をBGMなし，音楽のみのBGM，歌詞ありのBGMの3つの条件に25名ずつに振り分けて記憶課題を実施しました。記憶課題は，無意味つづり30個が記載されたリストを記憶し，その後，それらの無意味つづりを再生するというものです。なお，参加者を3つの条件に振り分ける際には，作業記憶容量の測定課題を実施し，各条件でその点数ができるだけ均等になるようにしました。次のサンプルデータ（[anova_data04.omv](https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/anova_data04.omv)）には，この実験の結果が入力されています（図\@ref(fig:ANOVA-data04)）。
+ここでは次の実験データについて考えてみましょう。勉強中のBGMが勉強効率にどのように影響するのかを調べるため，参加者75名をBGMなし，音楽のみのBGM，歌詞ありのBGMの3つの条件に25名ずつに振り分けて記憶課題を実施しました。記憶課題は，無意味つづり30個が記載されたリストを記憶し，その後，それらの無意味つづりを再生するというものです。なお，参加者を3つの条件に振り分ける際には，作業記憶容量の測定課題を実施し，各条件でその点数ができるだけ均等になるようにしました。次のサンプルデータ（[anova_data04.omv](https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/anova_data04.omv)）には，この実験の結果が入力されています（図\@ref(fig:ANOVA-data04)）^[Windows版のjamoviでは，変数名に日本語が含まれている際に正しく分析できません。以下の内容は，サンプルデータの変数名を英数字に変更したうえで実行してください。]。
 
 <!-- -->
 ```{r ANOVA-data04, fig.cap="サンプルデータ", echo=FALSE}
