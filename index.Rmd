@@ -61,7 +61,8 @@ infig <- function(img){
 
 * Version 1.0.0 2021年6月10日公開
 * Version 1.0.1 2021年6月30日
-* Version 1.1.0 `r gsub("(\\D)0","\\1",format(Sys.time(), '%Y年%m月%d日'))`
+* Version 1.1.0 2022年3月7日
+* Version 1.1.1 `r gsub("(\\D)0","\\1",format(Sys.time(), '%Y年%m月%d日'))`
 
 <br/>
 <br/>

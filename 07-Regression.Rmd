@@ -396,7 +396,7 @@ $$
 
 ### 基本手順 {#sub:regression-LR-howto}
 
-それでは回帰分析の手順を見ておきましょう。ここでも，サンプルデータは[相関行列](#sec-regression-cormat)のところで用いたのと同じデータ（[regression_data01.omv](https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/regression_data01.omv)）を用います。（線形）回帰分析を実行するには，分析タブの「`r infig("analysis-regression")` 回帰分析」から「線形回帰」を選択してください（図\@ref(fig:regression-LR-menu)）。
+それでは回帰分析の手順を見ておきましょう。ここでも，サンプルデータは[相関行列](#sec-regression-cormat)のところで用いたのと同じデータ（[regression_data01.omv](https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/regression_data01.omv)）を用います。（線形）回帰分析を実行するには，分析タブの「`r infig("analysis-regression")` 回帰分析」から「線形回帰」を選択してください（図\@ref(fig:regression-LR-menu)）^[Windows版のjamoviでは，変数名に日本語が含まれている際に正しく分析できません。以下の内容は，サンプルデータの変数名を英数字に変更したうえで実行してください。]。
 
 ```{r regression-LR-menu, fig.cap = "線形回帰", echo = FALSE}
 knitr::include_graphics("images/regression/lr-menu.png")

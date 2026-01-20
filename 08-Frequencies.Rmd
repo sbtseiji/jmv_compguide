@@ -423,10 +423,10 @@ knitr::include_graphics("images/frequencies/n-outcomes-goodness-results.png")
     y =  c(5, 5, 10),
     z =  c(100, 100, 200)
   )
-  names(data.salada) <- c("好き", "嫌い", "計")
-  row.names(data.salada) <- c("男", "女", "計")
+  names(data.hamburg) <- c("好き", "嫌い", "計")
+  row.names(data.hamburg) <- c("男", "女", "計")
 
-  data.salada %>% kable(align = "ccc", caption =  "性別とハンバーグの好き嫌いについてのクロス集計表", booktabs = T) %>%
+  data.hamburg %>% kable(align = "ccc", caption =  "性別とハンバーグの好き嫌いについてのクロス集計表", booktabs = T) %>%
     add_header_above(header =  c(" " = 1, "ハンバーグ" = 2, " " = 1)) %>%
     pack_rows("性別", 1, 2) %>%
     kable_styling(latex_options =  "HOLD_position")# %>%
