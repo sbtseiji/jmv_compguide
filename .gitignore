@@ -17,3 +17,8 @@ _book
 .Rproj.user
 rsconnect
 rsconnect/documents/index.Rmd/bookdown.org/sbtseiji/jamovi_complete_guide.dcf
+
+# bookdown output
+_book/
+_bookdown_files/
+
