@@ -69,7 +69,7 @@ attributes(data01$父身長)$description <- "父親の身長（単位：cm）"
 attributes(data01$母身長)$description <- "母親の身長（単位：cm）"
 attributes(data01$娘身長)$description <- "娘の身長（単位：cm）"
 
-out <- jmvReadWrite::write_omv(data01, "data/omv/regression_data01.omv")
+out <- jmvReadWrite::write_omv(data01, "data/omv/regression_data01.omv", frcWrt = TRUE)
 
 ```
 
@@ -630,7 +630,7 @@ attributes(data02$母身長)$description <- "母親の身長（単位：cm）"
 attributes(data02$子身長)$description <- "子供の身長（単位：cm）"
 attributes(data02$性別)$description <- "子供の性別（男，女）"
 
-out <- jmvReadWrite::write_omv(data02, "data/omv/regression_data02.omv")
+out <- jmvReadWrite::write_omv(data02, "data/omv/regression_data02.omv", frcWrt = TRUE)
 
 ```
 
@@ -1141,7 +1141,7 @@ attributes(data03$PTSD)$description <- "PTSDの有無（あり，なし）"
 attributes(data03$性別)$description <- "対象者の性別（男，女）"
 
 
-out <- jmvReadWrite::write_omv(data03, "data/omv/regression_data03.omv")
+out <- jmvReadWrite::write_omv(data03, "data/omv/regression_data03.omv", frcWrt = TRUE)
 
 ```
 
@@ -1608,7 +1608,7 @@ attributes(data04$調和性)$description <- "調和性の得点"
 attributes(data04$誠実性)$description <- "誠実性の得点"
 attributes(data04$愛着)$description <- "愛着スタイル（安定，不安，回避）"
 
-out <- jmvReadWrite::write_omv(data04, "data/omv/regression_data04.omv")
+out <- jmvReadWrite::write_omv(data04, "data/omv/regression_data04.omv", frcWrt = TRUE)
 
 ```
 
@@ -1736,7 +1736,7 @@ attributes(data05$ストレス)$description <- "日中ストレス度（1：弱�
 attributes(data05$歩数)$description <- "1日の歩数（単位：千歩）"
 attributes(data05$気分)$description <- "起床時の気分（悪い，普通，良い）"
 
-out <- jmvReadWrite::write_omv(data05, "data/omv/regression_data05.omv")
+out <- jmvReadWrite::write_omv(data05, "data/omv/regression_data05.omv", frcWrt = TRUE)
 
 ```
 

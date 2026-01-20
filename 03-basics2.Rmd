@@ -26,7 +26,7 @@ attributes(data01$性別)$levels <- c("女", "男")
 attributes(data01$性別)$values <- c(1, 2)
 attributes(data01$性別)$measureType <- c("Nominal")
 
-out <- jmvReadWrite::write_omv(data01, "data/omv/basics2_data01.omv")
+out <- jmvReadWrite::write_omv(data01, "data/omv/basics2_data01.omv", frcWrt = TRUE)
 
 ```
 

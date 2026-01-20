@@ -12,7 +12,7 @@ attributes(COUNT)$measureType <- c("Continuous")
 
 data03 <- data.frame(DANJO, CAKE, COUNT)
 
-out <- jmvReadWrite::write_omv(data03, "data/omv/frequencies_data03.omv")
+out <- jmvReadWrite::write_omv(data03, "data/omv/frequencies_data03.omv", frcWrt = TRUE)
 ```
 
 # 度数分析 {#ch-frequencies}
@@ -468,7 +468,7 @@ attributes(fq.data03$人数)$description <- "そのケーキを選んだ人数"
 attributes(fq.data03$性別)$description <- "性別（男，女）"
 attributes(fq.data03$ケーキ)$description <- "ケーキの種類（ショートケーキ，チーズケーキ，チョコレートケーキ）"
 
-out <- jmvReadWrite::write_omv(fq.data03, "data/omv/frequencies_data03.omv")
+out <- jmvReadWrite::write_omv(fq.data03, "data/omv/frequencies_data03.omv", frcWrt = TRUE)
 
 ```
 
@@ -622,7 +622,7 @@ attributes(fq.data04$年齢)$description <- "年齢（大人，子供）"
 attributes(fq.data04$ケーキ)$description <- "ケーキの種類"
 attributes(fq.data04$人数)$description <- "そのケーキを選んだ人数"
 
-out <- jmvReadWrite::write_omv(fq.data04, "data/omv/frequencies_data04.omv")
+out <- jmvReadWrite::write_omv(fq.data04, "data/omv/frequencies_data04.omv", frcWrt = TRUE)
 
 ```
 
@@ -1162,7 +1162,7 @@ attributes(data05$本試験)$description <- "本試験の合否（合格，不�
 attributes(data05$追試験)$description <- "追試験の合否（合格，不合格）"
 
 
-out <- jmvReadWrite::write_omv(data05, "data/omv/frequencies_data05.omv")
+out <- jmvReadWrite::write_omv(data05, "data/omv/frequencies_data05.omv", frcWrt = TRUE)
 
 ```
 

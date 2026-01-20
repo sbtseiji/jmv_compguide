@@ -35,7 +35,7 @@ attributes(data01$血液型)$description <-"対象者の血液型"
 attributes(data01$体力)$description <-"対象者の体力レベル（5段階判定）"
 attributes(data01$学力)$description <-"対象者の学力レベル（5段階判定）"
 
-out <- jmvReadWrite::write_omv(data01, "data/omv/exploration_data01.omv")
+out <- jmvReadWrite::write_omv(data01, "data/omv/exploration_data01.omv", frcWrt = TRUE)
 
 ```
 

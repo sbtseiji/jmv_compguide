@@ -536,7 +536,7 @@ attributes(data01$Q5)$description <-"新しい環境にもすぐ馴染むこと�
 attributes(data01$Q6)$description <-"休日はできれば一人で過ごしたいと思う"
 attributes(data01$Q7)$description <-"流行には敏感な方である"
 
-out <- jmvReadWrite::write_omv(data01, "data/omv/basics_data01.omv")
+out <- jmvReadWrite::write_omv(data01, "data/omv/basics_data01.omv", frcWrt = TRUE)
 
 ```
 
