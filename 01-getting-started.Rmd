@@ -3,7 +3,7 @@
 
   data01 <- read.csv("data/intro_data01.csv")
 
-  out <- jmvReadWrite::write_omv(data01, "data/omv/intro_data01.omv")
+  out <- jmvReadWrite::write_omv(data01, "data/omv/intro_data01.omv", frcWrt = TRUE)
 
 ```
 

@@ -28,7 +28,7 @@ attributes(data01$Q3)$description <- "メッセージアプリでやりとりす
 attributes(data01$Q4)$description <- "メッセージアプリは何かとめんどくさい"
 attributes(data01$Q5)$description <- "送信メッセージに反応がないとソワソワする"
 
-out <- jmvReadWrite::write_omv(data01, "data/omv/factor_data01.omv")
+out <- jmvReadWrite::write_omv(data01, "data/omv/factor_data01.omv", frcWrt = TRUE)
 
 ```
 
@@ -308,7 +308,7 @@ attributes(data02$オムライス)$description <- "オムライスに対する�
 attributes(data02$ドリア)$description <- "ドリアに対する満足度（1〜7）"
 
 
-out <- jmvReadWrite::write_omv(data02, "data/omv/factor_data02.omv")
+out <- jmvReadWrite::write_omv(data02, "data/omv/factor_data02.omv", frcWrt = TRUE)
 
 ```
 
@@ -793,7 +793,7 @@ attributes(data03$Q7)$description <- "熱くなりすぎて周りに引かれる
 attributes(data03$Q8)$description <- "趣味について話し出すととまらない"
 attributes(data03$Q9)$description <- "熱中しすぎて我を忘れることがある"
 
-out <- jmvReadWrite::write_omv(data03, "data/omv/factor_data03.omv")
+out <- jmvReadWrite::write_omv(data03, "data/omv/factor_data03.omv", frcWrt = TRUE)
 
 ```
 
@@ -1190,7 +1190,7 @@ attributes(data04$Q6)$description <- "It's better to communicate with people onl
 attributes(data04$Q7)$description <- "Sometimes I get too enthusiastic and stun the people around me."
 attributes(data04$Q8)$description <- "I can't stop talking about my hobbies."
 attributes(data04$Q9)$description <- "Sometimes I get so absorbed that I lose control of myself."
-out <- jmvReadWrite::write_omv(data04, "data/omv/factor_data04.omv")
+out <- jmvReadWrite::write_omv(data04, "data/omv/factor_data04.omv", frcWrt = TRUE)
 
 ```
 

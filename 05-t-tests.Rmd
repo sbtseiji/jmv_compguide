@@ -73,7 +73,7 @@ attributes(data01$得点)$description <- "対象者の課題得点"
 attributes(data01$グループ)$description <- "対象者のグループ（1または2）"
 
 
-out <- jmvReadWrite::write_omv(data01, "data/omv/ttest_data01.omv")
+out <- jmvReadWrite::write_omv(data01, "data/omv/ttest_data01.omv", frcWrt = TRUE)
 
 ```
 
@@ -365,7 +365,7 @@ attributes(data02$ID)$description <- "対象者のID"
 attributes(data02$訓練前)$description <- "訓練前の記憶課題成績"
 attributes(data02$訓練後)$description <- "訓練後の記憶課題成績"
 
-out <- jmvReadWrite::write_omv(data02, "data/omv/ttest_data02.omv")
+out <- jmvReadWrite::write_omv(data02, "data/omv/ttest_data02.omv", frcWrt = TRUE)
 
 ```
 
@@ -485,7 +485,7 @@ attributes(data03$得点)$measureType <- c("Continuous")
 attributes(data03$ID)$description <- "対象者のID"
 attributes(data03$得点)$description <- "対象者の課題得点"
 
-out <- jmvReadWrite::write_omv(data03, "data/omv/ttest_data03.omv")
+out <- jmvReadWrite::write_omv(data03, "data/omv/ttest_data03.omv", frcWrt = TRUE)
 
 ```
 
