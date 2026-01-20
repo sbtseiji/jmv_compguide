@@ -1,10 +1,7 @@
 ---
 title: "jamovi完全攻略ガイド"
 author: "芝田 征司"
-output:
-  pdf_document:
-    extra_dependencies:["flafter"]
-papersize: a5j
+output: bookdown::gitbook
 biblio-style: apalike
 link-citations: null
 colorlinks: yes
