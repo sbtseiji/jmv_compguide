@@ -1,4 +1,5 @@
 bookdown::gitbook:
+  self_contained: true
   dev: svglite
   css: css/style.css
   split_by: section
@@ -18,7 +19,7 @@ bookdown::gitbook:
       weibo: no
       instapper: no
       vk: no
-
+      
 bookdown::pdf_book:
   includes:
     in_header: latex/preamble.tex
