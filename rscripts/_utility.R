@@ -1,4 +1,7 @@
 options(knitr.graphics.auto_pdf = TRUE)
+options(knitr.table.format = function() {
+  if (knitr::is_latex_output()) "latex" else "html"
+})
 knitr::opts_chunk$set(
   echo = FALSE,
   message = FALSE,
@@ -8,7 +11,9 @@ knitr::opts_chunk$set(
   fig.pos = "!ht")
 
 require('jmv')
-require('jmvconnect')
+suppressWarnings(suppressMessages(
+  require('jmvconnect', quietly = TRUE, warn.conflicts = FALSE)
+))
 require('jmvReadWrite')
 require('kableExtra')
 

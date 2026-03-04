@@ -20,4 +20,6 @@ rmd_files:
 - 08-Frequencies.Rmd
 - 09-Factor.Rmd
 - 10-part3.Rmd
-- 10a-Appendix.Rmd
+- 11-chart.Rmd
+- 12-part4.Rmd
+- 13-Appendix.Rmd

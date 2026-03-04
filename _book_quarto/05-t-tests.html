@@ -1,0 +1,1636 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="フリーの統計ソフト jamovi の使用方法についての日本語ガイドです。データの編集方法から分散分析や因子分析の設定方法まで、基本機能のすべてについて一通り説明しています。">
+
+<title>6&nbsp; t検定 – jamovi完全攻略ガイド</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./06-ANOVA.html" rel="next">
+<link href="./04a-exploration.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-777ac567918ecbb99a2fd73912d84d5b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "一致なし",
+    "search-matching-documents-text": "一致した文書",
+    "search-copy-link-title": "検索へのリンクをコピー",
+    "search-hide-matches-text": "追加の検索結果を非表示",
+    "search-more-match-text": "追加の検索結果",
+    "search-more-matches-text": "追加の検索結果",
+    "search-clear-button-title": "消去",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "取消",
+    "search-submit-button-title": "検索",
+    "search-label": "サーチ"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+<script>
+MathJax ={chtml: {
+      mtextFont: 'arial',
+      // mtextInheritFont: true,
+   },
+};
+</script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js?config=TeX-AMS_HTML"></script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="nav-sidebar docked quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="サイドバーを切り替える" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./04-part2.html">分析編</a></li><li class="breadcrumb-item"><a href="./05-t-tests.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">t検定</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="サイドバーを切り替える" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="サーチ" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">jamovi完全攻略ガイド</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/sbtseiji/jmv_compguide" title="ソースコード" class="quarto-navigation-tool px-1" aria-label="ソースコード"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="サーチ"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">jamovi完全攻略ガイド</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./00-part1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">導入編</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false" aria-label="セクションを切り替え">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-getting-started.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">jamoviの導入</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">データ操作</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-basics2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">分析と編集</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./04-part2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">分析編</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="セクションを切り替え">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04a-exploration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">探索</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-t-tests.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">t検定</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-ANOVA.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">分散分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-Regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">回帰分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08-Frequencies.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">度数分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09-Factor.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">因子分析</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./10-part3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">作図編</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="セクションを切り替え">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-chart.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">棒グラフ</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11a-boxplot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">箱ひげ図</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11b-histogram.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">ヒストグラム</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11c-scatterplot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">散布図</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11d-linechart.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">折れ線グラフ</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./12-part4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">付録</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false" aria-label="セクションを切り替え">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./13-Appendix.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">関数一覧</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">目次</h2>
+   
+  <ul>
+  <li><a href="#sec-ttests-independent-samples" id="toc-sec-ttests-independent-samples" class="nav-link active" data-scroll-target="#sec-ttests-independent-samples"><span class="header-section-number">6.1</span> 対応なしt検定</a>
+  <ul class="collapse">
+  <li><a href="#subsec:ttests-independent-basics" id="toc-subsec:ttests-independent-basics" class="nav-link" data-scroll-target="#subsec\:ttests-independent-basics"><span class="header-section-number">6.1.1</span> 考え方</a></li>
+  <li><a href="#subsec:ttests-independent-analysis" id="toc-subsec:ttests-independent-analysis" class="nav-link" data-scroll-target="#subsec\:ttests-independent-analysis"><span class="header-section-number">6.1.2</span> 分析手順</a></li>
+  <li><a href="#sub:ttest-setting2" id="toc-sub:ttest-setting2" class="nav-link" data-scroll-target="#sub\:ttest-setting2"><span class="header-section-number">6.1.3</span> 分析の詳細設定</a></li>
+  </ul></li>
+  <li><a href="#sec-ttests-paired" id="toc-sec-ttests-paired" class="nav-link" data-scroll-target="#sec-ttests-paired"><span class="header-section-number">6.2</span> 対応ありt検定</a>
+  <ul class="collapse">
+  <li><a href="#subsec:ttests-paired-basics" id="toc-subsec:ttests-paired-basics" class="nav-link" data-scroll-target="#subsec\:ttests-paired-basics"><span class="header-section-number">6.2.1</span> 考え方</a></li>
+  <li><a href="#subsec:ttests-paired-analysis" id="toc-subsec:ttests-paired-analysis" class="nav-link" data-scroll-target="#subsec\:ttests-paired-analysis"><span class="header-section-number">6.2.2</span> 分析手順</a></li>
+  </ul></li>
+  <li><a href="#sec-ttests-one" id="toc-sec-ttests-one" class="nav-link" data-scroll-target="#sec-ttests-one"><span class="header-section-number">6.3</span> 1標本t検定</a>
+  <ul class="collapse">
+  <li><a href="#subsec:ttests-one-basics" id="toc-subsec:ttests-one-basics" class="nav-link" data-scroll-target="#subsec\:ttests-one-basics"><span class="header-section-number">6.3.1</span> 考え方</a></li>
+  <li><a href="#subsec:ttests-one-analysis" id="toc-subsec:ttests-one-analysis" class="nav-link" data-scroll-target="#subsec\:ttests-one-analysis"><span class="header-section-number">6.3.2</span> 分析手順</a></li>
+  <li><a href="#sub:ttest-one-paired" id="toc-sub:ttest-one-paired" class="nav-link" data-scroll-target="#sub\:ttest-one-paired"><span class="header-section-number">6.3.3</span> 1標本t検定と対応ありt検定</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/sbtseiji/jmv_compguide/blob/main/05-t-tests.qmd" class="toc-action"><i class="bi bi-github"></i>ソースコード</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./04-part2.html">分析編</a></li><li class="breadcrumb-item"><a href="./05-t-tests.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">t検定</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="sec-ch-ttests" class="quarto-section-identifier"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">t検定</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>「<img src="images/assets/analysis-ttest.svg" class="img-fluid" alt="inline"> t検定」は，1つあるいは2つの平均値の検定のためのツールです。jamoviの基本構成では，ここには次の3つの分析メニューが含まれています（<a href="#fig-ttests-ttest-menu" class="quarto-xref">図&nbsp;<span>6.1</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-ttests-ttest-menu" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ttests-ttest-menu-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/ttests/ttests-menu.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ttests-ttest-menu-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;6.1: t検定のメニュー
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvmenu">
+<ul>
+<li>対応なしt検定　2グループの独立標本（対応なしデータ）の平均値の検定を行います</li>
+<li>対応ありt検定　対応ありデータの2つの平均値の検定を行います</li>
+<li>1標本t検定　標本の平均値と基準となる平均値の間で検定を行います</li>
+</ul>
+</div>
+<p>これらの分析メニューでは，平均値の検定だけでなく，それぞれに対応した<em>ノンパラメトリック検定</em>を行うこともできます。また，本書では詳しくは取り上げませんが，<em>ベイズ統計</em>の考え方を用いた指標を算出することも可能です。</p>
+<section id="sec-ttests-independent-samples" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="sec-ttests-independent-samples"><span class="header-section-number">6.1</span> 対応なしt検定</h2>
+<p>対応なしt検定（独立標本t検定）は，お互いに関連のない（<em>独立</em>な）2つのグループの間で母集団の平均値に統計的な差があるといえるかどうかを確かめたい場合に使用される分析手法です（<a href="#fig-ttests-independent-t" class="quarto-xref">図&nbsp;<span>6.2</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-ttests-independent-t" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ttests-independent-t-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/ttests/independent-t.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ttests-independent-t-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;6.2: 対応なしt検定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<section id="subsec:ttests-independent-basics" class="level3" data-number="6.1.1">
+<h3 data-number="6.1.1" class="anchored" data-anchor-id="subsec:ttests-independent-basics"><span class="header-section-number">6.1.1</span> 考え方</h3>
+<p>統計的仮説検定は，<em>推測統計</em>と呼ばれる統計手法を応用したもので，手元にあるデータは関心の対象である集団全体（<em>母集団</em>）から<em>無作為抽出</em>された一部（<em>標本</em>，<em>サンプル</em>）であるとみなします（<a href="#fig-ttests-population-sample" class="quarto-xref">図&nbsp;<span>6.3</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-ttests-population-sample" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ttests-population-sample-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/ttests/population-sample.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ttests-population-sample-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;6.3: 母集団と標本
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>推測統計の詳細については統計法の入門書を参照していただきたいと思いますが，母集団からその一部を標本として無作為抽出したとき，その標本がもつ値（平均値や分散など）は母集団のもつ値（母平均や母分散など）とは必ずしも一致しません。母集団の中から無作為に標本を抽出するということは，標本抽出のたびにそこからとり出される値が異なるということですから，同じ母集団から抽出された標本であっても，その平均値や分散は標本ごとにいくらか異なる値になるためです。</p>
+<!-- -->
+<p>もちろん，標本ごとに平均値や分散が異なるとはいえ，まったくでたらめに異なるわけではなく，そこには確率的な法則性が存在します。たとえば，平均値0，分散1で正規分布する母集団から無作為抽出された標本の平均値は0に近い値になる場合がほとんどで，10や<span class="math inline">\(-\textsf{8}\)</span>といった値になることは確率的にごくまれです。統計的仮説検定では，こうした母集団と標本の間の確率的な関係を利用しながら，母集団の特徴について判断を行うのです。</p>
+<!-- -->
+<p>対応なしt検定では，「両母集団の平均値は同じである（母集団間の平均値の差は0である）」という仮説（<em>帰無仮説</em>）についての検討を行います。もし2つの母集団（2つのグループ）の平均値が同じであるならば，そこからそれぞれ別々に抽出された標本の平均値もほぼ同じ値になるはずです。にもかかわらず，2グループの標本の平均値が大きく異なっていたとしたら，それは「両母集団の平均値は同じ」という仮説自体に無理があるということになるでしょう。</p>
+<!-- -->
+<p>このような考え方に基づいて，対応なしt検定では，2標本の平均値の差が帰無仮説のもとではあり得ないほど大きなものである場合に帰無仮説を<em>棄却</em>します。このとき，この「あり得なさ」の判断基準となるのが<em>有意確率</em>（<em>p</em>）です。このp値は，「帰無仮説が正しい」場合に手元の標本における平均値の差と同じかそれより大きな差が得られる確率を示しており，この値が<em>有意水準</em> <em>α</em>（一般には0.05）より小さい場合に，帰無仮説が正しくない（つまり2グループの平均値に<em>有意差</em>がある）と判断します。</p>
+</section>
+<section id="subsec:ttests-independent-analysis" class="level3" data-number="6.1.2">
+<h3 data-number="6.1.2" class="anchored" data-anchor-id="subsec:ttests-independent-analysis"><span class="header-section-number">6.1.2</span> 分析手順</h3>
+<p>ここでは次のサンプルデータ（<a href="https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/ttests_data01.omv">ttests_data01.omv</a>）を用いて対応なしt検定の実施方法について見ていきましょう。このデータに含まれている変数は次のとおりです（<a href="#fig-ttests-data01" class="quarto-xref">図&nbsp;<span>6.4</span></a>）。データファイルには，グループ1とグループ2のそれぞれ20名ずつ，計40名の課題得点データが含まれています。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-ttests-data01" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ttests-data01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/ttests/data01.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ttests-data01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;6.4: サンプルデータ
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvvar">
+<ul>
+<li><code>ID</code>　対象者のID</li>
+<li><code>グループ</code>　対象者のグループ（<code>1</code>または<code>2</code>）</li>
+<li><code>得点</code>　対象者の課題得点</li>
+</ul>
+</div>
+<p>それでは，グループ1とグループ2で，課題得点の平均値に差があるといえるかどうかを検定してみましょう。対応なしt検定を行うには，分析タブの「<img src="images/assets/analysis-ttest.svg" class="img-fluid" alt="inline"> t検定」から「対応なしt検定」を選択します（<a href="#fig-ttests-independent-menu" class="quarto-xref">図&nbsp;<span>6.5</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-ttests-independent-menu" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ttests-independent-menu-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/ttests/independent-menu.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ttests-independent-menu-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;6.5: 対応なしt検定の実行
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>すると，<a href="#fig-ttests-independent-analysis" class="quarto-xref">図&nbsp;<span>6.6</span></a>のような画面が表示されます。設定項目がたくさんあるので，まずは全体的な構成を見ておきましょう。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-ttests-independent-analysis" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ttests-independent-analysis-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/ttests/independent-analysis.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ttests-independent-analysis-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;6.6: 対応なしt検定の分析設定パネル
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvsettings">
+<ul>
+<li>従属変数　分析対象の変数を指定します。</li>
+<li>グループ変数　グループの別が入力されている変数を指定します。</li>
+<li><strong>検定</strong>　分析に用いる検定のタイプを指定します。</li>
+<li><strong>仮説</strong>　検定に用いる仮説を選択します。</li>
+<li><strong>欠損値</strong>　データに欠損値が含まれている場合の対処方法を指定します。</li>
+<li><strong>追加の統計量</strong>　一般的な分析結果に加えて算出したい統計量を指定します。</li>
+<li><strong>前提チェック</strong>　検定に必要な前提条件が満たされているかどうかの確認を行います。</li>
+</ul>
+</div>
+<p>この分析で必ず設定する必要がある項目は「従属変数」と「グループ変数」の2つです。従属変数は検定対象になる平均値を算出する変数（サンプルデータでは「得点」），グループ変数は比較したいグループの分類基準となる変数（サンプルデータでは「グループ」）です。2つのグループの平均値の差について検定するわけですから，「グループ」と「得点」の指定が必要なのは当然でしょう。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-ttests-t-setting" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ttests-t-setting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/ttests/t-setting.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ttests-t-setting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;6.7: 対応なしt検定の分析設定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<!-- -->
+<p>この2つを設定すると，すぐにそれが分析結果に反映されます（<a href="#fig-ttests-t-results" class="quarto-xref">図&nbsp;<span>6.8</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-ttests-t-results" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ttests-t-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/ttests/t-results.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ttests-t-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;6.8: 対応なしt検定の分析結果
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<!-- -->
+<p>結果の表の一番左（「得点」）は従属変数の名前，左から2番目は検定方法の名前です。対応なしt検定には<em>スチューデントの検定</em>と<em>ウェルチの検定</em>と呼ばれる2とおりの方法があり，ここに「スチューデントのt」と示されていれば，それはスチューデントの検定の結果であるということを示しています。</p>
+<p>その隣の「統計量」の列は検定統計量（ここでは<em>スチューデントのt</em>），その隣は「<em>自由度</em>」，「p」は有意確率（<em>p値</em>）です。このpが有意水準（一般にはα=0.05）より小さい場合に「差が有意」と判断します。ここで表示されている結果ではp=0.024ですから，グループ1と2の平均値の間には統計的に有意な差があるということになります。</p>
+<p>さて，ほとんどの場合，これで「対応なしt検定」はおしまいです。拍子抜けするくらいに簡単ですね。</p>
+</section>
+<section id="sub:ttest-setting2" class="level3" data-number="6.1.3">
+<h3 data-number="6.1.3" class="anchored" data-anchor-id="sub:ttest-setting2"><span class="header-section-number">6.1.3</span> 分析の詳細設定</h3>
+<p>先ほど見たように，jamoviを用いたt検定では設定らしい設定が不要で，分析の実行は驚くほど簡単なのですが，場合によっては分析設定の変更が必要になる場合があるかもしれません。そこで，ここでは対応なしt検定における設定の詳細について見ておくことにしましょう。</p>
+<section id="subsub:ttest-test2" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="subsub:ttest-test2">検定</h4>
+<p>「<strong>検定</strong>」には，次の項目が含まれています（<a href="#fig-ttests-tests" class="quarto-xref">図&nbsp;<span>6.9</span></a>）。ここでは，t検定における検定統計量の算出方法について設定を行います。</p>
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-ttests-tests" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ttests-tests-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/ttests/tests.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ttests-tests-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;6.9: 「検定」の設定項目
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvsettings">
+<ul>
+<li>スチューデント法　スチューデントの検定による検定結果を表示します。
+<ul>
+<li>ベイズ因子　帰無仮説と対立仮説の間でベイズ因子を算出します。</li>
+</ul></li>
+<li>ウェルチ法　ウェルチの検定による検定結果を表示します。</li>
+<li>マン=ホイットニーのU　マン=ホイットニーのU検定の結果を表示します。</li>
+</ul>
+</div>
+<section id="subsub:ttest-student" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="subsub:ttest-student">スチューデント法</h5>
+<p>この項目がチェックされている場合，<em>スチューデントのt検定</em>を用いた検定結果が表示されます。スチューデントのt検定では，平均値の差について検討する2つの母集団は平均値だけでなく分散も等しいという仮定のもとで検定統計量を算出します。そのため，一般には「2つの母集団で分散が等しい」という仮定から大きく逸脱しないデータで検定する際の方法として使用されています。</p>
+<p>この項目に含まれる「<em>ベイズ因子</em>」は，ベイズ統計の考え方を用いて仮説検定をする際に用いられる値です。この値は，<em>対立仮説</em>の確からしさと<em>帰無仮説</em>の確からしさを比で表したもので，この値が1の場合には帰無仮説と対立仮説の確からしさが同じであることを，1未満の場合には帰無仮説の方が，1より大きい場合には対立仮説の方が確からしいことを意味します。一般には，このベイズ因子の値が3.0以上である場合に，帰無仮説を棄却して対立仮説を採択します<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>。</p>
+<p>このベイズ因子の項目にある「事前分布」はベイズ因子の算出に使用されるもので，これは<em>事前分布</em>に関する設定値です。この値は初期値では「<span class="math inline">\(\sqrt{2}/2=0.707\)</span>」に設定されています。ベイズ因子の算出にチェックを入れた場合，ベイズ因子の隣にその推定誤差（±%）も表示されます。</p>
+<!-- -->
+</section>
+<section id="subsub:ttest-welch" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="subsub:ttest-welch">ウェルチ法</h5>
+<p>スチューデントの検定では2つの母集団で分散が等しいという仮定を用いて検定統計量を算出しますが，<em>ウェルチのt検定</em>ではそうした前提を設けずに検定統計量を算出します。そのため，一般にこの方法は2つの母集団で分散が異なっている場合に用いられます。</p>
+<p>ウェルチの検定の項目にチェックを入れた場合，結果の表では「ウェルチのt」の行にその分析結果が表示されます。ウェルチの検定では，多くの場合，自由度が整数でなく，小数値を含んだものになります。</p>
+</section>
+<section id="subsub:ttest-mann" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="subsub:ttest-mann">マン=ホイットニーのU</h5>
+<p>t検定は母集団の分布が正規分布であるという前提のもとで計算を行います。しかし実際のデータでは，このような前提が成り立たない場合，あるいは成り立つかどうかが不明な場合というのもあり得ます。</p>
+<p>これに対し，<em>マン=ホイットニーのU検定</em>は，母集団の分布の形に特別な仮定を設けずに検定を行うため，正規分布でないようなデータであっても分析が可能になります。このような方法は，<em>ノンパラメトリック検定</em>と呼ばれます。</p>
+<p>「マン=ホイットニーのU」にチェックを入れた場合，その結果は「マン=ホイットニーのU」の行に表示されます。</p>
+</section>
+</section>
+<section id="subsub:ttest-hypothesis" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="subsub:ttest-hypothesis">仮説</h4>
+<p>「<strong>仮説</strong>」には，次の項目が含まれています（<a href="#fig-ttests-hypothesis" class="quarto-xref">図&nbsp;<span>6.10</span></a>）。 <!-- --></p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-ttests-hypothesis" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ttests-hypothesis-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/ttests/hypothesis.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ttests-hypothesis-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;6.10: 「仮説」の設定項目
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvsettings">
+<ul>
+<li>グループ1 ≠ グループ2　グループ1とグループ2で平均値が異なるかどうかを検定します（両側検定）</li>
+<li>グループ1 &gt; グループ2　グループ1の平均値がグループ2の平均値より大きいかどうかを検定します（片側検定）</li>
+<li>グループ1 &lt; グループ2　グループ1の平均値がグループ2の平均値より小さいかどうかを検定します（片側検定）</li>
+</ul>
+</div>
+<p>ここでは検定に使用する対立仮説の設定を行います。一般に，t検定における対立仮説には「グループ1 ≠ グループ2」が用いられます。この対立仮説は，2つのグループで平均値が異なるということのみを示しており，グループ1とグループ2のどちらの平均値が大きいかまでは述べていません。この場合，グループ1の平均値がグループ2の平均値より大きくても小さくても検定結果が有意になります。このような検定方法は<em>両側検定</em>と呼ばれます。</p>
+<p>これに対し，「グループ1 &gt; グループ2」はグループ1の平均値がグループ2より大きい場合のみ，「グループ1 &lt; グループ2」はグループ1の平均値がグループ2より小さい場合のみ検定結果が有意になります。このように，一方のグループの平均値がもう一方よりも大きいかどうかのみ，あるいは小さいかどうかのみを確かめる検定方法は<em>片側検定</em>と呼ばれます。</p>
+</section>
+<section id="subsub:ttest-missing-values" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="subsub:ttest-missing-values">欠損値</h4>
+<p>「<strong>欠損値</strong>」には，次の項目が含まれています（<a href="#fig-ttests-missing-values" class="quarto-xref">図&nbsp;<span>6.11</span></a>）。</p>
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-ttests-missing-values" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ttests-missing-values-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/ttests/missing-values.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ttests-missing-values-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;6.11: 「欠損値」の設定項目
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvsettings">
+<ul>
+<li>分析ごとに除外</li>
+<li>行全体を除外</li>
+</ul>
+</div>
+<p>ここでは，データに欠損値があった場合にどう対処するかについての設定を行います。この設定は，同時に複数の変数について平均値の検定を行う場合にのみ影響します。</p>
+<section id="分析ごとに除外" class="level6 unnumbered">
+<h6 class="unnumbered anchored" data-anchor-id="分析ごとに除外">分析ごとに除外</h6>
+<p>ここで「分析ごとに除外」を選択した場合，それぞれの検定において欠損値を分析から除外します。2種類の変数XとYについてグループ1とグループ2で平均値に差があるかどうかを検定している場合で，ある対象者のXの値が欠落している場合，Xの平均値の検定においてはその対象者のデータは分析から除外されますが，Yの平均値の検定でその対象者のデータが分析から除外されることはありません。</p>
+</section>
+<section id="行全体を除外" class="level6 unnumbered">
+<h6 class="unnumbered anchored" data-anchor-id="行全体を除外">行全体を除外</h6>
+<p>これに対し，「行全体を除外」を選択した場合には，XまたはYのいずれかの値が欠落している対象者のデータは，XとYの両方の検定で分析から除外されます。</p>
+</section>
+</section>
+<section id="subsub:ttest-additional-statistics" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="subsub:ttest-additional-statistics">追加の統計量</h4>
+<p>「<strong>追加の統計量</strong>」には，次の項目が含まれています（<a href="#fig-ttests-additional" class="quarto-xref">図&nbsp;<span>6.12</span></a>）。</p>
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-ttests-additional" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ttests-additional-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/ttests/additional.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ttests-additional-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;6.12: 「追加の統計量」の設定項目
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvsettings">
+<ul>
+<li>平均値の差　グループ間の平均値の差とその標準誤差を算出します。
+<ul>
+<li>信頼区間　平均値の差の信頼区間を算出します。</li>
+</ul></li>
+<li>効果量　平均値の差についての効果量を算出します。
+<ul>
+<li>信頼区間　効果量の信頼区間を算出します。</li>
+</ul></li>
+<li>記述統計　従属変数について，グループごとの記述統計量を算出します。</li>
+<li>記述統計量のグラフ　従属変数の平均値と中央値についてのグラフを作成します。</li>
+</ul>
+</div>
+<section id="平均値の差" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="平均値の差">平均値の差</h5>
+<p>「平均値の差」にチェックを入れると，2グループ間の平均値の差の値と，その標準誤差が表示されます。なお，t検定の検定統計量（t）は，この「グループ間の平均値の差」を標準誤差で割ることによって算出されます。</p>
+<p>その下にある「信頼区間」にチェックを入れると，平均値の差の信頼区間（下限および上限）が算出されます。信頼区間の幅は初期設定では95%になっていますが，数値を変更すれば99%信頼区間などを算出することも可能です。</p>
+</section>
+<section id="効果量" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="効果量">効果量</h5>
+<p>「効果量」にチェックを入れると，平均値の差についての効果量が算出されます。また，その下にある「信頼区間」にチェックを入れると，その効果量についての信頼区間が算出できます。なお，t検定に対する効果量としては「<em>コーエンのd</em>（Cohen’s d）」が，マン=ホイットニーのU検定に対する効果量としては「<em>順位双列相関係数</em>」が算出されます。</p>
+<p>平均値の検定で検定統計量として用いられるtは，「差の大きさ」を表す値ではありません。この値は平均値の差を標準誤差で割って求められますが，標準誤差は標本サイズが大きくなるほど小さくなるため，標本サイズの大きなデータを対象とした検定では，平均値の差が実質的に無意味なほど小さなものであっても結果が有意になる場合があるのです。</p>
+<p>これに対し，コーエンのdという統計量は，平均値の差が標準偏差の何倍の大きさであるかを示した値です。標準誤差と違い，標準偏差は標本サイズの大小によって極端に変わるようなことがありません。そのため，どのような標本データに対しても「差の大きさ」を安定的に評価できるのです。このdの値（の絶対値）が大きいほど，平均値の差が大きいことを意味します。コーエンのdの大きさの解釈については，一般に<a href="#tbl-ttests-d-cohen" class="quarto-xref">表&nbsp;<span>6.1</span></a>のような目安が用いられています。<a href="https://apastyle.apa.org/products/publication-manual-7th-edition">APAの論文執筆マニュアル第7版</a>や<a href="https://psych.or.jp/manual/">日本心理学会の論文執筆・投稿の手びき</a>に見られるように，近年では分析結果で効果量を示すよう求められることが多くなってきています。</p>
+<div class="cell" data-layout-align="center">
+<div id="tbl-ttests-d-cohen" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-ttests-d-cohen-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+表&nbsp;6.1: 効果量dの解釈の目安
+</figcaption>
+<div aria-describedby="tbl-ttests-d-cohen-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="table do-not-create-environment cell caption-top table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: center;" data-quarto-table-cell-role="th">dの値</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">効果の大きさ</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">0.8</td>
+<td style="text-align: center;">大</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">0.5</td>
+<td style="text-align: center;">中</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">0.2</td>
+<td style="text-align: center;">小</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>なお，マン=ホイットニーのU検定の場合には効果量として<em>順位双列相関係数</em>という値が算出されます。これは，順序データと2値データの間の相関係数です。順位双列相関係数の解釈の仕方は，基本的にはピアソンの積率相関係数と同様です。</p>
+</section>
+<section id="記述統計" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="記述統計">記述統計</h5>
+<p>「<strong>追加の統計量</strong>」にある「記述統計」にチェックを入れると，分析対象の変数（従属変数）について，グループごとの平均値や標準偏差などの記述統計量が算出されます（<a href="#fig-ttests-descriptives" class="quarto-xref">図&nbsp;<span>6.13</span></a>）。</p>
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-ttests-descriptives" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ttests-descriptives-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/ttests/descriptives.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ttests-descriptives-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;6.13: グループごとの記述統計量
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="記述統計量のグラフ" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="記述統計量のグラフ">記述統計量のグラフ</h5>
+<p>また，その下の「記述統計量のグラフ」にチェックを入れると，グループごとの平均値および中央値が<a href="#fig-ttests-desc-plot" class="quarto-xref">図&nbsp;<span>6.14</span></a>のようなグラフで示されます。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-ttests-desc-plot" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ttests-desc-plot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/ttests/desc-plot.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ttests-desc-plot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;6.14: グループごとの記述統計量のグラフ
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="subsub:ttest-assumption-checks" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="subsub:ttest-assumption-checks">前提チェック</h4>
+<p>「前提チェック」には，次の項目が含まれています（<a href="#fig-ttests-assumption" class="quarto-xref">図&nbsp;<span>6.15</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-ttests-assumption" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ttests-assumption-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/ttests/assumption.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ttests-assumption-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;6.15: 前提チェック
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvsettings">
+<ul>
+<li>等質性検定　分散の等質性についての検定を実施します。</li>
+<li>正規性検定　分布の正規性についての検定を実施します。</li>
+<li>Q-Qプロット　正規Q-Qプロットを作成します。</li>
+</ul>
+</div>
+<p>対応なしt検定では，分析対象となる母集団の分布についていくつかの仮定（前提）を設けることによって計算を効率化しているため，それらの前提を満たしていないデータに対しては分析結果の信頼性が低くなります。t検定の前提条件についての詳細は統計法の教科書などを参照してもらうこととして，ここではそれらのうち，jamoviの設定項目と関連する2つの前提について見ておきます。</p>
+<section id="等質性検定" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="等質性検定">等質性検定</h5>
+<p>まず，1つ目の「等質性検定」ですが，これは2つのグループで分散が等しいかどうかについて確かめるものです。スチューデントの検定では，2つのグループで分散が等しいことを前提として検定統計量を算出します。そのため，2グループの分散が極端に異なる場合には，正確な検定結果を得ることができません。そこで，2つのグループで分散が極端に異ならないかどうかを検定するのがこの設定項目です。</p>
+<p>この「等質性検定」にチェックを入れると，<a href="#fig-ttests-levene" class="quarto-xref">図&nbsp;<span>6.16</span></a>のような形で<em>ルビーン検定</em>と呼ばれる分散の等質性検定の結果が表示されます。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-ttests-levene" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ttests-levene-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/ttests/levene.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ttests-levene-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;6.16: 分散の等質性検定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>この表の「F」の値は，2つのグループにおける分散の比で，この値が1であれば2グループの分散が等しいことを，1より極端に大きければ，2グループで分散が大きく異なることを意味します。一般には，このFについての有意確率（p）が0.05未満，または0.10未満の場合に2つのグループで分散が異なると判断します。この検定の結果が有意であった場合，スチューデントの検定の前提条件が満たされないことになりますので，その場合にはウェルチの検定を用いることになります。</p>
+</section>
+<section id="正規性検定" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="正規性検定">正規性検定</h5>
+<p>前提チェックの2つ目の項目である「正規性検定」は，分析対象のデータが正規分布からかけ離れていないかどうかを確かめるものです。対応なしt検定では，データの母集団が正規分布であることを前提としていますので，この前提が満たされない場合には，母集団に正規分布を仮定しないマン=ホイットニーのUなどのノンパラメトリックな手法を用いる必要があります。</p>
+<p>そこでjamoviでは，<em>シャピロ=ウィルク検定</em>（Shapiro-Wilk検定）と呼ばれる手法を用いて正規性の検定を行います。この検定は，「標本データは正規分布する母集団から無作為抽出されたものである」という帰無仮説について検定を行います。一般に，この分析結果のp値が0.05未満の場合に，データの母集団が正規分布でないとみなします（<a href="#fig-ttests-normality" class="quarto-xref">図&nbsp;<span>6.17</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-ttests-normality" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ttests-normality-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/ttests/normality.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ttests-normality-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;6.17: 正規性検定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="q-qプロット" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="q-qプロット">Q-Qプロット</h5>
+<p>前提チェックの3つ目の項目である「Q-Qプロット」は，標本データが正規分布からかけ離れていないかどうかを視覚的に確認するための手法です。正規分布する母集団から無作為抽出された標本は，母集団と同じく正規分布になるという数学的な性質がありますので，標本データが正規分布からかけ離れている場合には，母集団の分布も正規分布でない可能性が高まります。</p>
+<p>「Q-Qプロット」の項目にチェックを入れると，出力ウィンドウに次のようなグラフが表示されます。このQ-Qプロットと呼ばれる図では，横軸に理論的な分位数，縦軸に標準化残差をとって，各測定値をグラフ上にプロットします。このとき，データが正規分布している場合には，すべての測定値は直線上に並ぶことになります。そのため，このQ-Qプロットで各測定値を示す点が直線から極端に離れていなければ，標本データはほぼ正規分布しているということになり，その母集団も正規分布である可能性が高まります。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-ttests-qqplot" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ttests-qqplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/ttests/qqplot.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ttests-qqplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;6.18: Q-Qプロット
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>例題データの場合，両端のデータ点が直線からやや外れた位置にありますが，それ以外はほぼ直線上にあるので，正規分布から極端に離れていることはなさそうです。</p>
+</section>
+</section>
+</section>
+</section>
+<section id="sec-ttests-paired" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="sec-ttests-paired"><span class="header-section-number">6.2</span> 対応ありt検定</h2>
+<p>今度は対応ありt検定について見ていきましょう。対応ありt検定は，2種類の測定値の間に明確なペアが存在する場合に，その母集団の平均値に統計的な差があるといえるかどうかを確かめるのに使用されます（<a href="#fig-ttests-paired-t" class="quarto-xref">図&nbsp;<span>6.19</span></a>）。</p>
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-ttests-paired-t" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ttests-paired-t-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/ttests/paired-t.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ttests-paired-t-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;6.19: 対応ありt検定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>この検定が用いられる典型的な場面は，ある処置を行う前後で平均値に差があるかどうかを確かめるというものです。この場合，それぞれの対象者について処置前と処置後の2回の測定を行いますので，同じ対象者の測定値同士で前後の比較を行うことができます。このように，2つのグループ（処置前と処置後）の測定値の間で特定のペアが成立するデータを一般に「対応ありデータ」と呼びます。</p>
+<section id="subsec:ttests-paired-basics" class="level3" data-number="6.2.1">
+<h3 data-number="6.2.1" class="anchored" data-anchor-id="subsec:ttests-paired-basics"><span class="header-section-number">6.2.1</span> 考え方</h3>
+<p>対応なしt検定の場合と異なり，対応ありt検定では対象者ごとに2つの条件における測定値の差を求め，その「測定値の差の平均値」を用いて検定を行います。2つの条件（処置前と処置後など）に違いがなければ，どちらの条件の測定値も同じような値になるはずで，その場合，2条件の測定値の差の平均値は0に近い値になります。このような考えから，対応ありt検定では，2条件の測定値の差の平均値が0であるといえるかどうかを確かめます。</p>
+</section>
+<section id="subsec:ttests-paired-analysis" class="level3" data-number="6.2.2">
+<h3 data-number="6.2.2" class="anchored" data-anchor-id="subsec:ttests-paired-analysis"><span class="header-section-number">6.2.2</span> 分析手順</h3>
+<p>ここでは次のサンプルデータ（<a href="https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/ttests_data02.omv">ttests_data02.omv</a>）を用いて対応ありt検定の実施方法を見ていきましょう。このデータは，20名の参加者を対象に，効率的な記憶法の訓練前と訓練後における記憶課題の成績を測定したものです。このデータファイルには，次の3つの変数値が格納されています（<a href="#fig-ttests-data02" class="quarto-xref">図&nbsp;<span>6.20</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-ttests-data02" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ttests-data02-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/ttests/data02.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ttests-data02-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;6.20: サンプルデータ
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvvar">
+<ul>
+<li><code>ID</code>　対象者のID</li>
+<li><code>訓練前</code>　訓練前の記憶課題成績</li>
+<li><code>訓練後</code>　訓練後の記憶課題成績</li>
+</ul>
+</div>
+<p>それでは，訓練前と訓練後で，記憶課題成績の平均値に差があるといえるかどうかを検定してみましょう。対応ありt検定を行うには，分析タブの「<img src="images/assets/analysis-ttest.svg" class="img-fluid" alt="inline"> t検定」から「対応ありt検定」を選択します（<a href="#fig-ttests-paired-t-menu" class="quarto-xref">図&nbsp;<span>6.21</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-ttests-paired-t-menu" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ttests-paired-t-menu-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/ttests/paired-t-menu.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ttests-paired-t-menu-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;6.21: 対応ありt検定の実行
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>すると，<a href="#fig-ttests-paired-setting" class="quarto-xref">図&nbsp;<span>6.22</span></a>のような画面が表示されます。設定項目がたくさんありますが，そのほとんどは対応なしt検定の場合と同じです。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-ttests-paired-setting" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ttests-paired-setting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/ttests/paired-setting.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ttests-paired-setting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;6.22: 対応ありt検定の分析設定パネル
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvsettings">
+<ul>
+<li>変数ペア　分析対象の変数ペアを指定します</li>
+<li><strong>検定</strong>　分析に用いる検定を指定します</li>
+<li><strong>仮説</strong>　検定に用いる仮説を選択します</li>
+<li><strong>欠損値</strong>　データに欠損値が含まれている場合の対処方法を指定します</li>
+<li><strong>追加の統計量</strong>　一般的な分析結果に加えて算出したい統計量を指定します</li>
+<li><strong>前提チェック</strong>　検定に必要な前提条件が満たされているかどうかの確認を行います</li>
+</ul>
+</div>
+<p>この分析で必ず設定する必要がある項目は「変数ペア」のみです。変数ペアには，分析対象となる変数のペアを指定します。サンプルデータの場合，「訓練前」と「訓練後」の差について検定したいので，この2つを「変数ペア」欄に移動します。</p>
+<p>このとき，「訓練前」と「訓練後」を1つずつ「変数ペア」欄に移動することもできますが，2つまとめて移動させる方がわかりやすいでしょう。まずどちらか一方の変数名をクリックして選択した後，「SHIFT(⇧)」キーを押しながらもう一方の変数名をクリックすると2つの変数を同時に選択することができますので，その状態で「<img src="images/assets/action-forward.svg" class="img-fluid" alt="inline">」をクリックして変数ペアの設定を行います（<a href="#fig-ttests-paired-variables" class="quarto-xref">図&nbsp;<span>6.23</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-ttests-paired-variables" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ttests-paired-variables-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/ttests/paired-variables.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ttests-paired-variables-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;6.23: 変数ペアの設定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>対応なしt検定の場合と同様に，この設定だけで基本的な分析結果が得られます（<a href="#fig-ttests-paired-results" class="quarto-xref">図&nbsp;<span>6.24</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-ttests-paired-results" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ttests-paired-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/ttests/paired-results.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ttests-paired-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;6.24: 対応ありt検定の分析結果
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>変数名の代わりに変数ペアが表示されること以外は，分析結果の表も対応なしt検定の場合と同じです。この分析結果では，有意確率pの値が「&lt;.001（0.001未満）」となっていますので，検定結果は有意，つまり記憶法の訓練前後で平均値に有意な差があるということになります。</p>
+<p>なお，検定統計量は変数ペアの左側の変数から右側の変数の値を引いて算出されています（サンプルデータの場合は「訓練前 − 訓練後」）。両側検定の場合，検定結果が有意かどうかは統計量の絶対値で判断しますので問題ありませんが，片側検定の場合，この統計量がどちらからどちらを引いた値に基づくものであるのかに注意が必要になります。</p>
+<p>この分析の設定項目は，「<strong>検定</strong>」の部分を除いて対応なしt検定の場合と同じです。重複する部分については説明を省略します。</p>
+<section id="subsub:ttest-test" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="subsub:ttest-test">検定</h4>
+<p>対応ありt検定の「<strong>検定</strong>」には，次の項目が含まれています（<a href="#fig-ttests-paired-test" class="quarto-xref">図&nbsp;<span>6.25</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-ttests-paired-test" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ttests-paired-test-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/ttests/paired-test.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ttests-paired-test-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;6.25: 「検定」の設定項目
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvsettings">
+<ul>
+<li>スチューデント法　スチューデントの検定による検定結果を表示します。
+<ul>
+<li>ベイズ因子　帰無仮説と対立仮説の間でベイズ因子を算出します。</li>
+</ul></li>
+<li>ウィルコクソン符号順位検定　ウィルコクソン符号順位検定（Wilcoxon符号順位検定）の結果を表示します。</li>
+</ul>
+</div>
+<p>「<strong>検定</strong>」の項目もほとんどは対応なしt検定の場合と同じですが，対応ありt検定の場合，t検定の計算方法は<em>スチューデントの検定</em>のみになります。また，この場合のノンパラメトリック検定には，<em>ウィルコクソン符号順位検定</em>と呼ばれる検定手法が用いられます。</p>
+<p>それ以外の項目は，対応なしt検定の場合とほぼ同じですので，詳細については対応なしt検定のセクションを参照してください。</p>
+<p>なお，スチューデントの検定について「<strong>追加の統計量</strong>」で効果量を算出した場合は，対応なしt検定の場合と同様にコーエンのdが，ウィルコクソン符号順位検定について効果量を算出した場合，マン=ホイットニーの検定の場合と同様に<em>順位双列相関係数</em>が表示されます。</p>
+</section>
+</section>
+</section>
+<section id="sec-ttests-one" class="level2" data-number="6.3">
+<h2 data-number="6.3" class="anchored" data-anchor-id="sec-ttests-one"><span class="header-section-number">6.3</span> 1標本t検定</h2>
+<p>最後に1標本のt検定です。1標本t検定は，ある母集団の平均値と特定の値の間に差があるかどうかを確かめたい場合の検定方法です（<a href="#fig-ttests-one-sample" class="quarto-xref">図&nbsp;<span>6.26</span></a>）。</p>
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-ttests-one-sample" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ttests-one-sample-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/ttests/one-sample.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ttests-one-sample-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;6.26: 1標本t検定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>この検定は，あるテストにおける母平均が50点になっているかどうかを確かめたい場合，手元の標本が想定する母集団（平均値100の母集団など）から抽出されたものであるといえるかどうかを確かめたい場合などに用いられます。</p>
+<section id="subsec:ttests-one-basics" class="level3" data-number="6.3.1">
+<h3 data-number="6.3.1" class="anchored" data-anchor-id="subsec:ttests-one-basics"><span class="header-section-number">6.3.1</span> 考え方</h3>
+<p>ある母集団から無作為抽出された標本の平均値は，確率的には元の母集団の平均値と同じ値（実際には母集団の平均値周辺の値）になるという性質があります。つまり，平均値が50の母集団から抽出された標本では，その標本の平均値は50，平均値が100の母集団から抽出された標本では，その標本の平均値は100またはその周辺の値になるのです。</p>
+<p>この関係を利用して，ある1つの標本について，その母集団の平均値についての検討を行うのがこの1標本t検定です。もし，標本の平均値が51などの値であれば，その標本が平均値50の母集団から抽出されたものである可能性は高いといえるでしょう。しかし，標本の平均値が150の場合，そのような平均値をもつ標本が平均値50の母集団から抽出されたとは考えにくくなります（<a href="#fig-ttests-one-sample-basic" class="quarto-xref">図&nbsp;<span>6.27</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-ttests-one-sample-basic" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ttests-one-sample-basic-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/ttests/one-sample-basic.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ttests-one-sample-basic-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;6.27: 母集団の平均値と標本の平均値の関係
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="subsec:ttests-one-analysis" class="level3" data-number="6.3.2">
+<h3 data-number="6.3.2" class="anchored" data-anchor-id="subsec:ttests-one-analysis"><span class="header-section-number">6.3.2</span> 分析手順</h3>
+<p>ここでは次のサンプルデータ（<a href="https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/ttests_data03.omv">ttests_data03.omv</a>）を用いて1標本t検定の実施方法を見ていきましょう（<a href="#fig-ttests-data03" class="quarto-xref">図&nbsp;<span>6.28</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-ttests-data03" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ttests-data03-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/ttests/data03.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ttests-data03-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;6.28: サンプルデータ
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvvar">
+<ul>
+<li><code>ID</code>　対象者のID</li>
+<li><code>得点</code>　対象者の課題得点</li>
+</ul>
+</div>
+<p>このデータには，20名の対象者について，ある課題の得点が入力されています。この標本の母集団において，課題得点の平均値が50点であるといえるかどうかを確かめたいとしましょう。</p>
+<p>1標本t検定を行うには，分析タブの「<img src="images/assets/analysis-ttest.svg" class="img-fluid" alt="inline"> t検定」から「1標本t検定」を選択します（<a href="#fig-ttests-one-menu" class="quarto-xref">図&nbsp;<span>6.29</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-ttests-one-menu" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ttests-one-menu-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/ttests/one-menu.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ttests-one-menu-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;6.29: 1標本t検定の実行
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>すると，<a href="#fig-ttests-one-setting" class="quarto-xref">図&nbsp;<span>6.30</span></a>のような画面が表示されます。設定項目がたくさんありますが，そのほとんどは対応ありt検定のものと同じです。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-ttests-one-setting" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ttests-one-setting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/ttests/one-setting.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ttests-one-setting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;6.30: 1標本t検定の分析設定パネル
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvsettings">
+<ul>
+<li>従属変数　分析対象の変数を指定します。</li>
+<li><strong>検定</strong>　分析に用いる検定を指定します。</li>
+<li><strong>仮説</strong>　検定に用いる仮説を選択します。</li>
+<li><strong>欠損値</strong>　データに欠損値が含まれている場合の対処方法を指定します。</li>
+<li><strong>追加の統計量</strong>　一般的な分析結果に加えて算出したい統計量を指定します。</li>
+<li><strong>前提チェック</strong>　検定に必要な前提条件が満たされているかどうかの確認を行います。</li>
+</ul>
+</div>
+<p>設定パネルで対応ありt検定と異なっている部分は<strong>仮説</strong>欄だけです（<a href="#fig-ttests-one-hypothesis" class="quarto-xref">図&nbsp;<span>6.31</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-ttests-one-hypothesis" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ttests-one-hypothesis-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/ttests/one-hypothesis.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ttests-one-hypothesis-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;6.31: 仮説の設定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvsettings">
+<ul>
+<li>検定値　比較したい値を指定します。</li>
+<li>≠ 検定値　平均値が検定値と異なるかどうかを検定します（両側検定）。</li>
+<li>&gt; 検定値　平均値が検定値より大きいかどうかを検定します（片側検定）。</li>
+<li>&lt; 検定値　平均値が検定値より小さいかどうかを検定します（片側検定）。</li>
+</ul>
+</div>
+<p>では分析の設定を行いましょう。まず，「得点」を「従属変数」に設定します（<a href="#fig-ttests-one-set-var" class="quarto-xref">図&nbsp;<span>6.32</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-ttests-one-set-var" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ttests-one-set-var-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/ttests/one-set-var.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ttests-one-set-var-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;6.32: 分析変数の設定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>次に，比較対象の値を設定します。今回のサンプルデータでは，平均値が50点といえるかどうかを確かめたいので，「<strong>仮説</strong>」にある「検定値」の値を50に設定します（<a href="#fig-ttests-one-test-value" class="quarto-xref">図&nbsp;<span>6.33</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-ttests-one-test-value" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ttests-one-test-value-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/ttests/one-test-value.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ttests-one-test-value-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;6.33: 検定値の設定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>従属変数と検定値の設定が終わると，出力ウィンドウの結果は<a href="#fig-ttests-one-results" class="quarto-xref">図&nbsp;<span>6.34</span></a>のようになっているはずです。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-ttests-one-results" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ttests-one-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/ttests/one-results.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ttests-one-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;6.34: 1標本t検定の分析結果
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>表示される結果は対応なしt検定や対応ありt検定の場合とほぼ同じですが，表の下に「H<span class="math inline">\(_\text{a}\)</span> μ ≠ 50」という検定仮説に関する注釈がつけられている点が異なります。これは，「母集団の平均値が50でない」という対立仮説のもとで検定を行ったことを示しています。1標本t検定では分析者が指定した検定値を用いて検定を行うため，その情報がここに表示されているのです。</p>
+<p>この分析結果では，有意確率pが0.002と小さな値ですので，「差が有意（母集団の平均値は50でない）」が分析結果になります。</p>
+</section>
+<section id="sub:ttest-one-paired" class="level3" data-number="6.3.3">
+<h3 data-number="6.3.3" class="anchored" data-anchor-id="sub:ttest-one-paired"><span class="header-section-number">6.3.3</span> 1標本t検定と対応ありt検定</h3>
+<p>この1標本t検定は，対応ありt検定と関係が深い分析手法です。対応ありt検定では，2つのグループ間でペアとなる測定値の差を求め，その測定値の差の平均値が0であるかどうかを検定します。このとき，「ペアとなる測定値の差」そのものを一種の測定変数とみなすと，これは「測定値の差」という変数の平均値が0であるかどうかを検定していることになり，1標本t検定とまったく同じになるのです。つまり，対応ありt検定は1標本t検定の特殊ケースなのです。</p>
+<p>そのことをここで確かめておきましょう。対応ありt検定のところで使用したサンプルデータ（<a href="https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/ttests_data02.omv">ttests_data02.omv</a>）を再度開いてください（<a href="#fig-ttests-data02a" class="quarto-xref">図&nbsp;<span>6.35</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-ttests-data02a" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ttests-data02a-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/ttests/data02.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ttests-data02a-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;6.35: 対応ありt検定のサンプルデータ
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>データファイルを開いたら，「変化量」という名前の計算変数を作成し，そこに記憶訓練実施前の得点（「訓練前」）と実施後の得点（「訓練後」）の差を格納しましょう。まず，データタブの「変数」にある「<img src="images/assets/menu-variable-add.svg" class="img-fluid" alt="inline"> 追加」ボタンから「計算変数」の「<img src="images/assets/menu-computed-append.svg" class="img-fluid" alt="inline"> 追加」を選択して新たに計算変数を追加します（<a href="#fig-ttests-append-compvar" class="quarto-xref">図&nbsp;<span>6.36</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-ttests-append-compvar" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ttests-append-compvar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/ttests/append-compvar.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ttests-append-compvar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;6.36: 計算変数を追加
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>次に，作成した計算変数の変数名の部分「<img src="images/assets/variable-nominal.svg" class="img-fluid" alt="inline"> D」をダブルクリックして，変数設定パネルを表示します。変数名を「変化量」に変更し，計算式の部分に「<code>訓練前 - 訓練後</code>」と入力してください。マイナス記号（<code>-</code>）を入力する際は，日本語入力がオフになっていることを確認しましょう（<a href="#fig-ttests-set-compvar" class="quarto-xref">図&nbsp;<span>6.37</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-ttests-set-compvar" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ttests-set-compvar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/ttests/set-compvar.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ttests-set-compvar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;6.37: 計算変数の設定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>入力を確定して変数設定パネルを閉じると，「訓練前」と「訓練後」の差が「変化量」に入力されていることがわかります（<a href="#fig-ttests-compvar-diff" class="quarto-xref">図&nbsp;<span>6.38</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-ttests-compvar-diff" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ttests-compvar-diff-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/ttests/compvar-diff.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ttests-compvar-diff-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;6.38: 作成した「変化量」変数
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>変数の作成が完了したら，分析タブの「<img src="images/assets/analysis-ttest.svg" class="img-fluid" alt="inline"> t検定」から「1標本t検定」を選択します（<a href="#fig-ttests-diff-one" class="quarto-xref">図&nbsp;<span>6.39</span></a> ）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-ttests-diff-one" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ttests-diff-one-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/ttests/diff-one.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ttests-diff-one-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;6.39: 1標本t検定を実行
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>設定パネルで，先ほど作成した「変化量」を従属変数に設定します（<a href="#fig-ttests-diff-one-setting" class="quarto-xref">図&nbsp;<span>6.40</span></a> ）。対応ありt検定では，2グループの差の平均値が0であるかどうかについての検定を行いますので，「<strong>仮説</strong>」の「検定値」は0のままで構いません。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-ttests-diff-one-setting" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ttests-diff-one-setting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/ttests/diff-one-setting.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ttests-diff-one-setting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;6.40: 分析の設定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>設定が完了すると，分析結果は<a href="#fig-ttests-one-paired-results" class="quarto-xref">図&nbsp;<span>6.41</span></a> の「1標本t検定」のようになります。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-ttests-one-paired-results" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ttests-one-paired-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/ttests/one-paired-results.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ttests-one-paired-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;6.41: 分析結果
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>この結果と，「訓練前」と「訓練後」の間で対応ありt検定を行った場合の結果（対応ありt検定）を見比べてみてください。「変化量」の部分が「訓練前　訓練後」になっていることを除けば，他はすべて同じですね。このように両者で結果が同じになるのは，対応ありt検定が「訓練前」と「訓練後」の差で構成された1標本データについて，その母集団の平均値が0と異なるかどうかを確かめているのと同じことだからなのです。</p>
+
+
+</section>
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p>jamoviのt検定におけるベイズ因子は「対立仮説（H<span class="math inline">\(_1\)</span>）：帰無仮説（H<span class="math inline">\(_0\)</span>）」の比（BF<span class="math inline">\(_{10}\)</span>）の形で示されています。「帰無仮説（H<span class="math inline">\(_0\)</span>）：対立仮説（H<span class="math inline">\(_1\)</span>）」の比（BF<span class="math inline">\(_{01}\)</span>）として示されている場合には，ベイズ因子の値が0に近いほど対立仮説が確からしいことを意味します。<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./04a-exploration.html" class="pagination-link" aria-label="探索">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">探索</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./06-ANOVA.html" class="pagination-link" aria-label="分散分析">
+        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">分散分析</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/sbtseiji/jmv_compguide/blob/main/05-t-tests.qmd" class="toc-action"><i class="bi bi-github"></i>ソースコード</a></li></ul></div></div></div></footer><script src="site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

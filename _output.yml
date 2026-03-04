@@ -4,7 +4,7 @@ bookdown::gitbook:
   css: css/style.css
   split_by: section
   includes:
-    in_header: html/mathjax.html
+    in_header: "html/mathjax.html"
   config:
     toc:
       before: |
@@ -17,6 +17,5 @@ bookdown::gitbook:
       twitter: yes
       google: no
       weibo: no
-      instapper: no
+      instapaper: no
       vk: no
-

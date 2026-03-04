@@ -1,0 +1,2801 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="フリーの統計ソフト jamovi の使用方法についての日本語ガイドです。データの編集方法から分散分析や因子分析の設定方法まで、基本機能のすべてについて一通り説明しています。">
+
+<title>10&nbsp; 因子分析 – jamovi完全攻略ガイド</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./10-part3.html" rel="next">
+<link href="./08-Frequencies.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-777ac567918ecbb99a2fd73912d84d5b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "一致なし",
+    "search-matching-documents-text": "一致した文書",
+    "search-copy-link-title": "検索へのリンクをコピー",
+    "search-hide-matches-text": "追加の検索結果を非表示",
+    "search-more-match-text": "追加の検索結果",
+    "search-more-matches-text": "追加の検索結果",
+    "search-clear-button-title": "消去",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "取消",
+    "search-submit-button-title": "検索",
+    "search-label": "サーチ"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+<script>
+MathJax ={chtml: {
+      mtextFont: 'arial',
+      // mtextInheritFont: true,
+   },
+};
+</script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js?config=TeX-AMS_HTML"></script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="nav-sidebar docked quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="サイドバーを切り替える" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./04-part2.html">分析編</a></li><li class="breadcrumb-item"><a href="./09-Factor.html"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">因子分析</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="サイドバーを切り替える" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="サーチ" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">jamovi完全攻略ガイド</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/sbtseiji/jmv_compguide" title="ソースコード" class="quarto-navigation-tool px-1" aria-label="ソースコード"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="サーチ"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">jamovi完全攻略ガイド</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./00-part1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">導入編</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false" aria-label="セクションを切り替え">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-getting-started.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">jamoviの導入</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">データ操作</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-basics2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">分析と編集</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./04-part2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">分析編</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="セクションを切り替え">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04a-exploration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">探索</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-t-tests.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">t検定</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-ANOVA.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">分散分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-Regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">回帰分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08-Frequencies.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">度数分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09-Factor.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">因子分析</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./10-part3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">作図編</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="セクションを切り替え">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-chart.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">棒グラフ</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11a-boxplot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">箱ひげ図</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11b-histogram.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">ヒストグラム</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11c-scatterplot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">散布図</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11d-linechart.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">折れ線グラフ</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./12-part4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">付録</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false" aria-label="セクションを切り替え">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./13-Appendix.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">関数一覧</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">目次</h2>
+   
+  <ul>
+  <li><a href="#sec-factor-reliability-analysis" id="toc-sec-factor-reliability-analysis" class="nav-link active" data-scroll-target="#sec-factor-reliability-analysis"><span class="header-section-number">10.1</span> 信頼性分析</a>
+  <ul class="collapse">
+  <li><a href="#sub:factor-reliability-analysis-basic" id="toc-sub:factor-reliability-analysis-basic" class="nav-link" data-scroll-target="#sub\:factor-reliability-analysis-basic"><span class="header-section-number">10.1.1</span> 考え方</a></li>
+  <li><a href="#sub:factor-reliability-analysis-method" id="toc-sub:factor-reliability-analysis-method" class="nav-link" data-scroll-target="#sub\:factor-reliability-analysis-method"><span class="header-section-number">10.1.2</span> 基本手順</a></li>
+  <li><a href="#sub:factor-reliability-reverse-scaled-items" id="toc-sub:factor-reliability-reverse-scaled-items" class="nav-link" data-scroll-target="#sub\:factor-reliability-reverse-scaled-items"><span class="header-section-number">10.1.3</span> 逆転項目</a></li>
+  <li><a href="#sub:factor-reliability-save" id="toc-sub:factor-reliability-save" class="nav-link" data-scroll-target="#sub\:factor-reliability-save"><span class="header-section-number">10.1.4</span> 保存</a></li>
+  </ul></li>
+  <li><a href="#sec-factor-pca" id="toc-sec-factor-pca" class="nav-link" data-scroll-target="#sec-factor-pca"><span class="header-section-number">10.2</span> 主成分分析</a>
+  <ul class="collapse">
+  <li><a href="#考え方" id="toc-考え方" class="nav-link" data-scroll-target="#考え方"><span class="header-section-number">10.2.1</span> 考え方</a></li>
+  <li><a href="#sub:factor-pca-procedure" id="toc-sub:factor-pca-procedure" class="nav-link" data-scroll-target="#sub\:factor-pca-procedure"><span class="header-section-number">10.2.2</span> 基本手順</a></li>
+  <li><a href="#sub:factor-pca-results" id="toc-sub:factor-pca-results" class="nav-link" data-scroll-target="#sub\:factor-pca-results"><span class="header-section-number">10.2.3</span> 分析結果</a></li>
+  <li><a href="#sub:factor-pca-details" id="toc-sub:factor-pca-details" class="nav-link" data-scroll-target="#sub\:factor-pca-details"><span class="header-section-number">10.2.4</span> 分析の詳細設定</a></li>
+  <li><a href="#sub:factor-pca-save" id="toc-sub:factor-pca-save" class="nav-link" data-scroll-target="#sub\:factor-pca-save"><span class="header-section-number">10.2.5</span> 保存</a></li>
+  <li><a href="#sub:factor-pca-score-analysis" id="toc-sub:factor-pca-score-analysis" class="nav-link" data-scroll-target="#sub\:factor-pca-score-analysis"><span class="header-section-number">10.2.6</span> 主成分得点を用いた分析</a></li>
+  </ul></li>
+  <li><a href="#sec-factor-efa" id="toc-sec-factor-efa" class="nav-link" data-scroll-target="#sec-factor-efa"><span class="header-section-number">10.3</span> 探索的因子分析</a>
+  <ul class="collapse">
+  <li><a href="#sub:factor-efa-basics" id="toc-sub:factor-efa-basics" class="nav-link" data-scroll-target="#sub\:factor-efa-basics"><span class="header-section-number">10.3.1</span> 考え方</a></li>
+  <li><a href="#sub:factor-efa-procedure" id="toc-sub:factor-efa-procedure" class="nav-link" data-scroll-target="#sub\:factor-efa-procedure"><span class="header-section-number">10.3.2</span> 基本手順</a></li>
+  <li><a href="#sub:factor-efa-save" id="toc-sub:factor-efa-save" class="nav-link" data-scroll-target="#sub\:factor-efa-save"><span class="header-section-number">10.3.3</span> 保存</a></li>
+  <li><a href="#sub:factor-efa-results" id="toc-sub:factor-efa-results" class="nav-link" data-scroll-target="#sub\:factor-efa-results"><span class="header-section-number">10.3.4</span> 分析結果</a></li>
+  </ul></li>
+  <li><a href="#sec-factor-cfa" id="toc-sec-factor-cfa" class="nav-link" data-scroll-target="#sec-factor-cfa"><span class="header-section-number">10.4</span> 確認的因子分析</a>
+  <ul class="collapse">
+  <li><a href="#sub:factor-cfa-basics" id="toc-sub:factor-cfa-basics" class="nav-link" data-scroll-target="#sub\:factor-cfa-basics"><span class="header-section-number">10.4.1</span> 考え方</a></li>
+  <li><a href="#sub:factor-cfa-procedure" id="toc-sub:factor-cfa-procedure" class="nav-link" data-scroll-target="#sub\:factor-cfa-procedure"><span class="header-section-number">10.4.2</span> 分析手順</a></li>
+  <li><a href="#sub:factor-cfa-results" id="toc-sub:factor-cfa-results" class="nav-link" data-scroll-target="#sub\:factor-cfa-results"><span class="header-section-number">10.4.3</span> 分析結果</a></li>
+  <li><a href="#sub:factor-cfa-residual-covariances" id="toc-sub:factor-cfa-residual-covariances" class="nav-link" data-scroll-target="#sub\:factor-cfa-residual-covariances"><span class="header-section-number">10.4.4</span> 残差共分散</a></li>
+  <li><a href="#sub:factor-cfa-options" id="toc-sub:factor-cfa-options" class="nav-link" data-scroll-target="#sub\:factor-cfa-options"><span class="header-section-number">10.4.5</span> オプション</a></li>
+  <li><a href="#sub:factor-cfa-estimates" id="toc-sub:factor-cfa-estimates" class="nav-link" data-scroll-target="#sub\:factor-cfa-estimates"><span class="header-section-number">10.4.6</span> 推定値</a></li>
+  <li><a href="#sub:factor-cfa-model-fit" id="toc-sub:factor-cfa-model-fit" class="nav-link" data-scroll-target="#sub\:factor-cfa-model-fit"><span class="header-section-number">10.4.7</span> モデル適合度</a></li>
+  <li><a href="#sub:factor-cfa-additional-output" id="toc-sub:factor-cfa-additional-output" class="nav-link" data-scroll-target="#sub\:factor-cfa-additional-output"><span class="header-section-number">10.4.8</span> 追加の出力</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/sbtseiji/jmv_compguide/blob/main/09-Factor.qmd" class="toc-action"><i class="bi bi-github"></i>ソースコード</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./04-part2.html">分析編</a></li><li class="breadcrumb-item"><a href="./09-Factor.html"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">因子分析</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="sec-ch-factor" class="quarto-section-identifier"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">因子分析</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>この章では，「<img src="images/assets/analysis-factor.svg" class="img-fluid" alt="inline"> 因子分析」ツールについて見ていきます。jamoviの基本構成では，ここには次の分析メニューが含まれています（<a href="#fig-factor-menu" class="quarto-xref">図&nbsp;<span>10.1</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-menu" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-menu-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/factor-menu.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-menu-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.1: 因子分析のメニュー
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvmenu">
+<ul>
+<li><strong>尺度分析</strong>
+<ul>
+<li>信頼性分析　尺度の内的一貫性についての指標を算出します。</li>
+</ul></li>
+<li><strong>データ縮約</strong>
+<ul>
+<li>主成分分析　主成分分析を用いてデータを少数の主成分に集約します。</li>
+<li>探索的因子分析　複数の変数の背後にある共通因子を探索します。</li>
+<li>確認的因子分析　想定される因子モデルがデータに適合しているかどうかを確かめます。</li>
+</ul></li>
+</ul>
+</div>
+<p>それではまず，尺度分析の項目から見ていきましょう。</p>
+<section id="sec-factor-reliability-analysis" class="level2" data-number="10.1">
+<h2 data-number="10.1" class="anchored" data-anchor-id="sec-factor-reliability-analysis"><span class="header-section-number">10.1</span> 信頼性分析</h2>
+<p>ある体温計で数分間に3回繰り返して体温を測ったとき，1回目の測定では36.6度，2回目は36.5度，3回目は36.6度だったとしましょう。この体温計では，3回の測定値がほとんど同じです。そして別の体温計で同じように3回の測定を行ったとき，1回目の測定では36.2度，2回目には35.1度，3回目は38.2度だったとします。このような場合，1つ目の体温計と2つ目の体温計のどちらを信頼するかと聞かれたら，ほとんどの人は1つ目の体温計を選ぶことでしょう。2つ目の体温計は，測定値がコロコロ変わり，正しく測れているのかどうかもわからないからです。</p>
+<p>それは心理尺度の場合も同様です。尺度による測定値が，測定のたびにコロコロと変わるようでは困ります。測定のたびにIQの値が10も20も変わるようでは，その知能検査の結果はあてになりません。</p>
+<p>そして，そうした尺度の<em>信頼性</em>について，客観的な指標を用いて確認しようとするのが<em>信頼性分析</em>です。信頼性にはいくつかの確認方法がありますが，jamoviでは<em>内的一貫性</em>の指標を用いた信頼性分析が利用できます。</p>
+<section id="sub:factor-reliability-analysis-basic" class="level3" data-number="10.1.1">
+<h3 data-number="10.1.1" class="anchored" data-anchor-id="sub:factor-reliability-analysis-basic"><span class="header-section-number">10.1.1</span> 考え方</h3>
+<p>心理学の調査では，<em>リカート法</em><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>による心理測定尺度がよく用いられます。通常，それらの尺度は内容的に関連のある複数の質問で構成されており，それら複数の質問に対する回答値を合計したり平均したりすることによって尺度得点が算出されます。</p>
+<p>このように，複数の質問に対する回答値を足したり平均したりして1つの尺度得点として使用するためには，当然ながらそれらの質問が同じ内容について測定しているものでなくてはなりません。このような同一尺度内における質問内容の一貫性は，<em>内的一貫性</em>や<em>内的整合性</em>と呼ばれます。</p>
+<p>内的一貫性が高い尺度では，ある質問に対して「5」と答えた回答者は他の質問に対しても「5」と答える可能性が高く，「1」と答えた回答者は「1」と答える可能性が高いというように，同じ1人の回答者の中でその回答値が似通ったものになるはずです。類似した内容を測定しているのであれば測定結果も類似した値が得られるということは，その尺度における測定結果が安定したものである（信頼性のあるものである）ことを意味するわけです。</p>
+<p>複数の質問で構成される心理尺度を用いた測定を行う場合には，その尺度における内的一貫性が十分であるかどうかの確認が行われますが，その際の内的一貫性の指標としてよく用いられているのが<em>クロンバックのアルファ</em>（α）や<em>アルファ係数</em>と呼ばれる値です。この値はしばしば<em>信頼性係数</em>とも呼ばれます。このクロンバックのアルファは，次のように尺度に含まれる各質問の回答値の分散と，参加者ごとの回答値の合計の分散から算出されます。</p>
+<p><span class="math display">\[
+\alpha = \frac{\text{質問数}}{\text{質問数}-1}\times\left(1-\displaystyle\frac{\text{各質問の分散の合計}}{\text{各回答者の合計の分散}}\right)
+\]</span></p>
+<p>このようにして計算すると，質問ごとの回答のばらつきが一人一人の回答のばらつきよりも小さい（つまりそれぞれの質問に対する回答値が似通っている）場合にクロンバックのアルファが1に近くなります。</p>
+<p>このアルファの値は0から1の値をとり，その大きさについては<a href="#tbl-factor-cronbach-alpha" class="quarto-xref">表&nbsp;<span>10.1</span></a>のような目安を用いて解釈が行われます。一般に，心理尺度においてはこの値が0.8以上ある場合に内的一貫性があるとみなされます。</p>
+<div class="cell" data-layout-align="center">
+<div id="tbl-factor-cronbach-alpha" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-factor-cronbach-alpha-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+表&nbsp;10.1: クロンバックのアルファの解釈の目安
+</figcaption>
+<div aria-describedby="tbl-factor-cronbach-alpha-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="table do-not-create-environment cell caption-top table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: center;" data-quarto-table-cell-role="th">アルファの値</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">内的一貫性</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">0.9〜1.0</td>
+<td style="text-align: center;">非常に高い</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">0.8〜0.9</td>
+<td style="text-align: center;">高い</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">0.7〜0.8</td>
+<td style="text-align: center;">許容レベル</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">0.6〜0.7</td>
+<td style="text-align: center;">疑わしい</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">0.5〜0.6</td>
+<td style="text-align: center;">低い</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">0.0〜0.5</td>
+<td style="text-align: center;">著しく低い</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+</section>
+<section id="sub:factor-reliability-analysis-method" class="level3" data-number="10.1.2">
+<h3 data-number="10.1.2" class="anchored" data-anchor-id="sub:factor-reliability-analysis-method"><span class="header-section-number">10.1.2</span> 基本手順</h3>
+<p>ここでは，このサンプルデータ（<a href="https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/factor_data01.omv">factor_data01.omv</a>）を用いて尺度の内的一貫性について分析してみましょう。このデータは「メッセージアプリ志向尺度」を用いて測定されたもので，次の変数が含まれています。なお，各質問への回答は，いずれも「1:まったくあてはまらない」から「5:とてもよくあてはまる」までの5段階です（<a href="#fig-factor-data01" class="quarto-xref">図&nbsp;<span>10.2</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-data01" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-data01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/data01.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-data01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.2: サンプルデータ
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvvar">
+<ul>
+<li><code>ID</code>　対象者のID</li>
+<li><code>Q1</code>「メッセージアプリをよく使う」への回答値</li>
+<li><code>Q2</code>「メッセージアプリよりメールで連絡することのほうが多い」への回答値</li>
+<li><code>Q3</code>「メッセージアプリでやりとりするのは楽しい」への回答値</li>
+<li><code>Q4</code>「メッセージアプリは何かとめんどくさい」への回答値</li>
+<li><code>Q5</code>「送信メッセージに反応がないとソワソワする」への回答値</li>
+</ul>
+</div>
+<p>このデータについて信頼性分析を実施するには，分析タブの「<img src="images/assets/analysis-factor.svg" class="img-fluid" alt="inline"> 因子分析」から「信頼性分析」を選択します（<a href="#fig-factor-reliability-menu" class="quarto-xref">図&nbsp;<span>10.3</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-reliability-menu" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-reliability-menu-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/reliability-menu.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-reliability-menu-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.3: 信頼性分析の実行
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>すると，<a href="#fig-factor-reliability-setting" class="quarto-xref">図&nbsp;<span>10.4</span></a>のような設定パネルが表示されます。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-reliability-setting" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-reliability-setting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/reliability-setting.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-reliability-setting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.4: 信頼性分析の設定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvsettings">
+<ul>
+<li>項目　分析対象の項目（変数）を指定します。</li>
+<li><strong>尺度統計量</strong>　尺度全体についての統計量を算出します。</li>
+<li><strong>項目統計量</strong>　各項目（変数）に関する統計量を算出します。</li>
+<li><strong>追加オプション</strong>　結果表示に関するその他の設定です。</li>
+<li><span class="groupbar"><img src="images/assets/modules-analyses-arrow-r.svg" width="10pt/">| 逆転項目</span>　逆転項目に関する設定を行います。</li>
+<li><span class="groupbar"><img src="images/assets/modules-analyses-arrow-r.svg" width="10pt/">| 保存</span>　計算結果を変数値として保存します。</li>
+</ul>
+</div>
+<p>この画面で，内的一貫性の指標を算出したい質問の回答値が入った変数を指定します。通常は1つの尺度に含まれている質問すべてを指定しますが，その尺度が複数の下位尺度<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>から構成されている場合には，1つの下位尺度に含まれている質問のみを指定します。サンプルデータのメッセージアプリ志向尺度は「Q1」から「Q5」までの5つの質問で構成されていますので，これら5つを「項目」の領域に移動します（<a href="#fig-factor-reliability-set-var" class="quarto-xref">図&nbsp;<span>10.5</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-reliability-set-var" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-reliability-set-var-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/reliability-set-var.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-reliability-set-var-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.5: 分析対象の設定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>これで基本的な分析の設定は終わりです，といいたいところですが，残念ながらそうではありません。今回のデータでは，適切な分析結果を得るためにはあと少しだけ設定が必要です。これでなぜ分析設定が完了でないのかは，出力ウィンドウにある結果の表を見てみるとわかります（<a href="#fig-factor-reliability-error" class="quarto-xref">図&nbsp;<span>10.6</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-reliability-error" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-reliability-error-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/reliability-error.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-reliability-error-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.6: 分析の設定上の問題
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>まず，この結果ではクロンバックのアルファの値がマイナスになっており，これは明らかに計算が正しくありません。そして，この表の下には何やら注釈が長々と書かれています。この注を見てみると，「項目’Q2’および’Q4’は尺度全体と負の相関関係にあるため，逆転項目として処理したほうがよいでしょう」と書かれています。</p>
+<p>実際，このサンプルデータでは，「Q1」と「Q3」，「Q5」はメッセージアプリの使用が多いほど回答値が大きくなる質問ですが，「Q2」と「Q4」はその逆で，メッセージアプリをあまり使わない人ほど回答値が大きくなるような，逆内容の質問です。このような，他の質問とは逆内容の質問を含む項目は<em>逆転項目</em>と呼ばれ，内的一貫性の分析においては，これらはそのままでは分析できません。</p>
+</section>
+<section id="sub:factor-reliability-reverse-scaled-items" class="level3" data-number="10.1.3">
+<h3 data-number="10.1.3" class="anchored" data-anchor-id="sub:factor-reliability-reverse-scaled-items"><span class="header-section-number">10.1.3</span> 逆転項目</h3>
+<p>尺度を構成する質問の中に逆転項目が含まれている場合には，分析設定パネルの［逆転項目］の部分を展開し，それらを適切に設定する必要があります（<a href="#fig-factor-reliability-reverse-items" class="quarto-xref">図&nbsp;<span>10.7</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-reliability-reverse-items" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-reliability-reverse-items-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/reliability-reverse-items.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-reliability-reverse-items-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.7: 逆転項目の設定パネル
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>この画面の左側に通常の尺度項目が，右側に逆転項目が入るように，必要な変数を選択して移動します（<a href="#fig-factor-reliability-reversed" class="quarto-xref">図&nbsp;<span>10.8</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-reliability-reversed" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-reliability-reversed-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/reliability-reversed.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-reliability-reversed-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.8: 逆転項目の設定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>すると，<a href="#fig-factor-reliability-cronbach" class="quarto-xref">図&nbsp;<span>10.9</span></a>のように結果の表の下にあった注釈が消え，そして算出結果も0.84という正常な値になりました。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-reliability-cronbach" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-reliability-cronbach-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/reliability-cronbach.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-reliability-cronbach-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.9: クロンバックのアルファの算出結果
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>この結果から，このメッセージアプリ志向尺度の内的一貫性の値は0.84で，十分な内的一貫性を持っているといえそうです。</p>
+<section id="subsub:factor-reliability-scale-statistics" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="subsub:factor-reliability-scale-statistics">尺度統計量</h4>
+<p>さて，少し前後しましたが，ここからは分析設定の詳細についてみていくことにしましょう。設定パネルの<strong>尺度統計量</strong>の部分では，尺度全体についての内的一貫性を吟味するための指標を設定します。</p>
+<p>ここには，次の4つの項目があります。</p>
+<div class="jmvsettings">
+<ul>
+<li>クロンバックのα　尺度全体のクロンバックのアルファを算出します。</li>
+<li>マクドナルドのω　尺度全体のマクドナルドのオメガを算出します。</li>
+<li>平均値　尺度全体の平均値を算出します。</li>
+<li>標準偏差　尺度全体の標準偏差を算出します。</li>
+</ul>
+</div>
+<p>これらの項目すべてにチェックを入れると，結果の表は<a href="#fig-factor-reliability-statistics-results" class="quarto-xref">図&nbsp;<span>10.10</span></a>のようになります。</p>
+<!--  -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-reliability-statistics-results" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-reliability-statistics-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/reliability-statistics-results.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-reliability-statistics-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.10: さまざまな尺度統計量
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>このうち，クロンバックのアルファについてはすでに説明しましたので，それ以外の項目について見ていきましょう。</p>
+<section id="マクドナルドのω" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="マクドナルドのω">マクドナルドのω</h5>
+<p>クロンバックのアルファは計算は単純なのですが，その分，正確さにかける部分があり，近年とくにその問題点がたびたび指摘されるようになっています<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>。そこで，その代替的な指標として近年注目を集めているのが<em>マクドナルドのオメガ</em>（ω）です。この値は，<em>オメガ係数</em>とも呼ばれます。</p>
+<p>クロンバックのアルファでは，尺度に含まれる各質問に対する回答値をそのまま単純に合計しますが，マクドナルドのオメガでは各質問への回答値が共通因子から受けている影響（因子負荷量）を考慮して重みづけを行ったうえで合計します。このオメガについても基本的な解釈の仕方はクロンバックのアルファと同様で，0.8を超える場合に内的一貫性が高いとみなされます。サンプルデータでは，クロンバックのアルファとマクドナルドのオメガはほぼ同じ値で，オメガを指標とした場合にも十分な内的一貫性があることが示されました。</p>
+</section>
+<section id="平均値標準偏差" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="平均値標準偏差">平均値，標準偏差</h5>
+<p><strong>尺度統計量</strong>の「平均値」と「標準偏差」にチェックを入れると，尺度全体の回答値の平均と標準偏差が算出されます。</p>
+</section>
+</section>
+<section id="subsub:factor-reliability-item-statistics" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="subsub:factor-reliability-item-statistics">項目統計量</h4>
+<p><strong>項目統計量</strong>には，尺度を構成する個別の質問項目について吟味するための項目が含まれています。</p>
+<!--  -->
+<div class="jmvsettings">
+<ul>
+<li>項目除外時のクロンバックα</li>
+<li>項目除外時のマクドナルドω</li>
+<li>平均値</li>
+<li>標準偏差</li>
+<li>I-R相関</li>
+</ul>
+</div>
+<p>ここでも，すべての項目にチェックを入れてその結果を見てみましょう（<a href="#fig-factor-reliability-item-statistics" class="quarto-xref">図&nbsp;<span>10.11</span></a>）。</p>
+<!--結果  -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-reliability-item-statistics" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-reliability-item-statistics-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/reliability-item-statistics.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-reliability-item-statistics-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.11: 項目ごとの統計量
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<section id="項目除外時のクロンバックα" class="level5" data-number="10.1.3.0.1">
+<h5 data-number="10.1.3.0.1" class="anchored" data-anchor-id="項目除外時のクロンバックα"><span class="header-section-number">10.1.3.0.1</span> 項目除外時のクロンバックα</h5>
+<p>この項目は，各質問項目を分析から除外した場合にクロンバックのアルファの値がどのように変化するかを示します。ここに表示されている値の中に尺度全体の値よりも大きなものがある場合，その項目を分析から除外することで尺度全体のアルファ係数が上昇することを意味します。今回の分析結果では，いずれの値も全体の値を下回っていますので，分析から除外すべき質問項目はなさそうです。</p>
+</section>
+<section id="項目除外時のマクドナルドω" class="level5" data-number="10.1.3.0.2">
+<h5 data-number="10.1.3.0.2" class="anchored" data-anchor-id="項目除外時のマクドナルドω"><span class="header-section-number">10.1.3.0.2</span> 項目除外時のマクドナルドω</h5>
+<p>この項目は，各質問項目を分析から除外した場合にマクドナルドのオメガの値がどのように変化するかを示します。ここに表示されている値の中に尺度全体の値よりも大きなものがある場合，その項目を分析から除外することで尺度全体のオメガ係数が上昇することを意味します。クロンバックのアルファの場合と同様に，この結果ではオメガの値はいずれも全体の値を下回っていますので，分析から除外すべき質問項目はなさそうです。</p>
+</section>
+<section id="平均値標準偏差-1" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="平均値標準偏差-1">平均値，標準偏差</h5>
+<p>ここでの「平均値」と「標準偏差」は，「Q1」から「Q5」それぞれの平均値と標準偏差を表示します。</p>
+</section>
+<section id="i-r相関" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="i-r相関">I-R相関</h5>
+<p>一番下にある「I-R相関」の項目にチェックを入れると，<em>I-R相関</em>と呼ばれる指標が算出されます。I-R相関は，各質問項目（item）の回答値とそれ以外の項目（rest）の合計値の間の相関係数です。このI-R相関が著しく低い場合には，その質問項目が他の質問項目と異なる回答傾向を持っている（一貫性が低い）ことが考えられます。今回の分析結果では，「Q1」から「Q5」の中にそのような傾向はみられません。</p>
+</section>
+</section>
+<section id="追加オプション" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="追加オプション">追加オプション</h4>
+<p><strong>追加オプション</strong>にある「相関ヒートマップ」にチェックを入れると，相関行列を<em>ヒートマップ</em>の形で視覚化した図が作成されます。ヒートマップとは，相関係数の大きさや向きを色の違いや濃淡で示したもののことをいいます。1つの尺度に含まれる質問項目の数が多い場合，ヒートマップの形で視覚化することによって，他と傾向の異なる質問項目を見つけやすくなります（<a href="#fig-factor-reliability-heatmap" class="quarto-xref">図&nbsp;<span>10.12</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-reliability-heatmap" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-reliability-heatmap-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/reliability-heatmap.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-reliability-heatmap-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.12: 相関係数のヒートマップ
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>このヒートマップでは，正の相関係数が緑，負の相関係数が赤で，そして相関係数の絶対値が大きくなるほど緑または赤の色が濃くなる形で示されています。</p>
+</section>
+</section>
+<section id="sub:factor-reliability-save" class="level3" data-number="10.1.4">
+<h3 data-number="10.1.4" class="anchored" data-anchor-id="sub:factor-reliability-save"><span class="header-section-number">10.1.4</span> 保存</h3>
+<p>設定パネルの一番下にある<span class="groupbar"><img src="images/assets/modules-analyses-arrow-r.svg" width="10pt/">| 保存</span>の項目では，逆転項目の処理を行ったうえで，各質問項目の回答値の合計または平均値を新たな変数として保存することができます（<a href="#fig-factor-reliability-menu" class="quarto-xref">図&nbsp;<span>10.3</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-reliability-save-scores" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-reliability-save-scores-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/reliability-save-scores.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-reliability-save-scores-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.13: 尺度得点の保存
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvsettings">
+<ul>
+<li>平均得点　回答値（逆転処理済）の平均値を尺度得点として保存します。</li>
+<li>合計得点　回答値（逆転処理済）の合計値を尺度得点として保存します。</li>
+</ul>
+</div>
+<p><a href="02-basics.html">第<span class="quarto-xref"><span>3</span></span>章</a>の「<a href="sec-practice-handling.html#sub:basics2-scale-score">尺度得点の算出</a>」では，計算変数を用いて尺度得点を変数に格納する方法を紹介しましたが，jamoviではこのようにして簡単に尺度得点を作成することもできるのです。</p>
+<p>このとき，「平均得点」にチェックを入れれば各質問項目への回答値の平均値が，「合計得点」にチェックを入れれば合計値が新たな変数として保存されます。</p>
+</section>
+</section>
+<section id="sec-factor-pca" class="level2" data-number="10.2">
+<h2 data-number="10.2" class="anchored" data-anchor-id="sec-factor-pca"><span class="header-section-number">10.2</span> 主成分分析</h2>
+<p>ここからは，数学的にデータを縮約する方法について見ていきましょう。</p>
+<p>データの縮約とは，たくさんあるデータを類似性などを基準に整理し，それらをより少数の意味あるまとまりとして集約することをいいます。質問紙調査などによる調査研究では，データとして何十種類もの質問文に対する回答値が得られるのが普通ですし，それ以外の場合にも，関心のある事象に関連した指標をできる限り幅広く集めて分析を行おうとすると，分析に使用する変数の種類は膨大になってしまいます。そこで，そのような場合には，多変量解析によって，そうした複雑なデータを，できるだけ元の情報を損なわないようにしながら可能な限り単純化し，理解可能なものに分類，整理しようとするわけです。</p>
+<p>このデータ縮約の方法の1つとして，<em>主成分分析</em>（PCA）があります。主成分分析では，次に説明するような考え方で複数の変数がもつ情報を統合し，より少ない数の合成変数に集約するということを行います。</p>
+<section id="考え方" class="level3" data-number="10.2.1">
+<h3 data-number="10.2.1" class="anchored" data-anchor-id="考え方"><span class="header-section-number">10.2.1</span> 考え方</h3>
+<p>ここでは次のサンプルデータ（<a href="https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/factor_data02.omv">factor_data02.omv</a>）を用いて主成分分析の基本的な考え方を見ておきましょう。このデータは，ある大学の学生男女計250人を対象に，食堂で提供されている代表的なメニュー6種類に対する満足度を「1:とても不満」から「7:非常に満足」までの7段階でたずねた結果です（<a href="#fig-factor-data02" class="quarto-xref">図&nbsp;<span>10.14</span></a>）。このデータを用い，この食堂で提供されているメニューに対する総合的な満足度について分析したいと思います。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-data02" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-data02-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/data02.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-data02-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.14: サンプルデータ
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvvar">
+<ul>
+<li><code>ID</code> 回答者のID</li>
+<li><code>性別</code>　回答者の性別</li>
+<li><code>パスタ</code>　パスタに対する満足度</li>
+<li><code>カレー</code>　カレーに対する満足感</li>
+<li><code>ラーメン</code>　ラーメンに対する満足感</li>
+<li><code>カツ丼</code>　カツ丼に対する満足感</li>
+<li><code>オムライス</code>　オムライスに対する満足感</li>
+<li><code>ドリア</code>　ドリアに対する満足感</li>
+</ul>
+</div>
+<p>このデータには全部で6種類のメニューに対する満足度が記録されているわけですが，これらを個別に分析した場合，個別のメニューに対する満足度の傾向は見ることができても，メニュー全体に対する全体的な満足度についてはわかりません。メニューに対する全体的満足度について知るには，これら6つのメニューに対する満足度を，なんらかの形で統合する必要があります。それにはどうすればよいのでしょうか。ここでは話を単純にするために，2つの変数を1つに統合する場合を例に見ていきます。</p>
+<p>ここに，r=0.8の正の相関関係にある2つの変数があるとします。相関係数が0.8の変数の値を散布図に示すと，おおよそ<a href="#fig-factor-pca-scatter1" class="quarto-xref">図&nbsp;<span>10.15</span></a>のようなものになります。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-pca-scatter1" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-pca-scatter1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/pca-scatter1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-pca-scatter1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.15: 相関r=0.8の2変数の散布図
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>この散布図は，2つの変数が持っている情報を，変数1の軸（横軸）と変数2の軸（縦軸）の2つの軸で表現される平面上の点として表現したものです。そして，この2つの変数がもつ情報を1つに集約するということは，この2つの軸で表現されている情報を1つの軸だけで表現するということになるのです。</p>
+<p>ここで，たとえばこの散布図に示されたデータの情報を横軸のみで表現した場合について考えてみましょう。縦軸のみで表現するということは，縦軸の値（変数2）は無視するということですので，ここでは変数2の値をすべて0として散布図上に示しなおします（<a href="#fig-factor-pca-scatter2" class="quarto-xref">図&nbsp;<span>10.16</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-pca-scatter2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-pca-scatter2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/pca-scatter2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-pca-scatter2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.16: データを横軸に集約した場合の散布図
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>すると，散布図上の点が横一列に並びました。1つの軸で表現するということは，このようにデータの点が一直線上に並ぶようにするということなのです。</p>
+<p>ただし，これでは単に変数2がもつ情報（y軸がもつ情報）を捨てているだけですので，2つの軸がもつ情報を1つの軸に集約したことによって，多くの情報が失われてしまいます（<a href="#fig-factor-pca-scatter3" class="quarto-xref">図&nbsp;<span>10.17</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-pca-scatter3" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-pca-scatter3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/pca-scatter3.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-pca-scatter3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.17: 集約による情報の損失
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>そこで，もう少し工夫をしてみましょう。このように2変数間に正の相関がある場合，その散布図は右肩上がりの楕円形の形になります。その楕円の中央を，楕円の長いほうの軸にそって貫通するような直線を引き，その直線を軸として散布図上の情報を集約させてみます（<a href="#fig-factor-pca-scatter4" class="quarto-xref">図&nbsp;<span>10.18</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-pca-scatter4" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-pca-scatter4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/pca-scatter4.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-pca-scatter4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.18: 情報の損失が少ない軸に集約
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>すると，先ほどの場合よりも失われる情報の量がずっと少なくなりました。このような形で情報を集約できれば，2つの軸で表現される情報を1つの軸で表現したとしても，もとの情報が多く損なわれてしまうということがありません。</p>
+<p>主成分分析では，このようにしてデータのもつ情報ができるだけ失われないようにしながら，もとのデータよりも少ない軸を用いてデータを表現しなおすのです。</p>
+<p>このとき，この情報を集約する軸は，次のような式によって表現されます。</p>
+<p><span class="math display">\[
+z = a_1 \times \text{変数}_1 + a_2 \times \text{変数}_2 + \cdots + a_n \times \text{変数}_n
+\]</span></p>
+<p>先ほどの2変数の例の場合，情報を集約する軸の式は，<span class="math inline">\(z=a_1\times\text{変数}_1+a_2\times\text{変数}_2\)</span> となります。つまり，2つの変数の値になんらかの重みづけを行ったうえで合計するという形で合成得点を作成するのです。そして分析においては，このような変換によって失われる情報量が最小となるように，この式における重みづけの部分の値を決定します。</p>
+<p>なお，この式は一見すると回帰分析で用いられる回帰式によく似ていますが，式の左辺にあるのが分析に使用する変数ではなく，合成得点zになっているという点に注意してください。この式によって算出される左辺zの値は<em>主成分得点</em>と呼ばれます。</p>
+<p>それでは，jamoviにおける主成分分析の手順を見ていきましょう。なお，jamoviの主成分分析は，多変量解析の教科書の多くで説明されている主成分分析の形ではなく，かなり<em>因子分析</em>寄りの分析手法および結果表示になっています。この後の説明では，主成分分析と因子分析の違いを明確にするためにも，できるだけ統計法の教科書に近い形での結果になるように設定を行いながら分析を進めていきたいと思います。</p>
+<p>また，主成分分析には分散共分散行列<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>を用いる場合と相関行列を用いる場合とがあり，その両者で算出される固有ベクトルの値が異なります。jamoviでは，相関行列を用いた主成分分析が実行されます。</p>
+</section>
+<section id="sub:factor-pca-procedure" class="level3" data-number="10.2.2">
+<h3 data-number="10.2.2" class="anchored" data-anchor-id="sub:factor-pca-procedure"><span class="header-section-number">10.2.2</span> 基本手順</h3>
+<p>主成分分析を実行するには，分析タブの「<img src="images/assets/analysis-factor.svg" class="img-fluid" alt="inline"> 因子分析」から「主成分分析」を選択します（<a href="#fig-factor-pca-menu" class="quarto-xref">図&nbsp;<span>10.19</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-pca-menu" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-pca-menu-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/pca-menu.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-pca-menu-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.19: 主成分分析の実行
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>すると，<a href="#fig-factor-pca-setting" class="quarto-xref">図&nbsp;<span>10.20</span></a>のような設定パネルが表示されます。</p>
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-pca-setting" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-pca-setting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/pca-setting.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-pca-setting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.20: 主成分分析の設定パネル
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvsettings">
+<ul>
+<li><strong>方法</strong>
+<ul>
+<li>回転法　主成分の回転法を設定します。</li>
+</ul></li>
+<li><strong>主成分数</strong>
+<ul>
+<li>平行分析に基づく　平行分析の結果をもとに主成分の個数を決定します。</li>
+<li>固有値に基づく　固有値の大きさが指定値以上の主成分を採用します。</li>
+<li>数値指定　主成分の個数を直接指定します。</li>
+</ul></li>
+<li>前提チェック
+<ul>
+<li>バートレットの球面性検定　バートレットの球面性検定を実施します。</li>
+<li>KMO標本妥当性指標　標本妥当性指標（MSA）を算出します。</li>
+</ul></li>
+<li><strong>因子負荷</strong>
+<ul>
+<li>これ未満の負荷量を隠す　絶対値の小さい負荷量を非表示にします。</li>
+<li>負荷量順に並び替え　負荷量の絶対値が大きい順に変数を並び替えて表示します。</li>
+</ul></li>
+<li><strong>追加の出力</strong>
+<ul>
+<li>主成分の要約量　各主成分について要約量を算出します。</li>
+<li>主成分の相関　各主成分の間の相関を算出します。</li>
+<li>回転前の固有値　回転前の固有値とその寄与率，累積寄与率を算出します。</li>
+<li>スクリー・プロット スクリー・プロットを表示します。</li>
+</ul></li>
+<li><span class="groupbar"><img src="images/assets/modules-analyses-arrow-r.svg" width="10pt/">| 保存</span>　分析結果を新たな変数に保存します。</li>
+</ul>
+</div>
+<p>この設定パネルで，主成分分析の対象となる変数（「パスタ」から「ドリア」まで）を「変数」欄に移動します（<a href="#fig-factor-pca-set-var" class="quarto-xref">図&nbsp;<span>10.21</span></a>）。</p>
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-pca-set-var" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-pca-set-var-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/pca-set-var.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-pca-set-var-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.21: 分析対象の変数を設定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>これで基本的な分析手順は終わりです。ただし，主成分分析の結果は設定によって大きく変わりますので，結果の見方についての説明に入る前に，いくつかの設定項目について説明しておきたいと思います。</p>
+<section id="subsub:factor-pca-method" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="subsub:factor-pca-method">回転法</h4>
+<p>主成分分析の目的は，たくさんの変数をできるだけ少数の変数に集約することにあります。そのため，まずは分析に使用した変数全体が持っている情報を1つの軸に集約し，そこで拾いきれなかった情報を2つ目，3つ目の軸に集約していくというのがもともとの考え方です。</p>
+<p>しかし，情報の損失を最小限にすることだけを目的として軸を設定した場合，その軸が一体何を表しているのかが解釈困難になる場合もあります。心理学における研究の場合，多数ある変数を少数の軸に集約するだけでなく，それらの軸に対する解釈も重要な関心対象であることがよくあります。そのため，主成分分析の結果を解釈しやすくすることを目的として，分析で得られた軸に対して「<em>回転</em>」と呼ばれる操作を行う場合があります。</p>
+<p>jamoviの主成分分析では，分析設定パネルの「<strong>方法</strong>」にある「回転法」でこの回転方法についての設定ができるようになっており，初期設定値では，回転方法は「バリマックス」が指定されています。ここでは，この設定値を「なし」に設定してください（<a href="#fig-factor-pca-rotate" class="quarto-xref">図&nbsp;<span>10.22</span></a>）。</p>
+<!-- -->
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-pca-rotate" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-pca-rotate-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/pca-rotate.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-pca-rotate-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.22: 主成分の回転法を「なし」に設定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>いわゆる「総合得点」を算出したい場合には，回転は「なし」にしておきます。そうすることによって，軸を回転する前の主成分分析結果を得ることができるからです。なお，多変量解析の教科書の多くは，主成分分析では回転を行っていません。</p>
+<p>「総合得点」を算出することよりも集約した軸の解釈が主な目的の場合には，適切な回転方法を選んで指定します。軸の回転方法については因子分析のところで説明するため，ここでは省略します。</p>
+</section>
+<section id="subsub:factor-pca-component" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="subsub:factor-pca-component">主成分数</h4>
+<p>主成分分析では，計算上は元の変数と同じ数だけ主成分が抽出されます。しかし，変数が多いからデータがもつ情報を少数の軸に縮約しようとしているのに，元の変数と同じ個数だけ主成分を抽出したのでは意味がありません。そこで実際の分析では，抽出された中から適切な個数の主成分だけを選んで使用するのですが，その際，主成分の「適切な個数」については，いくつかの判断方法があります。</p>
+<p>jamoviの「<strong>主成分数</strong>」の設定項目には，次の3種類が用意されています。</p>
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-pca-n-components" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-pca-n-components-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/pca-n-components.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-pca-n-components-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.23: 採用する主成分の個数の設定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvsettings">
+<ul>
+<li>平行分析に基づく</li>
+<li>固有値に基づく</li>
+<li>数値指定</li>
+</ul>
+</div>
+<p>ここでは，これら3つの項目を中心に，適切な主成分の個数を判断する方法について見ていきましょう。</p>
+<section id="subsub:factor-pca-component-parallel" class="level6 unnumbered">
+<h6 class="unnumbered anchored" data-anchor-id="subsub:factor-pca-component-parallel">平行分析に基づく</h6>
+<p>1つ目の「平行分析に基づく」では，<em>平行分析</em>と呼ばれる手法を用いて最適と考えられる主成分の個数を決定します。jamoviでは，この方法が初期設定値になっています。</p>
+<p>この方法では，まずコンピューターを用いて，分析データと変数の個数が同じで標本サイズも同じであるランダムなデータを複数発生させます。そして，それらを用いて主成分分析を行った場合の平均的な結果と，実際のデータを主成分分析した場合の結果を比較し，ランダムなデータの場合よりも<em>固有値</em>が大きい主成分を採用するという方法をとります。</p>
+<p>さて，この「固有値」とは一体何なのでしょうか。これをきちんと説明するのは非常に難しいので，ここでは大まかなイメージをつかんでおくことにしましょう。</p>
+<p>先ほど，主成分分析の考え方のところでは，変数が2つの場合を例にとって説明をしました。変数が2つの場合，それらの変数がもつ情報は2つの軸で構成される平面上に表現することができます。もしこれが3つの変数の場合であれば，それらの変数がもつ情報は3つの軸で構成される3次元空間上に表現されることになります。</p>
+<p>今回のサンプルデータでは変数の数は6個ですので，これら6つの変数がもつ情報は，6次元の空間（これがどのようなものかを図示することもイメージすることも不可能ですが）に表現されることになるわけです。そして主成分分析では，それらn次元の空間に表現された情報を，できるだけ情報の損失がないような形で集約できる軸を探していきます。</p>
+<p>その際，その軸がどの方向を向いているのかを表した値が，先ほどの主成分得点の式における係数の部分です。2変数の場合には，主成分得点の式は「<span class="math inline">\(z=a_1\times\text{変数}_1+a_2\times\text{変数}_2\)</span>」という形になりますが，これはこの軸が，グラフの原点（横軸・縦軸ともに0）と，横軸の座標が<span class="math inline">\(a_1\)</span>，縦軸の座標が<span class="math inline">\(a_2\)</span>の点（<span class="math inline">\([{a_1}\ \ {a_2}]\)</span>）を通る直線であることを意味しています。変数が3つの場合にも，主成分の軸はやはり原点（<span class="math inline">\([0\ \ 0\ \ 0]\)</span>）と主成分得点の各係数を座標要素とする3次元空間中の点<span class="math inline">\([{a_1}\ \ {a_2}\ \ {a_3}]\)</span>を通る直線になります（<a href="#fig-factor-pca-eigenvector" class="quarto-xref">図&nbsp;<span>10.24</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-pca-eigenvector" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-pca-eigenvector-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/pca-eigenvector.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-pca-eigenvector-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.24: 固有ベクトルと固有値
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>このとき，この主成分得点の式の係数で表現される<span class="math inline">\([{a_1\ \ a_2}]\)</span>や<span class="math inline">\([{a_1\ \ a_2\ \ a_3}]\)</span>は，数学的には分析対象データの相関行列（または分散共分散行列）の<em>固有ベクトル</em>と呼ばれるものになります。そして，その固有ベクトルにそった直線上にデータがどれだけ集約できているのか（その軸でどれだけのばらつきを表現できているか）を数値化したものが<em>固有値</em>です<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>。</p>
+<p>なお，「平行分析に基づく」を選択した状態で「<strong>追加の出力</strong>」にある「スクリープロット」にチェックを入れると，平行分析におけるランダムなデータと実際のデータの固有値の変化を見ることができます（<a href="#fig-factor-pca-parallel" class="quarto-xref">図&nbsp;<span>10.25</span></a>）。</p>
+<!--  -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-pca-parallel" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-pca-parallel-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/pca-parallel.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-pca-parallel-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.25: 平行分析のスクリープロット
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="subsub:factor-pca-component-eigen" class="level6 unnumbered">
+<h6 class="unnumbered anchored" data-anchor-id="subsub:factor-pca-component-eigen">固有値に基づく</h6>
+<p>2つ目の「固有値に基づく」も非常によく用いられる方法です。一般に，この方法では「固有値が1以上」（これは一般に<em>カイザー基準</em>と呼ばれます）の主成分を採用します。SASやSPSSなどの統計ソフトでは，この基準が標準として設定されており，分析で算出される<em>固有値</em>の値が1を超える主成分の情報のみが結果に表示されます。</p>
+<p>主成分分析で主成分の個数を決める基準として用いられるのはデータの<em>相関行列</em>についての固有値ですが，この値はその主成分に「変数何個分」の情報が集約されているかという形で解釈することができます。つまり，「固有値1以上」というのは，最低でも変数1個分の情報を持っているような主成分だけを採用するということなのです。この方法を用いる場合には，「固有値に基づく」を選択して「固有値の最小基準値」を「1」に設定します。</p>
+</section>
+<section id="subsub:factor-pca-fixednumber" class="level6 unnumbered">
+<h6 class="unnumbered anchored" data-anchor-id="subsub:factor-pca-fixednumber">数値指定</h6>
+<p>それ以外の方法で主成分の個数を判断した場合には，その個数を「数値指定」に指定することで，指定した個数の主成分を抽出することができます。</p>
+<p>固有値の大きさや平行分析以外の方法で主成分の個数を判断するものとしては，たとえば<em>スクリープロット</em>と呼ばれる方法があります。</p>
+<p>主成分分析の主成分は，最初のものほど固有値が大きく，2番目の主成分，3番目の主成分と，順番が後ろの主成分になるにつれて固有値は小さくなっていきます。そしてこの各主成分の固有値の大きさをグラフに示したものがスクリープロットで，この方法では，グラフ上で固有値の変化が小さくなる手前までの主成分を採用するという方法をとります。</p>
+<p>スクリープロットを利用して主成分の個数を判断したい場合には，この「数値指定」を選択した状態で，「<strong>追加の出力</strong>」にある「スクリープロット」にチェックを入れてスクリープロットを作成します（<a href="#fig-factor-pca-scree" class="quarto-xref">図&nbsp;<span>10.26</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-pca-scree" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-pca-scree-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/pca-scree.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-pca-scree-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.26: スクリープロットを用いた判断
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>今回のデータでは，3つ目の主成分以降は固有値の変化がほとんどありませんので，その手前の2つ目までの主成分を採用すると判断するわけです。そして，そのように判断したら，その主成分の個数（「2」）を「数値指定」の数値入力欄に指定します。</p>
+<p>その他の基準としては，「累積説明率が70〜80%以上」というものもあります。<em>説明率</em>（<em>寄与率</em>）とは，データ全体のうち，その主成分に集約されている部分の割合のことで，各主成分の説明率は，その主成分の固有値を分析に使用した変数の個数で割った値になります。この「累積説明率が70〜80%以上」という基準は，最初の主成分から順に2番目，3番目と主成分の説明率を合計していき，その合計値が0.7〜0.8以上になるところまでの主成分を採用するという方法です。</p>
+<p>この方法を用いる場合には，「<strong>追加の出力</strong>」にある「回転前の固有値」にチェックを入れます（<a href="#fig-factor-pca-cumulative" class="quarto-xref">図&nbsp;<span>10.27</span></a>）。すると，各主成分の分散説明率と，その主成分およびその手前の主成分の説明率の合計値（累積%）の表が出力されますので，そこから判断した主成分の個数を「数値指定」の数値入力欄に指定します。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-pca-cumulative" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-pca-cumulative-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/pca-cumulative.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-pca-cumulative-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.27: 累積説明率を基準とする判断
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>なお，これらの基準は，どれも絶対的なものではなく，主成分の適切な個数を判断する際の目安にすぎません。「固有値1以上」という基準では，主成分の個数が多すぎたり少なすぎたりする場合があります。また，分析の目的にもよるでしょうが，「累積説明率70〜80%以上」という基準では，主成分の数が多くなりすぎる傾向があります。平行分析の場合にも，主成分の個数が少なめに判定されることがあるようです。そのため，これらの基準を参考にしながら，最終的には分析者の判断で適切と考えられる主成分の個数を決定することになります。</p>
+<p>なお，今回のサンプルデータの分析では，主成分の個数は平行分析に基づいて決定することにしましょう。ここでは，「<strong>主成分数</strong>」は，初期設定値の「平行分析に基づく」にします。</p>
+</section>
+</section>
+<section id="subsub:factor-pca-loadings" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="subsub:factor-pca-loadings">因子負荷</h4>
+<p>「<strong>因子負荷</strong>」には，次の2つの項目が含まれています（<a href="#fig-factor-pca-loadings" class="quarto-xref">図&nbsp;<span>10.28</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-pca-loadings" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-pca-loadings-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/pca-loadings.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-pca-loadings-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.28: 因子負荷の設定項目
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvsettings">
+<ul>
+<li>これ未満の負荷量を隠す　絶対値の小さい負荷量を非表示にします。</li>
+<li>負荷量順に並び替え　負荷量の絶対値が大きい順に変数を並び替えて表示します。</li>
+</ul>
+</div>
+<section id="これ未満の負荷量を隠す" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="これ未満の負荷量を隠す">これ未満の負荷量を隠す</h5>
+<p>1つ目の「これ未満の負荷量を隠す」の項目は，結果の表の中に絶対値が小さな負荷量を表示しないようにするための設定です。分析に使用する変数や主成分の数が多い場合，主成分とほとんど関連がない部分については数値を非表示にしてしまったほうが，主成分と各変数との関係を把握しやすくなります。そのため，jamoviの初期設定では，負荷量の絶対値が0.3未満の場合にその部分が非表示になるように設定されています。</p>
+<p>今回の分析結果ではそのような値は1つもありませんでしたが，結果の表の中に数値が表示されていない部分がある場合には，それらの負荷量はここで設定されている基準値よりも小さいということです。</p>
+<p>なお，分析の過程では確かに小さい負荷量は非表示のほうが見やすいかもしれませんが，レポートや論文に結果を報告する際には，それら小さな負荷量も含めて報告するほうがよいでしょう。その場合には，「これ未満の負荷量を隠す」の値を「0」にすることですべての負荷量を表示させることができます。</p>
+</section>
+<section id="負荷量順に並び替え" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="負荷量順に並び替え">負荷量順に並び替え</h5>
+<p>この項目は，分析に使用した変数を負荷量の大きさの順に並び替えて表示させるかどうかについての設定です。分析に使用する変数が多い場合や，抽出した主成分の個数が多い場合などは，このチェックをオンにしておくと結果が見やすくなります。</p>
+<p>今回の分析では，この設定はオフのままにしておきます。</p>
+</section>
+</section>
+<section id="sub:factor-pca-additional" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="sub:factor-pca-additional">追加の出力</h4>
+<p>「<strong>追加の出力</strong>」には，次の4つの項目が含まれています（<a href="#fig-factor-pca-additional" class="quarto-xref">図&nbsp;<span>10.29</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-pca-additional" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-pca-additional-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/pca-additional.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-pca-additional-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.29: 追加の出力
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvsettings">
+<ul>
+<li>主成分の要約量　各主成分について要約量を算出します。</li>
+<li>主成分の相関　各主成分の間の相関を算出します。</li>
+<li>回転前の固有値　回転前の固有値とその寄与率，累積寄与率を算出します。</li>
+<li>スクリー・プロット スクリー・プロットを表示します。</li>
+</ul>
+</div>
+<section id="主成分の要約" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="主成分の要約">主成分の要約</h5>
+<p>この項目は，抽出された主成分の固有値や寄与率についての情報を表示させるかどうかの設定です。この設定項目は，主成分に対して回転を行った場合にその回転後の主成分の情報を知りたい場合に使用します。主成分の回転を行わない場合は，この設定で表示される内容は「回転前の固有値」の表の一部とまったく同じですので，今回のサンプルデータを用いた分析ではここは設定の必要はありません。</p>
+</section>
+<section id="主成分の相関" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="主成分の相関">主成分の相関</h5>
+<p>この項目は，主成分の間の相関係数を算出するための設定項目です。主成分に対して回転操作を行った場合には，その回転方法によって主成分の間に相関が見られることがあるのですが，主成分に対して回転を行わない場合，それぞれの主成分は互いに<strong>独立</strong>（相関0）になりますので，今回の分析ではここも設定の必要はありません。</p>
+</section>
+<section id="回転前の固有値" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="回転前の固有値">回転前の固有値</h5>
+<p>主成分の<a href="#subsub:factor-pca-fixednumber">数値指定</a>のところで説明したように，「回転前の固有値」にチェックを入れると，抽出直後の各主成分の固有値と<em>分散説明率</em>（寄与率），そしてその主成分までの寄与率の合計（累積%）が表示されます。</p>
+</section>
+<section id="スクリープロット" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="スクリープロット">スクリープロット</h5>
+<p>すでに<a href="#subsub:factor-pca-component-parallel">平行分析</a>や主成分の<a href="#subsub:factor-pca-fixednumber">数値指定</a>のところで説明したように，「スクリープロット」にチェックを入れると固有値の<em>スクリープロット</em> が作成されます。</p>
+<p>なお，この「スクリープロット」の項目は，「<strong>主成分数</strong>」で3つのうちのどれが選択されているかによって少しずつ表示が異なります。「<strong>主成分数</strong>」で「平行分析に基づく」が選択されている場合には，分析データとランダムなデータについてのスクリープロットが1つのグラフに示されますが，ここが「固有値に基づく」になっている場合には，「固有値の最小基準値」で指定された位置に点線が示されます。また，「<strong>主成分数</strong>」が「数値指定」になっている場合には，固有値のみがグラフ上に示されます（<a href="#fig-factor-pca-scree-plots" class="quarto-xref">図&nbsp;<span>10.30</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-pca-scree-plots" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-pca-scree-plots-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/pca-scree-plots.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-pca-scree-plots-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.30: スクリープロットのバリエーション
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="sub:factor-pca-results" class="level3" data-number="10.2.3">
+<h3 data-number="10.2.3" class="anchored" data-anchor-id="sub:factor-pca-results"><span class="header-section-number">10.2.3</span> 分析結果</h3>
+<p>主成分の個数は平行分析を基準に決定し，主成分の回転は行わないという設定で分析をすると，その結果は<a href="#fig-factor-pca-results" class="quarto-xref">図&nbsp;<span>10.31</span></a>のようになります。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-pca-results" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-pca-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/pca-results.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-pca-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.31: 主成分分析の結果
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>この表の「主成分」の部分に示されているのは<em>主成分負荷量</em>と呼ばれる値で，これは各変数と主成分との間の相関関係を示しています。この値は，その主成分の固有値の平方根と固有ベクトルを掛け合わせることによって求められます。</p>
+<p>回転を行わない主成分分析の場合，1つ目の主成分は全体を総合するような（総合得点的な）ものになることが多いのですが，今回の結果でも，第1主成分はどの変数の値とも0.5から0.7程度の正の相関関係にあり，メニュー全体に対する総合的な満足度を反映した軸といえるようなものになっています。つまり，この主成分の得点が高い人ほど全体的に満足度が高く，主成分得点が低い人ほど全体的に満足度が低い傾向にあるということです。</p>
+<p>これに対し，第2主成分ではカレーとラーメン，カツ丼に対する負荷量がプラスになっており，それ以外がマイナスであることから，この主成分の得点が高い人ほどカレーやラーメンなどのいわゆる「がっつり」したにメニューに対する満足度が高く，この主成分の得点が低い人ほどパスタやオムライスなどの洋食メニューに対する満足度が高くなく傾向にあることがわかります。このことから，この第2主成分は，がっつり志向かどうかという，志向性の違いを表しているといえるでしょう。</p>
+<p>結果の表の「<em>独自性</em>」の部分は，各変数がもつ情報のうち，この2つの主成分に集約しきれなかった情報の割合を示しています。この独自性の値に，たとえば0.8（80%）を超えるようなものが含まれている場合，その変数は主成分に情報がうまく集約できていないことを意味します。今回の分析結果では，どの変数も独自性は0.3前後ですので，2つの主成分に60%から70%程度の情報が集約できていることになります。これは分析結果としては十分な値でしょう。</p>
+</section>
+<section id="sub:factor-pca-details" class="level3" data-number="10.2.4">
+<h3 data-number="10.2.4" class="anchored" data-anchor-id="sub:factor-pca-details"><span class="header-section-number">10.2.4</span> 分析の詳細設定</h3>
+<p>基本的な分析が終わりましたので，ここからは主成分分析のその他の設定項目について見ていきましょう。</p>
+<section id="subsub:factor-pca-assumption" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="subsub:factor-pca-assumption">前提チェック</h4>
+<p>他の分析手法と同様に，主成分分析にも分析のための全体となる条件がいくつか存在します。それらの条件が満たされているかどうかは，「<strong>前提チェック</strong>」に含まれる項目を用いて確認できます（<a href="#fig-factor-pca-assumption" class="quarto-xref">図&nbsp;<span>10.32</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-pca-assumption" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-pca-assumption-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/pca-assumption.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-pca-assumption-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.32: 前提チェック
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvsettings">
+<ul>
+<li>バートレットの球面性検定　バートレットの球面性検定を実施します。</li>
+<li>KMO標本妥当性指標　標本妥当性指標（MSA）を算出します。</li>
+</ul>
+</div>
+<section id="バートレットの球面性検定" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="バートレットの球面性検定">バートレットの球面性検定</h5>
+<p>この項目にチェックを入れると，<em>バートレットの球面性検定</em>と呼ばれる検定が実施されます。</p>
+<p>主成分分析では，複数の変数で表現されている情報をより少数の主成分に集約するということを行うわけですが，その際，分析に使用する変数が互いにまったく無関係なものであると，それらを集約することができません。そこで，分析に使用するデータの中に主成分分析を適切に行えるだけの関連性が見られるかどうかを確かめるのが，このバートレットの球面性検定です。</p>
+<p>この検定のチェックをオンにすると，<a href="#fig-factor-pca-bartlett" class="quarto-xref">図&nbsp;<span>10.33</span></a>のような結果が得られます。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-pca-bartlett" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-pca-bartlett-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/pca-bartlett.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-pca-bartlett-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.33: 球面性検定の結果
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>この検定は，「分析データの相関行列が<em>単位行列</em>である」という仮説に対して検定を行っています。単位行列というのは，相関行列の対角（同じ変数同士の相関係数の部分）が1で，それ以外の要素（相関係数）がすべて0である状態です。つまり，この検定結果が有意である場合，「少なくとも1組以上の変数間に0でない相関がある」ということになります。今回の分析データに対する検定結果は有意（p&lt;.001）ですから，分析のための最低限の条件は満たしていることになります。</p>
+</section>
+<section id="kmo標本妥当性指標" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="kmo標本妥当性指標">KMO標本妥当性指標</h5>
+<p>「KMO標本妥当性指標」の項目は，カイザー=マイヤー=オルキン（KMO）の標本妥当性指標（<em>KMO標本妥当性指標</em>または<em>KMO指標</em>）と呼ばれる値の算出を行います（<a href="#fig-factor-pca-KMO" class="quarto-xref">図&nbsp;<span>10.34</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-pca-KMO" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-pca-KMO-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/pca-KMO.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-pca-KMO-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.34: KMO標本妥当性指標
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>この値は，変数間の相関および偏相関の情報をもとに算出されたもので，分析データに主成分として集約可能な部分がありそうな程度を示しています。この値の大きさについての大まかな目安は<a href="#tbl-factor-pca-KMO-table" class="quarto-xref">表&nbsp;<span>10.2</span></a>のとおりです。</p>
+<div class="cell" data-layout-align="center">
+<div id="tbl-factor-pca-KMO-table" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-factor-pca-KMO-table-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+表&nbsp;10.2: KMOの解釈の目安
+</figcaption>
+<div aria-describedby="tbl-factor-pca-KMO-table-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="table do-not-create-environment cell caption-top table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: center;" data-quarto-table-cell-role="th">KMOの値</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">解釈</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">0.9〜1.0</td>
+<td style="text-align: center;">非常に高い</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">0.8〜0.9</td>
+<td style="text-align: center;">高い</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">0.7〜0.8</td>
+<td style="text-align: center;">許容レベル</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">0.6〜0.7</td>
+<td style="text-align: center;">疑わしい</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">0.5〜0.6</td>
+<td style="text-align: center;">低い</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">0.0〜0.5</td>
+<td style="text-align: center;">著しく低い</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>この値はデータ全体と各変数それぞれについて算出されますが，主成分分析を実施するには，次の表のように全体のKMO指標が0.8以上であることが望ましく，少なくとも0.6以上である必要があるとされます。もし全体指標の値が小さい場合には，個別指標の値が小さな変数を分析から除外するなどの対応をとります。</p>
+<p>今回のデータについてのKMO指標は0.69でやや低めですが，分析に適さないというほどではなさそうです。</p>
+</section>
+</section>
+</section>
+<section id="sub:factor-pca-save" class="level3" data-number="10.2.5">
+<h3 data-number="10.2.5" class="anchored" data-anchor-id="sub:factor-pca-save"><span class="header-section-number">10.2.5</span> 保存</h3>
+<p>主成分分析では，各対象者について各主成分の主成分得点を算出し，それを別の分析に使用することが可能です。</p>
+<p>主成分得点の保存はとても簡単で，分析設定パネルの<span class="groupbar"><img src="images/assets/modules-analyses-arrow-r.svg" width="10pt/">| 保存</span>を展開して「主成分得点」にチェックを入れるだけです。この操作をしてからデータを確認すると，新たに「主成分得点1」と「主成分得点2」という変数が追加されていることがわかります（<a href="#fig-factor-pca-save" class="quarto-xref">図&nbsp;<span>10.35</span></a>）。</p>
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-pca-save" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-pca-save-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/pca-save.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-pca-save-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.35: 主成分得点の保存
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>今回の分析では2つの主成分を採用しましたので，それぞれについて主成分得点が算出されているのです。なお，主成分得点の算出方法は，分析の考え方のところで示した主成分分析の関係式に各回答者の回答値を代入することによって得られる値です。このデータの場合には，関係式は次のようになります。</p>
+<p><span class="math display">\[
+z = a_1 \times \text{パスタ} + a_2 \times \text{カレー} + \cdots + a_6 \times \text{ドリア}
+\]</span></p>
+<p>そして，主成分1と主成分2のそれぞれについてこの式を用いて計算した結果が，各個人の主成分得点ということになります。</p>
+<p>なお，この式における<span class="math inline">\(a_1\)</span>や<span class="math inline">\(a_2\)</span>は，主成分負荷量ではなく主成分分析で得られる固有ベクトルである点には注意が必要です。jamoviの分析結果では各主成分における固有ベクトルの値は表示されませんが，必要であれば主成分の負荷量を固有値の平方根で割ることによって求めることができます。</p>
+</section>
+<section id="sub:factor-pca-score-analysis" class="level3" data-number="10.2.6">
+<h3 data-number="10.2.6" class="anchored" data-anchor-id="sub:factor-pca-score-analysis"><span class="header-section-number">10.2.6</span> 主成分得点を用いた分析</h3>
+<p>さて，分析で得た2つの主成分について主成分得点が求まりましたので，これらの値を使ってさらに別の分析を行ってみましょう。このサンプルデータには，食堂で提供されている代表メニューに対する満足度の他に，回答者の性別についての情報も含まれています。そこで，食堂で提供されているメニューに対する全体的な満足度やメニューに対する好みに男女差が見られるかどうかを見てみることにしましょう。</p>
+<p>分析タブの「<img src="images/assets/analysis-ttest.svg" class="img-fluid" alt="inline"> t検定」から「対応なしt検定」を選択し，設定パネルの「従属変数」の欄に先ほど算出した2つの主成分得点を，「グループ変数」の部分に「性別」を設定します（<a href="#fig-factor-pca-t-test-setting" class="quarto-xref">図&nbsp;<span>10.36</span></a>）。</p>
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-pca-t-test-setting" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-pca-t-test-setting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/pca-t-test-setting.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-pca-t-test-setting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.36: 主成分得点を用いたt検定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>また，男児それぞれにおける各主成分得点の平均値を見るために，「<strong>追加の統計量</strong>」で「記述統計」にもチェックを入れておきましょう（<a href="#fig-factor-pca-ttest-descriptive" class="quarto-xref">図&nbsp;<span>10.37</span></a>）。</p>
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-pca-ttest-descriptive" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-pca-ttest-descriptive-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/pca-ttest-descriptive.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-pca-ttest-descriptive-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.37: t検定と同時に記述統計量を算出
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>そして得られた結果が<a href="#fig-factor-pca-ttest-results" class="quarto-xref">図&nbsp;<span>10.38</span></a>です。</p>
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-pca-ttest-results" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-pca-ttest-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/pca-ttest-results.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-pca-ttest-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.38: 主成分得点のt検定の結果
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>この結果から，主成分1の主成分得点（食堂のメニューに対する全体的な満足度）は男女差が有意ではありませんが，主成分2の主成分得点（がっつり志向）においては男女差が有意になっています。また，算出された記述統計量からは，男性の主成分得点2の平均値は女性よりも高い値となっていますので，男性のほうがラーメンやカレー，カツ丼へといった「がっつり系」メニューへの志向が強く，女性はパスタやオムライス，ドリアなどの洋食メニューへの志向が強いことがわかります。</p>
+</section>
+</section>
+<section id="sec-factor-efa" class="level2" data-number="10.3">
+<h2 data-number="10.3" class="anchored" data-anchor-id="sec-factor-efa"><span class="header-section-number">10.3</span> 探索的因子分析</h2>
+<p>ここまで見てきた主成分分析は，複数の変数を総合した得点を作成することによってそこに情報を集約し，変数の数を減らすという手法でした。これに対し，因子分析では，複数の変数の背後にある少数の<em>共通因子</em>を探し出すことによって，データの構造を単純化し，理解しやすくする方法です。</p>
+<p>なお，因子分析は大きく<em>探索的因子分析</em>と<em>確認的因子分析</em>と呼ばれるものとに分けられますが，「因子分析」とだけいった場合には，一般に探索的因子分析のことを意味します。そこで，まずはこの探索的因子分析について見ていくことにしましょう。</p>
+<section id="sub:factor-efa-basics" class="level3" data-number="10.3.1">
+<h3 data-number="10.3.1" class="anchored" data-anchor-id="sub:factor-efa-basics"><span class="header-section-number">10.3.1</span> 考え方</h3>
+<p>ここに，ある高校における学力テスト10教科（国語，英語，日本史，世界史，公民，地理，数学，物理，生物，化学）の成績データがあるとします。このデータを用いて各生徒の学力について分析したいとしましょう。この場合，成績データは10科目分もありますので，なんらかの形でデータの縮約（削減）を行わないと，生徒の学力についての全体像を把握することは困難でしょう。この場合，先ほど説明した主成分分析を用いて，これらの成績を総合した得点を算出するというのも1つの方法ですが，ここでは別の方法を考えてみます。</p>
+<p>学校の教科は一般に「文系科目」，「理系科目」などと分類されますが，もしこれらの科目の成績の背後に「文系学力」や「理系学力」のようなものがあり，それらの能力の高さが個別の成績に影響を与えているのだとしたら，そしてそれらの能力の高さをなんらかの形で推定することができるとしたらどうでしょうか。この生徒は文系学力は高いが理系学力がいまいちだ，この生徒は文系学力も理系学力も高い，などのように，よりシンプルな形でそれぞれの学生の学力について検討できるようになるはずです。</p>
+<p>たとえば，これら10教科の成績の相関係数が<a href="#fig-factor-efa-basics" class="quarto-xref">図&nbsp;<span>10.39</span></a>のようなものになっていたとしましょう。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-efa-basics" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-efa-basics-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/efa-basics.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-efa-basics-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.39: 10教科の相関係数の例
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>この相関行列を見ると，国語から公民まではお互いにだいたい0.4から0.6程度の正の相関があり，数学から化学までの間にも互いに0.5から0.7近い正の相関があります。対照的に，国語や英語と数学や物理の間の相関は0.1や0.2と低いものになっています。これらのことから，国語から公民まで，数学から化学までには成績の点から見た場合にある程度の類似性があり，そして国語や英語などの科目と数学や物理などの科目との間にはそうして類似性が見られないということになります。</p>
+<p>因子分析では，このような科目成績間の類似性には，その背後になんらかの共通因子の存在があると考えます。ある共通因子が，程度の差こそあれそれぞれの科目に対して影響を与えているのために，これらの点数が似通ってくると考えるわけです。このようにして考えると，国語から公民までの科目の背後，そして数学から化学までの科目の背後に共通する因子が隠れているといえそうです。</p>
+<p>なお，このデータはあくまでも「たとえば」の話として示したもので，かなり誇張した値になっています。ですから，科目間の類似性は相関係数を見ただけでもおおよそわかるのでしょう。しかし，実際のデータではここまでわかりやすい形になっていないことがほとんどです。そこで探索的因子分析では，このような複数の変数の背後にある因子を，数学的な手法を用いて見つけ出そうとするのです。</p>
+<p>その際，因子分析では各変数（この例の場合は各教科の成績）と各因子の間の関係を式で表すと次のような形になります。</p>
+<p><span class="math display">\[\begin{eqnarray*}
+\text{国語の成績} &amp;=&amp; a_1 \times \text{因子}_1 + b_1 \times \text{因子}_2 +\text{独自因子}_\text{国語}\\
+\text{英語語の成績} &amp;=&amp; a_2 \times \text{因子}_1 + b_2 \times \text{因子}_2 +\text{独自因子}_\text{英語}\\
+\text{日本史の成績} &amp;=&amp; a_3 \times \text{因子}_1 +\cdots
+\end{eqnarray*}\]</span></p>
+<p>主成分分析の場合とよく似ていますが，式の左側は主成分分析の場合のように合成得点ではなく，各教科の成績得点になっています。つまり，共通因子の影響力を合計したものが実際のテスト成績になるという考え方をとるのです。このとき，各因子の前にある<span class="math inline">\(a_1\)</span>や<span class="math inline">\(b_1\)</span>はその教科の成績における各因子の影響力の強さを表しており，これは<em>因子負荷量</em>と呼ばれます。このような式は，分析に使用する変数（この例では教科）の個数と同じだけ作成されます。</p>
+<p>また，式の最後には「<span class="math inline">\(\text{独自因子}_\text{国語}\)</span>」というような項目があります。これは，共通因子では説明しきれない，その教科独自の部分を表しており，<em>独自性</em>と呼ばれます。これに対し，その教科の得点のばらつきのうち，共通因子によって説明される部分は<em>共通性</em>と呼ばれます。</p>
+<p>このような考え方に基づいて，因子分析では先ほどの関係式でデータをうまく説明できるような因子負荷量を計算していくのですが，先ほどの関係式で分析前に明らかな値は式の左辺にある各教科の成績（これを<em>観測変数</em>と呼びます）のみで，それ以外の共通因子や因子負荷量，独自性（独自因子）の大きさはすべて計算によって求める必要があります。さらに，共通因子がいくつあるのかさえ，分析前にはわからないのです。さすがにこのままではなんでもありな状態になってしまい，最適な値を求めようにも求めようがありません。そこで，因子分析では計算になんらかの条件を設けたうえで，その中で最適と考えられる値を算出するという方法がとられます。</p>
+<p>そして，その際にどのような計算上の条件を設けたかによって，因子分析の結果は異なってきます。そのため，因子分析の実施にあたっては，分析をソフトウェア任せにするのではなく，分析者自身が分析データや分析目的に合わせて適切な設定を行うことが非常に重要となります。</p>
+</section>
+<section id="sub:factor-efa-procedure" class="level3" data-number="10.3.2">
+<h3 data-number="10.3.2" class="anchored" data-anchor-id="sub:factor-efa-procedure"><span class="header-section-number">10.3.2</span> 基本手順</h3>
+<p>ここからは，次のサンプルデータ（<a href="https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/factor_data03.omv">factor_data03.omv</a>）を用いて探索的因子分析の分析手順についてみていくことにしましょう（<a href="#fig-factor-data03" class="quarto-xref">図&nbsp;<span>10.40</span></a>）。 <!-- --></p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-data03" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-data03-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/data03.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-data03-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.40: サンプルデータ
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>このデータには，「オタク傾向」の強さを測定ために作成した9個の質問項目に対する回答データ（いずれも「1:まったくあてはまらない」〜「7:とてもよくあてはまる」の7段階評定）が300人分含まれています。これらの質問への回答から，「オタク傾向」の背後にどのような共通因子がありそうかを探ってみます。</p>
+<!-- -->
+<div class="jmvvar">
+<ul>
+<li><code>ID</code>　回答者のID</li>
+<li><code>Q1</code>　関心がある対象については徹底して調べ尽くすほうだ</li>
+<li><code>Q2</code>　好きなものを手に入れるためなら手間やお金は惜しまない</li>
+<li><code>Q3</code>　趣味に関連するアイテムやグッズなどは全部集めたくなる</li>
+<li><code>Q4</code>　現実の人間よりフィクションのキャラクターのほうがよいと思うことがある</li>
+<li><code>Q5</code>　人といるより趣味の時間のほうが楽しい</li>
+<li><code>Q6</code>　人とは直接話すよりオンラインでやりとりするほうがいい</li>
+<li><code>Q7</code>　熱くなりすぎて周りに引かれることがある</li>
+<li><code>Q8</code>　趣味について話し出すととまらない</li>
+<li><code>Q9</code>　熱中しすぎて我を忘れることがある</li>
+</ul>
+</div>
+<p>探索的因子分析の実施には，分析タブの「<img src="images/assets/analysis-factor.svg" class="img-fluid" alt="inline"> 因子分析」から「探索的因子分析」を選択します（<a href="#fig-factor-efa-menu" class="quarto-xref">図&nbsp;<span>10.41</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-efa-menu" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-efa-menu-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/efa-menu.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-efa-menu-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.41: 探索的因子分析の実行
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>すると，次の設定パネルが表示されます。画面の構成は，主成分分析のものと非常によく似ています（<a href="#fig-factor-efa-setting" class="quarto-xref">図&nbsp;<span>10.42</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-efa-setting" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-efa-setting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/efa-setting.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-efa-setting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.42: 探索的因子分析の設定パネル
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>ここで，分析に使用する観測変数（質問）を右側の「変数」欄に移動したら基本的な分析設定は終了です（<a href="#fig-factor-efa-set-var" class="quarto-xref">図&nbsp;<span>10.43</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-efa-set-var" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-efa-set-var-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/efa-set-var.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-efa-set-var-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.43: 分析する変数を設定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>ただし，主成分分析の場合と同様，あるいはそれ以上に，因子分析の結果は分析の設定によって異なります。そのため，分析結果を見る前に，因子分析の各設定項目について説明していきたいと思います。</p>
+<p>また，因子分析においても，それぞれの回答者について<em>因子得点</em>を算出することができます。</p>
+<section id="subsub:factor-efa-method" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="subsub:factor-efa-method">方法</h4>
+<p>データの中から共通因子をとり出すことを因子の<strong>抽出</strong>といいますが，この因子抽出の方法にはさまざまなものがあり，そしてどれを用いるかによって結果が少しずつ変わってきます。また，因子分析の場合，その抽出した因子に対してまず例外なく<strong>回転</strong>と呼ばれる操作が行われます。そして，その回転の方法によっても，分析結果が大きく変わります。</p>
+<p>そこで，ここではこれら因子分析の結果に大きく影響するこれらの設定項目について見ていくことにします。</p>
+<section id="subsub:factor-fa-extraction" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="subsub:factor-fa-extraction">抽出法</h5>
+<p><strong>方法</strong>の「抽出法」の項目では，因子の抽出方法について設定を行います。今回のサンプルデータの分析では，因子の抽出は初期設定どおり「最小残差法」で行うことにしますが，jamoviで使用可能な因子抽出法には次の3つの選択肢がありますので，ここではそれらについて簡単に説明しておくことにします（<a href="#fig-factor-efa-extract" class="quarto-xref">図&nbsp;<span>10.44</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-efa-extract" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-efa-extract-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/efa-extract.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-efa-extract-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.44: 因子抽出法
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvsettings">
+<ul>
+<li>最小残差法　最小2乗法を用いて残差が最小となるように因子を抽出します。</li>
+<li>最尤法　データの分布に多変量正規分布を仮定し，分析データを説明するモデルとしてもっともあり得そうな（最尤な）因子を抽出します。</li>
+<li>主因子法　主成分分析と同様の計算を繰り返し行い，計算結果を収束させていくことによって因子を抽出します。</li>
+</ul>
+</div>
+<section id="subsub:factor-fa-extraction-minres" class="level6 unnumbered">
+<h6 class="unnumbered anchored" data-anchor-id="subsub:factor-fa-extraction-minres">最小残差法</h6>
+<p>jamoviで用意されている因子抽出法のうち，「<em>最小残差法</em>」は「<em>重みづけなし最小2乗法</em>（OLS）」とも呼ばれる手法で，因子分析モデルとデータの間の残差が最小になるような形で因子の抽出を行います。この方法は，標本サイズが小さめのデータなど，比較的どのようなデータに対しても因子をうまく抽出することができるとされている方法です。</p>
+</section>
+<section id="最尤法" class="level6 unnumbered">
+<h6 class="unnumbered anchored" data-anchor-id="最尤法">最尤法</h6>
+<p>2つ目の「<em>最尤法</em>」は，データの分布に<em>多変量正規分布</em>と呼ばれる分布を仮定することによって，その分析データの説明モデルとしてもっともあり得そうな因子を抽出するという方法をとります。近年，多くの研究で用いられるようになった手法であり，数学的にも洗練された方法であるとされますが，計算途中で計算不能になってしまうケースが最小残差法などに比べて多く発生します。また，適切な結果を得るためには十分な標本サイズが必要とされます。</p>
+</section>
+<section id="主因子法" class="level6 unnumbered">
+<h6 class="unnumbered anchored" data-anchor-id="主因子法">主因子法</h6>
+<p>3つ目の「<em>主因子法</em>」は，主成分分析と同様に相関係数の<em>固有ベクトル</em>と<em>固有値</em>の計算を行うことによって因子を抽出する方法です。ただし，主成分分析ではこの計算は1度しか行われませんが，主因子法では最初の計算で得られた結果をもとに各変数に対する<em>共通性</em>を算出し，その共通性の値を相関行列の対角（同じ変数同士の相関で値がつねに1.0になる部分）をその共通性の値で置き換えたうえで，再度固有ベクトルと固有値の計算を行う，という手順を複数回繰り返します。最終的に，共通性の値の変化があらかじめ設定した基準値より小さくなった（固有値の値が安定した）ところで計算をストップし，その結果を因子として抽出します。</p>
+<p>この主因子法は，最小残差法と同様に，比較的どのようなデータであっても因子を抽出できることが知られています。また，計算が単純であるということから，コンピューターの計算能力がそれほど発達していなかった頃によく用いられてきた方法です。</p>
+<p>なお，この主因子法で反復計算を行わず，共通性の初期値を1.0にして（つまり相関行列そのままで）固有値の計算を行って因子を抽出する方法は「<em>主成分法</em><a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>」と呼ばれ，その結果はjamoviの「主成分分析」を用いた場合の分析結果と同じになります。</p>
+</section>
+</section>
+<section id="subsub:factor-fa-rotation" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="subsub:factor-fa-rotation">回転法</h5>
+<p>因子分析の目的は，たくさんの変数の背後にある共通因子を見つけ出し，それらがどのような因子であるかを解釈することにあります。しかし，因子分析の結果は，そのままでは解釈困難なことがほとんどです。そこで，この因子の解釈を容易にするために行われるのが因子の「回転」と呼ばれる操作です。</p>
+<p>次の例は，10教科の学力テストデータから因子抽出した場合の結果を図示したものだと考えてください。この図では，各教科に対する因子1の因子負荷量を横軸に，因子2の負荷量を縦軸にとって示したものです。因子分析直後の結果では，この図のようにそれぞれの教科が因子1と2の両方から影響（負荷）を受けていて，この因子1や因子2が何を表す因子なのかがよくわかりません（<a href="#fig-factor-efa-factor-example" class="quarto-xref">図&nbsp;<span>10.45</span></a>）。</p>
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-efa-factor-example" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-efa-factor-example-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/efa-factor-example.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-efa-factor-example-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.45: 因子抽出直後の状態の例
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>しかし，たとえば次の図のように，各教科の相対的な位置関係は保ったままでグラフの軸を回転させると，国語や英語などの教科は横軸の近くに，数学や物理などの教科は他の教科は縦軸の近くに集まるようになります（<a href="#fig-factor-efa-factor-example2" class="quarto-xref">図&nbsp;<span>10.46</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-efa-factor-example2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-efa-factor-example2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/efa-factor-example2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-efa-factor-example2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.46: 因子の回転
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>これであれば，横軸（因子1）は国語や英語，日本史などのいわゆる文系科目に強く関連する因子（文系学力因子）であり，縦軸（因子2）は数学や物理，化学などのいわゆる理系科目に強く関連する因子（理系学力因子）である，というように，容易に解釈することができるようになります。このようにして，分析結果を理解可能な形にすることが因子回転の役目です。</p>
+<p>その際，因子分析では，分析結果ができるだけ「<em>単純構造</em>」に近くなるようにして因子の回転を行います。単純構造とは，それぞれの変数が複数の共通因子のうちのいずれか1つからのみ影響を強く受けている状態，つまり，先ほどの図でそれぞれの変数がいずれかの軸にできるだけ近くなるような状態のことです。</p>
+<p>また，因子の軸を回転させる際，それぞれの軸が直角に交わった状態を維持したままで回転させる方法はとくに<em>直交回転</em>と呼ばれます。この直交回転では，それぞれの因子の間の相関は0になります。これに対し，因子の軸が互いに直角であるという条件をおかずに回転させる方法は<em>斜交回転</em>と呼ばれます。一般的には，直交回転よりも斜交回転のほうが，単純構造に近い結果が得られやすくなります。</p>
+<p>なお，かつては直交回転が一般的でしたが，それは当時のコンピューターの計算能力では計算が複雑になりがちな斜交回転は難しかっかたらというのが大きな理由の1つでした。現在のコンピューターではそのようなことはありませんので，近年は因子が互いに独立であるという強い仮説でもない限り，斜交回転を用いることが一般的になりつつあります。</p>
+<!--  -->
+<p>因子の回転方法にはじつにさまざまなものがありますが，jamoviではそのうち次の6つが利用できるようになっています。今回のサンプルデータの分析では，因子の回転法についても初期設定どおり「オブリミン法」で行うことにしますが，次に各回転方法について簡単に説明を加えておきます（<a href="#fig-factor-efa-factor-rotation" class="quarto-xref">図&nbsp;<span>10.47</span></a>）。</p>
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-efa-factor-rotation" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-efa-factor-rotation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/efa-factor-rotation.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-efa-factor-rotation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.47: 因子の回転方法
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvsettings">
+<ul>
+<li>なし　因子の回転は行いません。</li>
+<li>バリマックス　直交回転におけるもっとも一般的な手法です。因子ごとの因子負荷量2乗の分散を最大化します。</li>
+<li>クォーティマックス　直交回転における手法の1つです。変数ごとの因子負荷量2乗の分散を最大化します。</li>
+<li>プロマックス　斜交回転における代表的な手法の1つです。バリマックス回転の結果をもとに斜交回転を行います。</li>
+<li>オブリミン　斜交回転における手法の1つです。各因子間の因子負荷2乗の共分散を最小化します。</li>
+<li>シンプリマックス　斜交回転における手法の1つです。因子負荷が0に近い値になる箇所の個数を指定して因子を回転させます。</li>
+</ul>
+</div>
+<section id="fa-efa-rotation-none" class="level6 unnumbered">
+<h6 class="unnumbered anchored" data-anchor-id="fa-efa-rotation-none">なし</h6>
+<p>これは因子回転を行わないという設定です。何らかの理由で途中の計算結果を参照したい場合などを除いて，因子分析において回転を「なし」にすることはおそらくほとんどないでしょう。</p>
+</section>
+<section id="fa-efa-rotation-varimax" class="level6 unnumbered">
+<h6 class="unnumbered anchored" data-anchor-id="fa-efa-rotation-varimax">バリマックス</h6>
+<p>バリマックス法は<em>直交回転</em>におけるもっとも一般的な手法です。この回転方法では，因子ごとに因子負荷量2乗の分散が最大になるように，つまり，ある因子について，特定の変数に対しては負荷量の絶対値が大きく，他の因子に対しては小さくなるようにして因子軸を回転させます。</p>
+</section>
+<section id="fa-efa-rotation-quartimax" class="level6 unnumbered">
+<h6 class="unnumbered anchored" data-anchor-id="fa-efa-rotation-quartimax">クォーティマックス</h6>
+<p>クォーティマックス（コーティマックス）法も<em>直交回転</em>における手法の1つです。この方法では，それぞれの変数に対する各因子の負荷量にメリハリがつくようにして因子の軸を回転させます。この方法は，どの変数に対しても1つ目の因子の負荷量が高くなりがちで，すべての変数に対して影響を与える全般因子的なものが抽出されやすいことが知られています。</p>
+</section>
+<section id="fa-efa-rotation-promax" class="level6 unnumbered">
+<h6 class="unnumbered anchored" data-anchor-id="fa-efa-rotation-promax">プロマックス</h6>
+<p>プロマックス法は<em>斜交回転</em>における代表的な手法の1つです。この回転方法では，まずバリマックス回転によって得られた因子負荷を4乗<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a>して因子負荷量のメリハリを強調した状態を作成し，最終的な結果をそれに近づけるようにして因子の回転を行います。</p>
+<p>「斜交回転といえばプロマックス法」といえるほどによく使用される回転方法ですが，この方法はあくまでも簡便法であり，適切な結果を得るには別の回転法が望ましいとする考えもあります。</p>
+</section>
+<section id="fa-efa-rotation-oblimin" class="level6 unnumbered">
+<h6 class="unnumbered anchored" data-anchor-id="fa-efa-rotation-oblimin">オブリミン</h6>
+<p>オブリミン法は<em>斜交回転</em>における手法の1つです。この方法では，各因子間で因子負荷2乗の共分散が最小となるように因子の回転を行います。なお，オブリミン法はいくつかの斜交回転法をひとまとめにした総称で，jamoviの「オブリミン法」の結果は，そのうちの<em>クォーティミン法</em>（Quartimin）による回転結果と一致します。</p>
+</section>
+<section id="fa-efa-rotation-simplimax" class="level6 unnumbered">
+<h6 class="unnumbered anchored" data-anchor-id="fa-efa-rotation-simplimax">シンプリマックス</h6>
+<p>シンプリマックス法も<em>斜交回転</em>における手法の1つです。この方法では，因子負荷行列（各変数に対する因子負荷量をまとめた表）において「因子負荷が0」である箇所が特定の個数になるように回転させます。「因子負荷が0」である箇所の個数を指定して分析できる統計ソフトもありますが，jamoviで「シンプリマックス」による回転を行った場合，「因子負荷量0」に近い値となる箇所が分析に使用した変数と同じ個数になるような形で回転が行われます。</p>
+</section>
+</section>
+</section>
+<section id="subsub:factor-efa-number-of-factors" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="subsub:factor-efa-number-of-factors">因子数</h4>
+<p>主成分分析の場合と同様に，因子分析においても計算上は分析に使用する変数と同じ個数だけ因子を抽出することができます。実際の分析では，その中からとくに重要な因子だけをとり出して解釈することになります。因子の個数の決め方はすでに主成分分析のところで説明したのとまったく同じですので，ここでは説明は省略します。</p>
+<p>なお，サンプルデータの分析では，因子の個数は平行分析によって決める（平行分析に基づく）ことにします。その結果，3つの因子が抽出されたはずです。</p>
+</section>
+<section id="subsub:factor-efa-assumption-checks" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="subsub:factor-efa-assumption-checks">前提チェック</h4>
+<p>因子分析の前提についても，設定に含まれている項目やその使用方法，解釈の方法は主成分分析のところで説明したのと同一です。詳細は主成分分析における前提チェックの項目を参照してください。</p>
+</section>
+<section id="subsub:factor-efa-factor-loadings" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="subsub:factor-efa-factor-loadings">因子負荷量</h4>
+<p>因子負荷量の項目についても，設定項目やその使用方法は主成分分析のところで説明したのと同じです。ここでは，結果の解釈をしやすくするために「負荷量順に並び替え」にチェックを入れておくことにします。</p>
+</section>
+<section id="sub:factor-efa-additional-output" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="sub:factor-efa-additional-output">追加の出力</h4>
+<p>「<strong>追加の出力</strong>」には，次の項目が含まれています（<a href="#fig-factor-efa-additional-output" class="quarto-xref">図&nbsp;<span>10.48</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-efa-additional-output" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-efa-additional-output-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/efa-additional-output.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-efa-additional-output-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.48: 追加の出力
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<!-- -->
+<div class="jmvsettings">
+<ul>
+<li>因子の要約量</li>
+<li>因子の相関</li>
+<li>モデル適合度指標</li>
+<li>回転前の固有値</li>
+<li>スクリープロット</li>
+</ul>
+</div>
+<section id="subsub:factor-efa-factor-summary" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="subsub:factor-efa-factor-summary">因子の要約量</h5>
+<p>最初の「因子の要約量」の項目にチェックを入れると，因子に関する要約情報として<a href="#fig-factor-efa-factor-summary" class="quarto-xref">図&nbsp;<span>10.49</span></a>のような結果が表示されます。</p>
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-efa-factor-summary" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-efa-factor-summary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/efa-factor-summary.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-efa-factor-summary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.49: 因子の要約量
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>このうち，「負荷量2乗和」は各因子の因子負荷量の2乗値の合計で，これはその因子で説明できる情報の量を表します。その隣の「分散説明率（%）」は，データ全体の分散のうち，その因子によって説明される情報量の割合（<em>因子寄与率</em>），一番右端の「累積%（累積寄与率）」はその因子までの寄与率の合計です。</p>
+<p>この表は，因子抽出法を「最小残差法」，因子の回転法を「オブリミン法」にして分析した結果についての因子の要約ですが，この結果からは，3つの因子がそれぞれ比較的均等な割合でデータを説明できていることがわかります。また，3つの因子による累積寄与率は57.65%で，これら3つの因子でデータ全体の6割近くを説明できていることから十分といえるでしょう。</p>
+</section>
+<section id="subsub:factor-efa-factor-correlations" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="subsub:factor-efa-factor-correlations">因子の相関</h5>
+<p>「因子の相関」にチェックを入れると，各因子間の相関係数が<a href="#fig-factor-efa-factor-correlations" class="quarto-xref">図&nbsp;<span>10.50</span></a>のように相関行列の形で表示されます。</p>
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-efa-factor-correlations" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-efa-factor-correlations-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/efa-factor-correlations.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-efa-factor-correlations-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.50: 因子の相関
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>この相関行列から，3つの因子の間には互いに中程度からやや弱めの正の相関があることがわかります。</p>
+</section>
+<section id="subsub:factor-efa-fit-measures" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="subsub:factor-efa-fit-measures">モデル適合度指標</h5>
+<p>「モデル適合度指標」の項目にチェックを入れると，<a href="#fig-factor-efa-factor-model-fit" class="quarto-xref">図&nbsp;<span>10.51</span></a>のような表が追加で作成されます。</p>
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-efa-factor-model-fit" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-efa-factor-model-fit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/efa-factor-model-fit.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-efa-factor-model-fit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.51: モデル適合度指標
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>この表には，左から順にRMSEA，RMSEAの90%信頼区間，TLI，BIC，モデルに対する<span class="math inline">\(\chi^2\)</span>適合度検定の結果が表示されています。</p>
+<p>一番左のRMSEA（<em>近似誤差2乗平均平方根</em>）は，回帰分析のところで出てきたRMSE（<em>誤差2乗平均平方根</em>，<a href="07-Regression.html">第<span class="quarto-xref"><span>8</span></span>章</a>の<a href="07-Regression.html#sub:regression-LR-modelfit">モデル適合度</a>を参照）の近似値で，この値が小さいほど，分析によって得られた因子モデルとデータのずれ（残差）が小さいことを意味します。一般には，このRMSEAの値が0.05未満の場合にモデルの適合度が良好であるとみなされます。また，RMSEAについては90%（95%ではない点に注意）の信頼区間と合わせて報告されるのが一般的です。</p>
+<p>その隣のTLIは<em>タッカー=ルイス指数</em>と呼ばれる値で，これは<em>独立モデル</em>（因子と各変数の間の関係をまったく考えないモデル）に対して分析モデルのあてはまりがどれだけ改善されているかを示します。一般には，この値が0.95以上である場合にあてはまりがよいとみなされます。</p>
+<p>TLIの隣のBIC（<em>ベイズ情報量規準</em>）は，回帰分析のモデル適合度のところで説明した値と同じものです。この値はモデルのあてはまりのよさを相対的に示す数値で，この値1つだけでは，モデルが十分に適合しているかどうかの判断はできません。</p>
+<p>表の一番右端の「モデルの検定」の部分には，モデルとデータのずれの大きさについての<span class="math inline">\(\chi^2\)</span>適合度検定の結果が示されています。この検定は「モデルとデータのずれは0である」という帰無仮説に対するものなので，この検定結果が「有意でない」ことが望ましいといえます。ただし，この<span class="math inline">\(\chi^2\)</span>の値は標本サイズが大きいほど，また分析に使用する変数の個数が多いほど有意になりやすい傾向にあるため，この検定結果が有意だったからといって，必ずしもモデルがデータに適合していないというわけではありません。</p>
+<p>今回のサンプルデータの分析結果では，RMSEAは0.01と非常に小さく，TLIは1.00，<span class="math inline">\(\chi^2\)</span>検定の結果も有意ではありませんので，モデルの適合度は十分なと考えてよいでしょう。</p>
+</section>
+<section id="subsub:factor-efa-initial-eigenvalues" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="subsub:factor-efa-initial-eigenvalues">回転前の固有値</h5>
+<p>この設定項目にチェックを入れると，因子回転前の固有値に関する情報が表示されます。この設定項目で表示される内容は主成分分析の場合と同じですので，説明は省略します。</p>
+</section>
+<section id="subsub:factor-efa-scree-plot" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="subsub:factor-efa-scree-plot">スクリープロット</h5>
+<p>スクリープロットについても主成分分析の場合と同じですので説明は省略します。</p>
+</section>
+</section>
+</section>
+<section id="sub:factor-efa-save" class="level3" data-number="10.3.3">
+<h3 data-number="10.3.3" class="anchored" data-anchor-id="sub:factor-efa-save"><span class="header-section-number">10.3.3</span> 保存</h3>
+<p>因子分析でも，各対象者について各因子の因子得点を算出し，それを別の分析に使用することが可能です。設定パネルの一番下にある<span class="groupbar"><img src="images/assets/modules-analyses-arrow-r.svg" width="10pt/">| 保存</span>を展開すると「因子得点」の設定項目がありますので，ここにチェックを入れると因子得点が新たな変数として作成されます（<a href="#fig-factor-efa-save" class="quarto-xref">図&nbsp;<span>10.52</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-efa-save" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-efa-save-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/efa-save.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-efa-save-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.52: 因子得点の推定法
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>ただし，主成分得点と違って因子得点は答えが1つに決まらないため，これをどのように算出するかについては複数とおりの考え方があり，それぞれの方法で算出される因子得点の性質が少しずつ異なります。jamoviに用意されている因子得点の算出方法は，次の5つです。</p>
+<!-- -->
+<div class="jmvsettings">
+<ul>
+<li>サーストン　真の因子得点との相関が最大となる因子得点を算出します。</li>
+<li>バートレット　真の因子得点の不偏推定値となる因子得点を算出します。</li>
+<li>テン・ベルヘ　因子の相関をできるだけ正確に反映させた因子得点を算出します。</li>
+<li>アンダーソン=ルビン　直交する因子で因子得点間の相関が0になるような因子得点を算出します。</li>
+<li>ハーマン「理想化された」測定値をもとに因子得点を算出します。</li>
+</ul>
+</div>
+<p>なお，ここで作成される因子得点は，いわゆる「洗練された（refined）」因子得点です。因子得点として因子の負荷が大きい項目の合計点や平均点を用いる方法もよく用いられますが<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>，それらの得点は新たな「計算変数」として作成するか，<a href="#sec-factor-reliability-analysis">信頼性分析</a>の機能を用いて合成変数を作成するなどの方法を用いてください。</p>
+<section id="サーストン" class="level6 unnumbered">
+<h6 class="unnumbered anchored" data-anchor-id="サーストン">サーストン</h6>
+<p>サーストン法は<em>回帰法</em>とも呼ばれる方法で，回帰モデルを用いて因子の得点を推定しようとする方法です。より具体的には，変数間の相関行列の逆行列と因子負荷行列を使って因子得点算出のための係数を作成し，この係数を（標準化済みの）各測定値に掛けて因子得点を算出します。</p>
+<p>なお，探索的因子分析で抽出される因子は平均値が0，分散が1になるように標準化されていますが，この因子得点の平均は0，分散は回帰モデルの重相関係数の2乗に等しくなり，1にはなりません。また，この方法は，対応する因子と因子得点の間の相関が最大になるように因子得点を算出しますが，他の因子との関係については正確さがやや欠けるため，直交回転された因子についての因子得点であっても，因子得点間の相関が0にならない場合があります。</p>
+<p>サーストン法（回帰法）は因子得点算出の方法としてはおそらくもっとも一般的な手法で，他の多くの統計ソフトでも採用されています。</p>
+</section>
+<section id="バートレット" class="level6 unnumbered">
+<h6 class="unnumbered anchored" data-anchor-id="バートレット">バートレット</h6>
+<p>バートレット法は，サーストン法に改良を加えたもので，共通因子による影響のみを考慮して因子得点を算出します。この方法で算出された因子得点は，「真の」因子得点の<em>不偏推定値</em><a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a>になりますが，直交因子の因子得点間の相関が完全に0になるわけではありません。また，この方法による因子得点も，因子ごとの平均値は0になりますが，分散は1にはなりません。</p>
+</section>
+<section id="テンベルヘ" class="level6 unnumbered">
+<h6 class="unnumbered anchored" data-anchor-id="テンベルヘ">テン・ベルヘ</h6>
+<p>テン・ベルヘ法は，斜交回転された因子の相関をできるだけ正確に反映させるような形で算出される因子得点で，アンダーソン=ルビンの因子得点を斜交回転に拡張したような性質を持ちます。アンダーソン=ルビンの因子得点と同様に，この因子得点の平均値は0，分散は1になりますが，バートレット法の因子得点のような不偏推定値にはなっていません。</p>
+</section>
+<section id="アンダーソンルビン" class="level6 unnumbered">
+<h6 class="unnumbered anchored" data-anchor-id="アンダーソンルビン">アンダーソン=ルビン</h6>
+<p>アンダーソン=ルビン法は，直交する因子の因子得点間の相関が0になるようにして算出される因子得点です。また，この因子得点の平均値は0，分散は1になりますが，バートレット法の因子得点のような不偏推定値にはなっていません。</p>
+</section>
+<section id="ハーマン" class="level6 unnumbered">
+<h6 class="unnumbered anchored" data-anchor-id="ハーマン">ハーマン</h6>
+<p>ハーマン法は，測定値そのものではなく，因子分析結果から再構築された「理想化された」測定値を用いて因子得点を算出します。この方法は回帰法の修正版で，因子得点の平均値は0になりますが，分散は1にはなりません。</p>
+</section>
+</section>
+<section id="sub:factor-efa-results" class="level3" data-number="10.3.4">
+<h3 data-number="10.3.4" class="anchored" data-anchor-id="sub:factor-efa-results"><span class="header-section-number">10.3.4</span> 分析結果</h3>
+<p>サンプルデータについて，「最小残差法」で3因子（因子数は平行分析で決定）を抽出し，「オブリミン法」で回転した結果は<a href="#fig-factor-efa-factor-results" class="quarto-xref">図&nbsp;<span>10.53</span></a>のとおりです。なお，結果の表示については<strong>因子負荷</strong>の設定項目で「負荷量順に並び替え」にチェックを入れて変数の表示順序を因子負荷量の大きさ順に並び替えてあります。</p>
+<p>また，因子間の相関係数についても，<strong>追加の出力</strong>で「因子の相関」にチェックを入れて算出してあります。</p>
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-efa-factor-results" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-efa-factor-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/efa-factor-results.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-efa-factor-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.53: 探索的因子分析の結果
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>この結果の表には，それぞれの質問項目に対する各因子の負荷量と，各質問項目の独自性の値が示されています。このようにして各変数に対する因子負荷をまとめたものは<em>因子パターン行列</em>と呼ばれます。因子の回転を行わない場合や直交回転を用いた場合には，これらの値は因子と各変数の間の相関係数と同じになりますが，斜交回転の場合にはそうではありませんので，その点には注意が必要です。</p>
+<p>では，分析結果を見てみましょう。まず，どの質問項目においても独自性が極端に高いことはありませんので，これらの質問への回答は抽出した共通因子で説明できていると考えてよさそうです。もし，分析の結果において独自性が0.8を上回るような質問項目（観測変数）があった場合には，それらは分析から除外したほうがよいでしょう。</p>
+<p>また，この表では因子負荷量の絶対値が0.3未満のものは非表示になっています。このようにしてみると，<code>Q7</code>から<code>Q9</code>は因子1のみから強い負荷を，<code>Q4</code>から<code>Q6</code>は因子2のみから強い負荷を受けているというように，この分析結果が<em>単純構造</em>に近いものになっていることがよくわかります。</p>
+<p>今回の分析ではそのような質問項目（観測変数）はありませんでしたが，もし，単純構造を乱すような観測変数，つまり複数の因子の負荷が高い変数が含まれている場合には，それらを分析から除外して再分析することもありますし，分析の目的によっては，そのような変数をそのままにしておく場合もあります。ただし，そのように複数の因子にまたがる変数が多数あるような場合には，分析結果の解釈には注意が必要です。</p>
+<p>なお，分析結果を解釈する際には，このように絶対値の小さい負荷量は非表示にしたほうが単純構造になっているかどうかの確認がしやすいのですが，論文やレポートに結果を報告する際には，設定パネルの<strong>因子負荷</strong>の「これ未満の負荷量を隠す」に0を入力し，すべての負荷量を表示されるようにしたほうがよいでしょう。</p>
+<section id="subsub:factor-efa-factor-interpretation" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="subsub:factor-efa-factor-interpretation">因子の解釈</h4>
+<p>因子分析では，分析によって抽出された因子をどのように<strong>解釈</strong>できるかということも，分析における重要な関心の1つです。因子の解釈とは，それぞれの共通因子が一体何を意味するものなのかがわかるように，因子にわかりやすく簡潔な名前をつけることをいいます。</p>
+<p>たとえば，この分析結果では，因子1は「Q8」，「Q9」，「Q7」の3つの質問に高い負荷を持っていますが，これらの質問は次のとおりの内容でした。</p>
+<div class="jmvorange">
+<ul>
+<li>Q7　熱くなりすぎて周りに引かれることがある</li>
+<li>Q8　趣味について話し出すととまらない</li>
+<li>Q9　熱中しすぎて我を忘れることがある</li>
+</ul>
+</div>
+<p>これらの質問内容を見ると，いずれも「熱くなる」部分で共通しているようです。ですので，この因子を「熱中傾向」と名づけることにしましょう。</p>
+<p>このように，各因子が高い負荷をもつ観測変数にどのような共通点があるのかを見ながら，因子に名前をつけていくのが因子の解釈です。</p>
+<p>同様にして因子2，因子3についても解釈してみましょう。因子2は「Q4」から「Q6」に高い負荷を持っています。</p>
+<div class="jmvorange">
+<ul>
+<li>Q4　現実の人間よりフィクションのキャラクターのほうがよいと思うことがある</li>
+<li>Q5　人といるより趣味の時間のほうが楽しい</li>
+<li>Q6　人とは直接話すよりオンラインでやりとりするほうがいい</li>
+</ul>
+</div>
+<p>これらの質問内容は，いずれも人と接することを好まない傾向を示していますので，「非社交性」などと解釈するのが適当でしょう。</p>
+<p>また，因子3は「Q1」から「Q3」に高い負荷を持っています。</p>
+<div class="jmvorange">
+<ul>
+<li>Q1　関心がある対象については徹底して調べ尽くすほうだ</li>
+<li>Q2　好きなものを手に入れるためなら手間やお金は惜しまない</li>
+<li>Q3　趣味に関連するアイテムやグッズなどは全部集めたくなる</li>
+</ul>
+</div>
+<p>これらの質問内容は，いずれもモノや情報を徹底して集めたいという部分で共通点が見られますので，ここではこれを「収集欲求」と名づけることにしましょう。</p>
+<p>このようにして因子を解釈すると，「オタク傾向」には大きく「熱中傾向」，「非社交性」，「収集欲求」が関連しているということがわかります。また，これらの3因子の間には3.35から0.48の中程度の正の相関がありますので，熱中傾向が強い人ほど非社交的で収集欲求も強い傾向にあるということがわかります。このように，因子分析によってたくさんの変数を共通因子に還元することによって，データ全体を非常に簡潔に説明できるようになるのです。</p>
+</section>
+</section>
+</section>
+<section id="sec-factor-cfa" class="level2" data-number="10.4">
+<h2 data-number="10.4" class="anchored" data-anchor-id="sec-factor-cfa"><span class="header-section-number">10.4</span> 確認的因子分析</h2>
+<p>探索的因子分析によって得られる因子は，あくまでも分析に使用したデータに基づくものであって，それが普遍的な真実であるというわけではない点には注意が必要です。探索的因子分析の結果というのは一般に不安定なことが多く，分析に使用する変数が増えたり減ったりした場合や，別の集団を対象とした調査結果を分析した場合などには，抽出される因子の結果が変わることもよくあるのです。</p>
+<p>となると，分析で得られた因子モデルの正しさを別のデータで確かめたい，という考えが当然ながら生じてくるでしょう。ではその場合，新たに収集したデータを用いて探索的因子分析を行えばいいかというとそうではありません。探索的因子分析は，その分析データをもっともうまく説明できると考えられる因子を探索的に抽出する方法であって，因子モデルが正しいかどうかを確かめるための方法ではないからです。</p>
+<p>そして，このようにすでにある因子モデルが別のデータにおいてもあてはまるかどうかを確かめたい場合に使用されるのが，<em>確認的因子分析</em>と呼ばれる分析手法です。</p>
+<section id="sub:factor-cfa-basics" class="level3" data-number="10.4.1">
+<h3 data-number="10.4.1" class="anchored" data-anchor-id="sub:factor-cfa-basics"><span class="header-section-number">10.4.1</span> 考え方</h3>
+<p>ここでは，先ほどの探索的因子分析で用いたサンプルデータ（オタク傾向）の分析結果をもとに，確認的因子分析の考え方を見ていきましょう。先ほどの分析では，9つの質問への回答の背後に3つの共通因子が推定されました。そして，9つの質問のうち，Q1からQ3は「収集欲求」因子のみの負荷が高く，Q4からQ6は「非社交性」因子，Q7からQ9は「熱中傾向」因子のみの負荷が高いというように，各質問への回答には3つの因子のうちいずれか1つのみが強く影響している単純構造にあることが示されました。</p>
+<p>そして，このような構造が，海外のオタクにおいてもあてはまるといえるかどうかを知りたいとしましょう。そこで，前回の調査で使用した9つの質問を英訳し，英語圏に住む成人400名を対象に調査を実施しました。その結果がこのサンプルデータ（<a href="https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/factor_data04.omv">factor_data04.omv</a>）に入力されています（<a href="#fig-factor-data04" class="quarto-xref">図&nbsp;<span>10.54</span></a>）。</p>
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-data04" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-data04-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/data04.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-data04-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.54: サンプルデータ
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<!-- -->
+<div class="jmvvar">
+<ul>
+<li><code>ID</code>　回答者のID</li>
+<li><code>Q1</code>　I’m a thorough researcher when it comes to a subject I’m interested in.</li>
+<li><code>Q2</code>　I’m willing to spend a lot of time and money to get what I want.</li>
+<li><code>Q3</code>　I want to collect all the items and goods related to my hobby.</li>
+<li><code>Q4</code>　Sometimes I think fictional characters are better than real people.</li>
+<li><code>Q5</code>　I enjoy my hobbies more than being with people.</li>
+<li><code>Q6</code>　It’s better to communicate with people online than in person.</li>
+<li><code>Q7</code>　Sometimes I get too enthusiastic and stun the people around me.</li>
+<li><code>Q8</code>　I can’t stop talking about my hobbies.</li>
+<li><code>Q9</code>　Sometimes I get so absorbed that I lose control of myself.</li>
+</ul>
+</div>
+<p>このデータを先ほどの因子モデルでうまく説明できるかどうかを見るためには，まず分析に使用する因子モデルをはっきりさせておく必要があります。</p>
+<p>前回の因子分析結果を単純な模式図として示すと<a href="#fig-factor-cfa-model1" class="quarto-xref">図&nbsp;<span>10.55</span></a>のようになります。まず，「Q1」から「Q3」は「収集欲求」因子の影響を強く受けていました。他の2つの因子からもわずかに影響を受けていましたが，それらは非常に弱いので，ここでは省略します。</p>
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-cfa-model1" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-cfa-model1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/cfa-model1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-cfa-model1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.55: 収集欲求因子と観測変数の関係
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>この図では，因子を楕円で，各観測変数（質問への回答データ）を四角で示しています。因子と各変数は線（<em>パス</em>）で繋がれており，このパスは観測変数のほうに向かう矢印の形になっています。この矢印の向きは，変数間の影響の向きを表しています。因子分析の考え方では，各観測変数に対して因子が影響を及ぼしていると考えますので，矢印は因子から各観測変数に向かう形になるのです。</p>
+<p>同様に，「Q4」から「Q6」は「非社交性」因子，「Q7」から「Q9」は「熱中傾向」因子の影響を強く受けていました（<a href="#fig-factor-cfa-model2" class="quarto-xref">図&nbsp;<span>10.56</span></a>）。</p>
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-cfa-model2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-cfa-model2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/cfa-model2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-cfa-model2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.56: 非社交性因子，熱中傾向因子と観測変数の関係
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>また，これらの因子の間には，中程度からやや弱目の相関関係がありました。相関関係はお互いに関連があるということなので，ここではパスを両矢印で示します（<a href="#fig-factor-cfa-model3" class="quarto-xref">図&nbsp;<span>10.57</span></a>）。</p>
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-cfa-model3" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-cfa-model3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/cfa-model3.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-cfa-model3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.57: 共通因子間の関係
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>このようにして因子間と観測変数間の関係を図示したものは<em>パス図</em>と呼ばれます。このパス図は先ほどの因子分析結果を単純化して示したものですが，これが確認的因子分析において使用される分析モデルになるのです。確認的因子分析では，このような単純化された因子モデルを用いて，このモデルでデータをうまく説明できるかどうかを確かめます。</p>
+</section>
+<section id="sub:factor-cfa-procedure" class="level3" data-number="10.4.2">
+<h3 data-number="10.4.2" class="anchored" data-anchor-id="sub:factor-cfa-procedure"><span class="header-section-number">10.4.2</span> 分析手順</h3>
+<p>確認的因子分析は，一般に高価な専用ソフトウェアを使用するか，分析モデルをコンピュータープログラムのような形で書き表して実行するような形でしか利用できない場合がほとんどですが，jamoviではこれを驚くほど簡単に実行することができます。</p>
+<p>jamoviで確認的因子分析を実行するには，分析タブの「<img src="images/assets/analysis-factor.svg" class="img-fluid" alt="inline"> 因子分析」から「確認的因子分析」を選択します（<a href="#fig-factor-cfa-menu" class="quarto-xref">図&nbsp;<span>10.58</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-cfa-menu" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-cfa-menu-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/cfa-menu.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-cfa-menu-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.58: 確認的因子分析の実行
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>すると，次の設定パネルが表示されます（<a href="#fig-factor-cfa-setting" class="quarto-xref">図&nbsp;<span>10.59</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-cfa-setting" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-cfa-setting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/cfa-setting.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-cfa-setting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.59: 確認的因子分析の設定パネル
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>この画面右側の「因子」の部分に，分析モデルにそって変数を設定します。</p>
+<p>初期状態では，「因子」の部分には「因子1」しかありませんが，その下にある<span class="blueback">因子を追加</span>をクリックすると，因子を追加することができます。今回の分析モデルには3つの因子がありますので，<span class="blueback">因子を追加</span>を2回クリックして因子を2つ追加します（<a href="#fig-factor-cfa-add-factors" class="quarto-xref">図&nbsp;<span>10.60</span></a>）。</p>
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-cfa-add-factors" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-cfa-add-factors-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/cfa-add-factors.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-cfa-add-factors-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.60: 因子を2つ追加
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>次に，作成した因子の名前を設定します。因子の名前は「因子1」や「因子2」のままでも計算上は問題ありませんが，結果を見間違えたりしないよう，きちんと因子名を設定しておいたほうがよいでしょう。ここでは，「因子1」を「収集」，「因子2」を「非社交」，「因子3」を「熱中」としておきます（<a href="#fig-factor-cfa-rename-factors" class="quarto-xref">図&nbsp;<span>10.61</span></a>）。</p>
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-cfa-rename-factors" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-cfa-rename-factors-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/cfa-rename-factors.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-cfa-rename-factors-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.61: 因子の名前を変更
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>因子名の設定が終わったら，それぞれの因子に関連する変数を指定していきます。まず，「収集」因子の負荷が高いと考えられるのは「Q1」，「Q2」，「Q3」の3つですので，この3つを「収集」の「変数をここにドラッグ」の部分にマウスでドラッグして移動します（<a href="#fig-factor-cfa-set-vars" class="quarto-xref">図&nbsp;<span>10.62</span></a>）。</p>
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-cfa-set-vars" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-cfa-set-vars-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/cfa-set-vars.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-cfa-set-vars-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.62: 因子1に変数を設定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>同様にして，「非社交」と「熱中」因子も変数を指定します（<a href="#fig-factor-cfa-set-vars2" class="quarto-xref">図&nbsp;<span>10.63</span></a>）。</p>
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-cfa-set-vars2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-cfa-set-vars2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/cfa-set-vars2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-cfa-set-vars2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.63: すべての因子に変数を設定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>基本的な分析設定はこれでおしまいです。</p>
+</section>
+<section id="sub:factor-cfa-results" class="level3" data-number="10.4.3">
+<h3 data-number="10.4.3" class="anchored" data-anchor-id="sub:factor-cfa-results"><span class="header-section-number">10.4.3</span> 分析結果</h3>
+<p>それでは分析結果について見てみましょう。基本設定による分析では，<a href="#fig-factor-cfa-results" class="quarto-xref">図&nbsp;<span>10.64</span></a>のような結果が表示されます。いろいろな値が表示されているので，1つ1つ見ていきましょう。</p>
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-cfa-results" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-cfa-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/cfa-results.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-cfa-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.64: 確認的因子分析の結果
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>1つ目の「因子負荷」の表には，それぞれの因子から観測変数（各質問）への負荷量の推定値，標準誤差，標準得点（Z），有意確率（p）が示されています。この結果では，すべての値で負荷量の推定値が1を超えていますが，これは分析結果に問題があるわけではなく，この負荷量の値が標準化されていないものだからです。</p>
+<p>この結果では，それぞれの因子負荷量について「因子負荷が0である」という帰無仮説を用いた検定の結果が示されており，いずれの検定も有意確率（p）は「&lt;.001」で有意になっています。</p>
+<p>2つ目の「因子共分散」の表には，「推定値」の部分に因子の分散および因子間の共分散の値が示されています。なお，この表では各因子の分散は1.00に固定されており，この表に示されているのは因子間の相関係数になっています。各因子間の相関係数についても，因子負荷と同様に標準誤差と標準得点（Z），有意確率（p）の値が示されており，それぞれの有意性検定（帰無仮説：相関係数は0である）の結果を見ることができます。</p>
+<p>3つ目と4つ目の表には，この分析モデルのデータへの適合度に関する情報が表示されています。3つ目の表はモデルとデータのずれの大きさについての検定で，これは探索的因子分析の「<a href="#subsub:factor-efa-fit-measures">モデル適合度指標</a>」の部分で説明したものと同じです。この検定では<span class="math inline">\(\chi^2\)</span>が小さく，検定結果が有意でないことが望ましい結果です。今回の分析結果では有意確率p=0.492で検定結果は有意ではありませんので，分析モデルとデータのずれは0でないといえるほど大きなものでない（ずれは小さい）といえます。</p>
+<p>その下の「適合度指標」には，モデルのデータの適合度に関する代表的な指標が示されています（<a href="#fig-factor-cfa-results2" class="quarto-xref">図&nbsp;<span>10.65</span></a>）。</p>
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-cfa-results2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-cfa-results2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/cfa-results2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-cfa-results2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.65: 適合度関連の結果
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>この表に示されている値のうち，2つ目のTLIと3つ目のRMSEAについては，探索的因子分析の<a href="#subsub:factor-efa-fit-measures">適合度指標</a>のところで説明したものと同じです。</p>
+<p>表の1つ目のCFI（<em>比較適合度指標</em>）は，TLIと同様に<em>独立モデル</em>（因子と各変数の間の関係をまったく考えないモデル）に比べてどの程度あてはまりが改善しているかを0から1までの数値になるようにして算出した値で，この値が1に近いほどモデルがデータにうまくあてはまっていることを意味します。一般に，この値が0.90または0.95以上である場合に適合度が高いとみなされます。</p>
+<p>この分析結果では，適合度指標はCFI=1.00，TLI=1.00，RMSEA=0.00[0.00-0.04]で，いずれも適合のよさを示しています。したがって，今回の外国人を対象としたデータの場合にも，前回の分析結果で得られた3つの共通因子でうまく説明ができる，つまり，外国人の場合にも日本人と同じオタク傾向の3因子モデルがあてはまるということになります。</p>
+<p>では，ここからは分析の詳細設定について見ていきましょう。次の設定を適切に使用することで，分析結果についてのより詳しい情報が得られます。</p>
+</section>
+<section id="sub:factor-cfa-residual-covariances" class="level3" data-number="10.4.4">
+<h3 data-number="10.4.4" class="anchored" data-anchor-id="sub:factor-cfa-residual-covariances"><span class="header-section-number">10.4.4</span> 残差共分散</h3>
+<p><span class="groupbar"><img src="images/assets/modules-analyses-arrow-r.svg" width="10pt/">| 残差共分散</span>の設定項目は，因子によって説明しきれない残差（独自因子）の間で共分散（または相関係数）を算出したい場合に使用します。この項目を展開すると，<a href="#fig-factor-cfa-residual-covariance" class="quarto-xref">図&nbsp;<span>10.66</span></a>のような画面が表示されます。</p>
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-cfa-residual-covariance" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-cfa-residual-covariance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/cfa-residual-covariance.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-cfa-residual-covariance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.66: 残差共分散の設定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>この<em>残差共分散</em>（<em>誤差共分散</em>とも呼ばれます）を算出するには，ここで残差の共分散を算出したい変数のペアを選択し，それを右側の「残差共分散」の欄に移動します。なお，「<img src="images/assets/analysis-regression.svg" class="img-fluid" alt="inline"> 回帰分析」メニューの「相関行列」で相関係数を算出する場合とは異なり，ここでは共分散を算出させたい変数のペアを個別に指定する必要があります（<a href="#fig-factor-cfa-residual-covariance2" class="quarto-xref">図&nbsp;<span>10.67</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-cfa-residual-covariance2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-cfa-residual-covariance2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/cfa-residual-covariance2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-cfa-residual-covariance2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.67: 残差共分散の設定の例
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>残差共分散を算出するのはモデルの適合度を向上させるためであることがほとんどだと思われますが，残差共分散は因子で説明しきれない部分における変数間の関係であるため，残差共分散を多数算出する必要がある場合には，必要な因子がモデルの中に組み込まれていないなど，想定する因子モデルに問題がある可能性があります。</p>
+</section>
+<section id="sub:factor-cfa-options" class="level3" data-number="10.4.5">
+<h3 data-number="10.4.5" class="anchored" data-anchor-id="sub:factor-cfa-options"><span class="header-section-number">10.4.5</span> オプション</h3>
+<p><span class="groupbar"><img src="images/assets/modules-analyses-arrow-r.svg" width="10pt/">| オプション</span>では，分析における欠損値の扱いと，計算上の制約条件についての設定を行います（<a href="#fig-factor-cfa-option" class="quarto-xref">図&nbsp;<span>10.68</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-cfa-option" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-cfa-option-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/cfa-option.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-cfa-option-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.68: オプションの設定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvsettings">
+<ul>
+<li><strong>欠損値の処理</strong>
+<ul>
+<li>完全情報最尤推定法　欠損値のある行を削除せず，残りの情報を活用して分析します。</li>
+<li>行全体を除外　欠損値が含まれるデータ行全体を分析から除外します。</li>
+</ul></li>
+<li><strong>制約</strong>
+<ul>
+<li>因子の分散を1に固定　因子の分散を1に固定した場合の計算結果を表示します。</li>
+<li>最初の係数を1に固定　各因子の最初の変数の係数を1に固定した場合の計算結果を表示します。</li>
+</ul></li>
+</ul>
+</div>
+<section id="subsub:factor-cfa-missing" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="subsub:factor-cfa-missing">欠損値の処理方法</h4>
+<p>今回のサンプルデータには含まれていませんが，分析データに<strong>欠損値</strong>（データが欠落している部分）がある場合，その欠損値をどのように扱うかによって分析結果に影響が生じます。jamoviの確認的因子分析では，分析データに欠損値が含まれている場合，その値を<em>完全情報最尤推定法</em>と呼ばれる方法によって，欠損値を含む行を削除せず，欠損していない部分のデータ値を利用して推定を行います。</p>
+<p>欠損値に対して推定値を代入せず，欠損のままにしておきたい場合には，「行全体を除外」に設定を変更してください。完全情報最尤推定法による補完を行うのと，欠損がある場合にデータ行ごと分析から除外するのとでどちらがよいかは一概にはいえませんが，近年，とくに確認的因子分析においては，完全情報最尤推定法など，何らかの形で欠損値を補完して分析することが多いようです。</p>
+</section>
+<section id="subsub:factor-cfa-constraints" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="subsub:factor-cfa-constraints">推定における制約</h4>
+<p>探索的因子分析でも，何らかの形で計算のための条件や前提を設定しないことには計算結果が1つに定まらなかったのと同様に，確認的因子分析でもまったくの条件なしにはモデルに関する推定ができません。</p>
+<p>計算結果を収束させるために，確認的因子分析では「因子の分散を1」に固定するか，「各因子の最初の係数（負荷量）を1」にするか，いずれかの方法で計算を行います。jamoviの分析設定では，「因子の分散を1に固定」が初期設定値になっています。その場合，当然ですが表示される計算結果ではすべての因子で分散が1になります。</p>
+<p>もし因子の分散という情報が分析上重要である場合には，「最初の係数を1に固定」に設定して計算を行うことになるでしょう。その場合，各因子の分散の値は算出されますが，各因子の最初の変数では，その係数（因子負荷量）はすべて1になります。</p>
+<p>なお，分析結果として標準化された推定値（<strong>標準化推定値</strong>）を使用する場合には，どちらの場合も最終的な計算結果は同じになります。</p>
+</section>
+</section>
+<section id="sub:factor-cfa-estimates" class="level3" data-number="10.4.6">
+<h3 data-number="10.4.6" class="anchored" data-anchor-id="sub:factor-cfa-estimates"><span class="header-section-number">10.4.6</span> 推定値</h3>
+<p><span class="groupbar"><img src="images/assets/modules-analyses-arrow-r.svg" width="10pt/">| 推定値</span>では，因子や残差の推定値に関する設定を行います（<a href="#fig-factor-cfa-estimates" class="quarto-xref">図&nbsp;<span>10.69</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-cfa-estimates" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-cfa-estimates-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/cfa-estimates.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-cfa-estimates-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.69: 推定値の設定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<!-- -->
+<div class="jmvsettings">
+<ul>
+<li><strong>結果</strong>
+<ul>
+<li>因子共分散　因子の分散，および因子間の共分散または相関係数を算出します。</li>
+<li>因子の切片　因子の切片についての推定量を算出します。</li>
+<li>残差共分散　残差の分散，および指定した変数間での残差の共分散，または相関係数を算出します。</li>
+<li>残差の切片　残差の切片についての推定量を算出します。</li>
+</ul></li>
+<li><strong>統計量</strong>
+<ul>
+<li>検定統計量　推定した各係数についての有意性検定の結果を表示します。</li>
+<li>信頼区間　各係数について，信頼区間の算出を行います。</li>
+<li>標準化推定値　各係数について，標準化された値を算出します。</li>
+</ul></li>
+</ul>
+</div>
+<section id="subsub:factor-cfa-covariances" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="subsub:factor-cfa-covariances">結果</h4>
+<p>この画面の<strong>結果</strong>の部分では，因子と各観測変数の残差の分散・共分散と切片の算出結果を表示するかどうかについての設定を行います。</p>
+<p>この設定で「因子共分散」にチェックを入れた場合には，各因子の分散と，因子間の共分散または相関係数が表示されます。このとき，先ほどの<span class="groupbar"><img src="images/assets/modules-analyses-arrow-r.svg" width="10pt/">| オプション</span>のところで推定のための制約を「因子の分散を1に固定」に設定した場合には，結果に表示される値は各因子の分散（すべて1.00で固定）と，因子間の相関係数になります。これに対し，制約条件を「最初の係数を1に固定」に設定した場合には，結果の表には各因子の分散と因子間の共分散の値が表示されます。</p>
+<p>その下の「因子の切片」の部分にチェックを入れると，<em>因子の切片</em>（因子の平均値）についての情報が表示されるのですが，jamoviの現在のバージョンでは確認的因子分析で複数グループのデータを同時に分析するといったことはできませんので，この値はいずれの因子においても1.00で固定になります。そのため，この項目については現在のところ使い道はありません。</p>
+<p>3つ目の「残差共分散」の項目にチェックを入れると，各観測変数の残差の分散が表示されます。また，<span class="groupbar"><img src="images/assets/modules-analyses-arrow-r.svg" width="10pt/">| 残差共分散</span>の設定で共分散を算出するように設定した場合には，設定した観測変数のペアについて，算出された共分散の値が表示されます。</p>
+<p>一番下の「残差の切片」の部分にチェックを入れると<strong>残差の切片</strong>についての情報が表示されるのですが，その推定値および標準誤差は，どのような場合にもすべて観測変数の平均値と標準誤差の値に等しくなります（<a href="#fig-factor-cfa-estimates-results" class="quarto-xref">図&nbsp;<span>10.70</span></a>）。そのため，この項目についても今のところ使い道はなさそうです。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-cfa-estimates-results" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-cfa-estimates-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/cfa-estimates-results.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-cfa-estimates-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.70: 各設定項目の出力結果の例
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="subsub:factor-cfa-statistics" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="subsub:factor-cfa-statistics">統計量</h4>
+<p><span class="groupbar"><img src="images/assets/modules-analyses-arrow-r.svg" width="10pt/">| 推定値</span>右側の<strong>統計量</strong>の部分では，係数の推定に関する設定を行うことができます。1つ目の「検定統計量」にチェックを入れると，算出した係数（分散や共分散も含む）の推定値について，その係数が0でないかどうかの有意性検定の結果が表示されます。確認的因子分析では，いずれの係数についても標準得点zを用いた検定が行われます。</p>
+<p>2つ目の「信頼区間」にチェックを入れると，それぞれの係数について指定した幅の信頼区間が表示されます。</p>
+<p>3つ目の「標準化推定値」にチェックを入れると，各係数を標準化した値が表示されます。この標準化推定値の値は，<span class="groupbar"><img src="images/assets/modules-analyses-arrow-r.svg" width="10pt/">| オプション</span>のところで計算上の制約として「因子の分散を1に固定」を選択した場合にも「最初の係数を1に固定」を選択した場合にも同じになります（<a href="#fig-factor-cfa-standardized" class="quarto-xref">図&nbsp;<span>10.71</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-cfa-standardized" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-cfa-standardized-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/cfa-standardized.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-cfa-standardized-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.71: 標準化推定値
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>心理学の研究論文では，確認的因子分析の結果を報告する際にはこの標準化推定値を用いることが多いようです。考え方説明のところで用いた因子モデルの図に標準化推定値を示すと，分析結果は<a href="#fig-factor-cfa-result-model" class="quarto-xref">図&nbsp;<span>10.72</span></a>のようになります。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-cfa-result-model" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-cfa-result-model-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/cfa-result-model.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-cfa-result-model-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.72: 分析結果のパス図
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="sub:factor-cfa-model-fit" class="level3" data-number="10.4.7">
+<h3 data-number="10.4.7" class="anchored" data-anchor-id="sub:factor-cfa-model-fit"><span class="header-section-number">10.4.7</span> モデル適合度</h3>
+<p><span class="groupbar"><img src="images/assets/modules-analyses-arrow-r.svg" width="10pt/">| モデル適合度</span>では，モデル全体の適合度に関する情報の設定を行います（<a href="#fig-factor-cfa-model-fit" class="quarto-xref">図&nbsp;<span>10.73</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-cfa-model-fit" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-cfa-model-fit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/cfa-model-fit.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-cfa-model-fit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.73: モデル適合度の設定項目
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvsettings">
+<ul>
+<li><strong>適合度検定</strong>
+<ul>
+<li><span class="math inline">\(\chi^2\)</span>検定　モデル適合度についての<span class="math inline">\(\chi^2\)</span>検定の結果を表示します。</li>
+</ul></li>
+<li><strong>適合度指標</strong>
+<ul>
+<li>CFI　モデルのあてはまりのよさについての指標（比較適合度指標）を示します。</li>
+<li>TLI　モデルのあてはまりのよさについての指標（タッカー=ルイス指数）を示します。</li>
+<li>SRMR　モデルの残差の大きさについての指標（標準化残差2乗平均平方根）を示します。</li>
+<li>RMSEA　モデル残差の大きさについての指標（近似誤差2乗平均平方根）を示します。</li>
+<li>AIC　モデル残差の相対的な大きさについての情報（赤池情報量規準）を示します。</li>
+<li>BIC　モデル残差の相対的な大きさについての情報（ベイズ情報量規準）を示します。</li>
+</ul></li>
+</ul>
+</div>
+<section id="適合度検定" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="適合度検定">適合度検定</h4>
+<p>画面左側の「<strong>適合度検定</strong>」の部分では，モデルの適合度に関して<span class="math inline">\(\chi^2\)</span>検定を行うかどうかを設定できます。この検定では，「このモデルはデータがもつ情報を完全に説明できている（モデルによる残差が0である）」が帰無仮説ですので，この検定結果は有意にならない（pが0.05より大きい）ことが望ましいという点に注意してください。</p>
+<p>今回のサンプルデータでは<span class="math inline">\(\chi^2(\textsf{21})=\textsf{17.37}\)</span>で，有意確率p=0.688ですから，検定結果は有意ではありません。したがって，分析モデルでデータをうまく説明できている（モデルとデータのずれは大きくない）といえます。</p>
+<p>なお，探索的因子分析のところでも説明しましたが，この<span class="math inline">\(\chi^2\)</span>検定の結果は分析に使用する観測変数がたくさんある場合や標本サイズが大きい場合には有意になりやすい傾向があります。そのため，この検定結果が有意になっていたらだめだというわけでは必ずしもありません。モデルの適合度は，他の適合度指標と合わせて総合的に判断します。</p>
+</section>
+<section id="適合度指標" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="適合度指標">適合度指標</h4>
+<p>画面右側の<strong>適合度指標</strong>の部分では，適合度指標として表示させる値を選択します。</p>
+<section id="cfitli" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="cfitli">CFI，TLI</h5>
+<p>CFIとTLIについては，すでに探索的因子分析のところで説明しました。これらの値は，分析モデルの適合度が独立モデル（因子と観測変数がまったく無関係なモデル）に比べてどれだけ改善したかを示す値で，この値が1に近いほどあてはまりがよいことを意味します。一般には，0.9以上あるいは0.95以上の場合にあてはまりが良好であるとみなされます。</p>
+</section>
+<section id="srmrrmsea" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="srmrrmsea">SRMR，RMSEA</h5>
+<p>SRMRとRMSEAは残差の大きさに関する指標で，これらは0に近いほどよいということになります。RMSEAについては探索的因子分析のところで説明したとおりです。SRMRは，データから求められる共分散と推定モデルの共分散の差をもとに算出されます。これらの指標は，いずれの場合も算出した結果が0.05未満である場合にあてはまりが良好であるとみなすのが一般的です。</p>
+</section>
+<section id="aicbic" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="aicbic">AIC，BIC</h5>
+<p>AICとBICについては，回帰分析の<a href="07-Regression.html#sub:regression-LR-modelfit">モデル適合度</a> で説明したとおりです。これらはモデルの残差の大きさを表す値ですが，この値未満であればよいというようなものではなく，複数のモデル候補の間で相対的にあてはまりのよさを判断するための指標です。いくつかのモデル候補がある場合には，その中でこれらの値がもっとも小さくなるモデルを選択するのが一般的です。</p>
+<p>このように，確認的因子分析ではさまざまなモデル適合度指標を算出することができるのですが，逆にいえばこれは，この値さえ求めておけばよいというような定番の指標がないということでもあります。研究論文でも，モデル適合度の指標として<span class="math inline">\(\chi^2\)</span>検定の結果，あてはまりのよさの指標（CFIやTLI）を1つ以上，残差の大きさの指標（SRMRやRMSEA）を1つ以上の3種類の指標をセットで報告するのが一般的です。</p>
+<p>また，適合度指標としてどれを報告するかには流行（？）のようなものもあり，あてはまりのよさの指標として少し前まではGFIとAGFIという指標が報告されることが多かったのですが，近年ではそうでもないようです。少なくとも，それらの指標はjamoviのオプションには含まれていません。</p>
+</section>
+</section>
+</section>
+<section id="sub:factor-cfa-additional-output" class="level3" data-number="10.4.8">
+<h3 data-number="10.4.8" class="anchored" data-anchor-id="sub:factor-cfa-additional-output"><span class="header-section-number">10.4.8</span> 追加の出力</h3>
+<p><span class="groupbar"><img src="images/assets/modules-analyses-arrow-r.svg" width="10pt/">| 追加の出力</span>では，分析結果に基づいてモデルの適合度を向上させるための参考指標などについて設定することができます（<a href="#fig-factor-cfa-additional" class="quarto-xref">図&nbsp;<span>10.74</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-cfa-additional" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-cfa-additional-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/cfa-additional.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-cfa-additional-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.74: 追加の出力に関する設定項目
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvsettings">
+<ul>
+<li><strong>モデルの事後修正</strong>
+<ul>
+<li>相関行列の残差　モデルから算出される相関係数とデータから算出される相関係数の残差を求めます。</li>
+<li>修正指数　モデル適合度の向上につながりそうな修正候補を指数として示します。</li>
+</ul></li>
+<li><strong>グラフ</strong>
+<ul>
+<li>パス図　モデルのパス図を作成します。</li>
+</ul></li>
+</ul>
+</div>
+<section id="subsub:factor-cfa-posthoc" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="subsub:factor-cfa-posthoc">モデルの事後修正</h4>
+<p>今回のサンプルデータではモデルに十分な適合度がありましたが，実際の分析場面では適合度が十分とはいえない結果になる場合もあるでしょう。その場合，モデルのどの部分に問題があるのかを調べることで，モデルの適合度を向上させられることがあります。</p>
+<section id="相関行列の残差" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="相関行列の残差">相関行列の残差</h5>
+<p>そのための参考指標の1つが，モデルから算出される観測変数間の相関係数と，実際のデータにおける観測変数間の相関係数の間の残差です。相関係数の残差を算出するには，「相関行列の残差」の部分にチェックを入れます。またその際，「これ以上の値を強調」に指定されている数値より大きな絶対値の部分が赤色の文字で強調表示されます（<a href="#fig-factor-cfa-residual-correlation" class="quarto-xref">図&nbsp;<span>10.75</span></a>）。</p>
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-cfa-residual-correlation" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-cfa-residual-correlation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/cfa-residual-correlation.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-cfa-residual-correlation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.75: 相関行列の残差
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>この相関係数の残差に大きな値（たとえば0.1を超えるようなもの）がある場合には，分析モデルではその関係がうまく説明できていないということになります。そうした部分が特定の変数（表の列または行）に集中しているようであれば，その変数を分析から除外してみたり，モデルにおけるその変数の扱いを修正したりすることによってモデルの適合度が向上するかもしれません。</p>
+</section>
+<section id="修正指標" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="修正指標">修正指標</h5>
+<p>また，「修正指数」にチェックを入れると，分析に使用したモデルには含まれていない関係（パス）について，それらを加えたときにモデル適合度がどの程度向上するかを示す<em>修正指数</em>が算出されます。jamoviの初期設定では，この修正指数が3を超える部分が赤色で強調されるようになっていますが，この値は「これ以上の値を強調」の数値を指定することによって変更可能です。</p>
+<p>今回の分析結果について修正指数を算出してみると，<a href="#fig-factor-cfa-residual-modification-indices" class="quarto-xref">図&nbsp;<span>10.76</span></a>のような結果になります。</p>
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-cfa-residual-modification-indices" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-cfa-residual-modification-indices-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/cfa-residual-modification-indices.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-cfa-residual-modification-indices-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.76: モデル修正指数
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>この結果の1つ目の表から，「収集傾向」の因子で「Q5」と「Q6」の部分が赤になっていますから，現在のモデルに対してこれらのパス（「収集傾向」因子から「Q5」と「Q6」への因子負荷）をモデルに追加すると，さらにモデルの適合度が向上する可能性が高いということがわかります。</p>
+<p>2つ目の表は残差共分散に関する修正指数です。今回のこの結果は，ここで赤字になっている部分，たとえば「Q2」と「Q5」の間で残差共分散を算出するようにモデルを修正するとモデル適合度が向上する可能性が高いということを示しています。</p>
+<p>ただし，これらの数値はあくまでも「計算上，ここにパスを追加すると適合度があがる可能性がある」というものであって，そのようなパスが理解可能なものかどうかまでは保証されません。これらの指数にそって闇雲にモデルに修正を加えていくと，最終的に解釈不能なモデルになってしまう可能性が高くなります。モデルに修正を加える場合には，その修正が理解可能なものかどうかをよく考えるようにしてください。</p>
+<p>そもそも，確認的因子分析はすでにある仮説モデルでデータをうまく説明できるかどうかを確認することを目的とした分析です。分析結果が思わしくなかったからといって，データに合わせて大幅に探索的にモデルを修正していくのは決して好ましいとはいえないでしょう。モデルの修正は，元の仮説で想定される範囲を超えない程度に留めておくことが重要です。</p>
+</section>
+</section>
+<section id="グラフ" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="グラフ">グラフ</h4>
+<p>なお，モデルに複数の修正を加えた場合，そのままではそのモデルがどのような形になっているのかを把握することが困難になっていきます。その場合，<strong>グラフ</strong>の部分にある「パス図」にチェックを入れて，モデルを図示してみるとよいでしょう。「<strong>グラフ</strong>」の項目にチェックを入れると，<a href="#fig-factor-cfa-plots-diagram" class="quarto-xref">図&nbsp;<span>10.77</span></a>のように各因子と観測変数の関係，因子間の相関，残差間の相関を図示してくれます。</p>
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-factor-cfa-plots-diagram" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="!ht" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-factor-cfa-plots-diagram-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/factor/cfa-plots-diagram.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-factor-cfa-plots-diagram-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;10.77: モデルのパス図
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<!--  -->
+<p>なお，今回の分析ではモデルの修正は行っていませんので，ここに示されるパス図は，縦横の向きは違うだけで分析前に示したパス図と同じものになっています。</p>
+
+
+</section>
+</section>
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p>示された文章の内容について，「まったくあてはまらない」から「とてもよくあてはまる」までの5段階や7段階の選択肢から答えさせる手法。<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>1つの尺度の中でさらに小区分に分けられているもののことです。たとえば，ある性格特性尺度が外向性尺度，神経症傾向尺度など複数の小尺度からなる場合，外向性尺度や神経症尺度のことをその性格特性尺度の下位尺度と呼びます。<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>とはいえ，クロンバックのアルファは現在でも尺度の内的一貫性の指標として非常によく用いられています。<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>相関行列のような形の表で，相関行列ではつねに1になる表の左上から右下にかけての対角（同じ変数同士の組み合わせの部分）にその変数の分散，相関行列で各変数間の相関係数が示されている部分にそれらの変数の共分散が示されているもの。この分散共分散行列を標準化したものが相関行列です。<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>固有ベクトルと固有値についてのこのような説明は，数学的には適切ではないかもしれません。しかし，より正確な説明のためにはベクトルや行列の知識が必要となりますので，ここでは便宜的にこのように説明をしておきます。<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>ややこしいですが，この相関行列を用いて反復計算を行わずに因子抽出する場合を「主因子法」と呼び，反復計算を行う場合を「<em>反復主因子法</em>」と呼んで区別することもあります。<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>統計ソフトによっては，4乗でなく3乗するものもあります。<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn8"><p>これらの方法は「洗練されていない（non-refined）」因子得点などと呼ばれることもあります。<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn9"><p>数学上，その平均値が母集団の実際の値と同値になるようにして計算された値のことです。<a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./08-Frequencies.html" class="pagination-link" aria-label="度数分析">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">度数分析</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./10-part3.html" class="pagination-link" aria-label="作図編">
+        <span class="nav-page-text">作図編</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/sbtseiji/jmv_compguide/blob/main/09-Factor.qmd" class="toc-action"><i class="bi bi-github"></i>ソースコード</a></li></ul></div></div></div></footer><script src="site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="フリーの統計ソフト jamovi の使用方法についての日本語ガイドです。データの編集方法から分散分析や因子分析の設定方法まで、基本機能のすべてについて一通り説明しています。">
+
+<title>16&nbsp; 関数一覧 – jamovi完全攻略ガイド</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./12-part4.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-777ac567918ecbb99a2fd73912d84d5b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "一致なし",
+    "search-matching-documents-text": "一致した文書",
+    "search-copy-link-title": "検索へのリンクをコピー",
+    "search-hide-matches-text": "追加の検索結果を非表示",
+    "search-more-match-text": "追加の検索結果",
+    "search-more-matches-text": "追加の検索結果",
+    "search-clear-button-title": "消去",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "取消",
+    "search-submit-button-title": "検索",
+    "search-label": "サーチ"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+<script>
+MathJax ={chtml: {
+      mtextFont: 'arial',
+      // mtextInheritFont: true,
+   },
+};
+</script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js?config=TeX-AMS_HTML"></script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="nav-sidebar docked quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="サイドバーを切り替える" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./12-part4.html">付録</a></li><li class="breadcrumb-item"><a href="./13-Appendix.html"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">関数一覧</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="サイドバーを切り替える" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="サーチ" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">jamovi完全攻略ガイド</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/sbtseiji/jmv_compguide" title="ソースコード" class="quarto-navigation-tool px-1" aria-label="ソースコード"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="サーチ"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">jamovi完全攻略ガイド</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./00-part1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">導入編</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false" aria-label="セクションを切り替え">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-getting-started.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">jamoviの導入</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">データ操作</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-basics2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">分析と編集</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./04-part2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">分析編</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="セクションを切り替え">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04a-exploration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">探索</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-t-tests.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">t検定</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-ANOVA.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">分散分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-Regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">回帰分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08-Frequencies.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">度数分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09-Factor.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">因子分析</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./10-part3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">作図編</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="セクションを切り替え">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-chart.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">棒グラフ</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11a-boxplot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">箱ひげ図</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11b-histogram.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">ヒストグラム</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11c-scatterplot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">散布図</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11d-linechart.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">折れ線グラフ</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./12-part4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">付録</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="セクションを切り替え">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./13-Appendix.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">関数一覧</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">目次</h2>
+   
+  <ul>
+  <li><a href="#app:math" id="toc-app:math" class="nav-link active" data-scroll-target="#app\:math">数学関数</a></li>
+  <li><a href="#app:statistical" id="toc-app:statistical" class="nav-link" data-scroll-target="#app\:statistical">統計関数</a></li>
+  <li><a href="#app:logical" id="toc-app:logical" class="nav-link" data-scroll-target="#app\:logical">論理関数</a></li>
+  <li><a href="#app:text" id="toc-app:text" class="nav-link" data-scroll-target="#app\:text">文字関数</a></li>
+  <li><a href="#app:reference" id="toc-app:reference" class="nav-link" data-scroll-target="#app\:reference">参照関数</a></li>
+  <li><a href="#app:misc" id="toc-app:misc" class="nav-link" data-scroll-target="#app\:misc">その他の関数</a></li>
+  <li><a href="#app:simulation" id="toc-app:simulation" class="nav-link" data-scroll-target="#app\:simulation">シミュレーション関数</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/sbtseiji/jmv_compguide/blob/main/13-Appendix.qmd" class="toc-action"><i class="bi bi-github"></i>ソースコード</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./12-part4.html">付録</a></li><li class="breadcrumb-item"><a href="./13-Appendix.html"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">関数一覧</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">関数一覧</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="app:math" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="app:math">数学関数</h3>
+<dl>
+<dt>ABS(<code>値</code>)</dt>
+<dd>
+<code>値</code>の絶対値を返します（<span class="math inline">\(\mathsf{|x|}\)</span>）
+</dd>
+<dt>EXP(<code>値</code>)</dt>
+<dd>
+ネイピア数eの<code>値</code>乗の値（eのべき乗）を返します（<span class="math inline">\(\mathsf{e^{x}}\)</span>）
+</dd>
+<dt>LN(<code>値</code>)</dt>
+<dd>
+<code>値</code>の自然対数を返します（<span class="math inline">\(\mathsf{\log_{e}{x}}\)</span>）
+</dd>
+<dt>LOG10(<code>値</code>)</dt>
+<dd>
+<code>値</code>の常用対数を返します（<span class="math inline">\(\mathsf{\log_{10}{x}}\)</span>）
+</dd>
+<dt>SQRT(<code>値</code>)</dt>
+<dd>
+<code>値</code>の正の平方根を返します（<span class="math inline">\(\mathsf{\sqrt{x}}\)</span>）
+</dd>
+</dl>
+</section>
+<section id="app:statistical" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="app:statistical">統計関数</h3>
+<dl>
+<dt>ABSIQR(<code>変数</code>)</dt>
+<dd>
+<code>IQR()</code>関数の結果を絶対値で返します。
+</dd>
+<dt>ABSZ(<code>変数</code>)</dt>
+<dd>
+<code>Z()</code>関数の結果を絶対値で返します。
+</dd>
+<dt>BOXCOX（<code>変数</code>）</dt>
+<dd>
+<code>変数</code>に対して<em>ボックス=コックス変換</em>を行った値を返します。ボックス=コックス変換は，歪んだ分布をもつ変数を正規分布に近づける際に使用される変換です。
+</dd>
+<dt>IQR(<code>変数</code>)</dt>
+<dd>
+<code>変数</code>の各値が四分位範囲内にある場合は0，そうでない場合は四分位範囲の何倍離れた位置にあるかを返します。通常，この値の絶対値が1.5を超える場合に外れ値とみなされます。
+</dd>
+<dt>MAX(<code>値1</code>,<code>値2</code>, …)</dt>
+<dd>
+指定した<code>値</code>の中で最大の値を返します。
+</dd>
+<dt>MAXABSIQR(<code>変数1</code>,<code>変数2</code>, …)</dt>
+<dd>
+指定した<code>変数</code>の<code>ABSIQR()</code>の値のうち，最大の値を返します。
+</dd>
+<dt>MAZABSZ(<code>変数1</code>,<code>変数2</code>, … [, group_by = <code>グループ変数</code>])</dt>
+<dd>
+指定した<code>変数</code>の<code>Z()</code>関数の結果のうち，最大の値を返します。
+</dd>
+<dt>MEAN(<code>値1</code>,<code>値2</code>, … [, ignore_missing=0, min_valid=0])</dt>
+<dd>
+指定した値の平均値を返します。「ignore_missing=1」と指定した場合，欠損値が含まれる変数を除外して平均値を算出します。また，「min_valid」オプションでは平均値の算出に必要な値の個数を指定できます。「min_valid=3」と指定すると，3個以上の値が指定されていない場合には平均値は算出されません。
+</dd>
+<dt>MIN(<code>値1</code>,<code>値2</code>, …)</dt>
+<dd>
+指定した<code>値</code>の中で最小の値を返します。
+</dd>
+<dt>RANK(<code>変数</code>)</dt>
+<dd>
+指定した<code>変数</code>に含まれる各値の順位（昇順）を返します。
+</dd>
+<dt>ROUND(<code>値</code> [, <code>桁数</code>])</dt>
+<dd>
+指定した<code>値</code>の各値を指定桁数で四捨五入した値を返します。値のみを指定した場合（<code>ROUND(A)</code>）には整数値が，値の後ろに<code>2</code>を指定した場合（<code>ROUND(A,2)</code>）は，小数第2位までで四捨五入した値が返されます。
+</dd>
+<dt>FLOOR(<code>変数</code>)</dt>
+<dd>
+指定した<code>変数</code>の値の小数部を切り捨てて整数値に丸めます。
+</dd>
+<dt>CEILING(<code>変数</code>)</dt>
+<dd>
+指定した<code>変数</code>の値の小数部を切り上げて整数値に丸めます。
+</dd>
+<dt>SCALE(<code>変数</code> [, group_by=<code>グループ変数</code>])</dt>
+<dd>
+指定した<code>変数</code>の各値を標準化した値を返します。「<code>group_by</code>」でグループ変数を指定した場合は，それぞれのグループごとに値が標準化されます。この関数は<code>Z()</code>と同一です。
+</dd>
+<dt>STDEV(<code>値1</code>,<code>値2</code>, … [, ignore_missing=0])</dt>
+<dd>
+指定した値の標準偏差を返します。欠損値が含まれる変数値を用いて標準偏差を算出する場合は「ignore_missing=1」と指定することで欠損値を含む変数値以外の平均値を算出できます。「ignore_missing=1」と指定した場合，欠損値が含まれる変数を除外して標準偏差を算出します。
+</dd>
+<dt>SUM(<code>値1</code>,<code>値2</code>, … [, ignore_missing=0, min_valid=0])</dt>
+<dd>
+指定した値の合計値を返します。「ignore_missing=1」と指定した場合，欠損値が含まれる変数を除外して合計値を算出します。また，「min_valid」オプションでは合計値の算出に必要な値の個数を指定できます。「min_valid=3」と指定すると，3個以上の値が指定されていない場合には合計値は算出されません。
+</dd>
+<dt>VAR(<code>値1</code>,<code>値2</code>, … [, ignore_missing=0])</dt>
+<dd>
+指定した値の分散を返します。「ignore_missing=1」と指定した場合，欠損値が含まれる変数を除外して分散を算出します。
+</dd>
+<dt>Z(<code>変数</code> [, group_by=<code>グループ変数</code>])</dt>
+<dd>
+指定した<code>変数</code>の値を標準化して返します。「<code>group_by</code>」でグループ変数を指定した場合は，それぞれのグループに標準化が行われます。この関数は<code>SCALE()</code>と同一です。
+</dd>
+</dl>
+<section id="v関数" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="v関数">V関数</h4>
+<p>以下は，「V関数」と呼ばれる統計関数の一覧です。V関数は，その変数全体についての値を返す関数です。V関数でない関数，たとえば<code>MAX()</code>で<code>MAX(A,B)</code>とした場合，この関数では1行ごとに変数AおよびBの値の最大値を計算して返します。これに対し，<code>VMAX(A)</code>は，変数Aに含まれる値すべてにおける最大値を返します。</p>
+<dl>
+<dt>VMAX(<code>変数</code> [, group_by=<code>グループ変数</code>])</dt>
+<dd>
+指定した<code>変数</code>の最大値を返します。「<code>group_by</code>」でグループ変数を指定した場合は，それぞれのグループごとの最大値が返されます。
+</dd>
+<dt>VMEAN(<code>変数</code> [, group_by=<code>グループ変数</code>])</dt>
+<dd>
+指定した<code>変数</code>の平均値を返します。「<code>group_by</code>」でグループ変数を指定した場合は，それぞれのグループごとの平均値が返されます。
+</dd>
+<dt>VMED(<code>変数</code> [, group_by=<code>グループ変数</code>])</dt>
+<dd>
+指定した<code>変数</code>の中央値を返します。「<code>group_by</code>」でグループ変数を指定した場合は，それぞれのグループごとの中央値が返されます。
+</dd>
+<dt>VMIN(<code>変数</code> [, group_by=<code>グループ変数</code>])</dt>
+<dd>
+指定した<code>変数</code>の最小値を返します。「<code>group_by</code>」でグループ変数を指定した場合は，それぞれのグループごとの最小値が返されます。
+</dd>
+<dt>VMODE(<code>変数</code> [, group_by=<code>グループ変数</code>])</dt>
+<dd>
+指定した<code>変数</code>の最頻値を返します。「<code>group_by</code>」でグループ変数を指定した場合は，それぞれのグループごとの最頻値が返されます。
+</dd>
+<dt>VN(<code>変数</code> [, group_by=<code>グループ変数</code>])</dt>
+<dd>
+指定した<code>変数</code>に含まれる値の個数（度数）を返します。「<code>group_by</code>」でグループ変数を指定した場合は，それぞれのグループごとの度数が返されます。
+</dd>
+<dt>VSE(<code>変数</code> [, group_by=<code>グループ変数</code>])</dt>
+<dd>
+指定した<code>変数</code>の平均値の標準誤差を返します。「<code>group_by</code>」でグループ変数を指定した場合は，それぞれのグループごとの標準誤差が返されます。
+</dd>
+<dt>VSTDEV(<code>変数</code> [, group_by=<code>グループ変数</code>])</dt>
+<dd>
+指定した<code>変数</code>の標準偏差を返します。「<code>group_by</code>」でグループ変数を指定した場合は，それぞれのグループごとの標準偏差が返されます。
+</dd>
+<dt>VSUM(<code>変数</code> [, group_by=<code>グループ変数</code>])</dt>
+<dd>
+指定した<code>変数</code>の合計値を返します。「<code>group_by</code>」でグループ変数を指定した場合は，それぞれのグループごとの合計値が返されます。
+</dd>
+<dt>VVAR(<code>変数</code> [, group_by=<code>グループ変数</code>])</dt>
+<dd>
+指定した<code>変数</code>の分散を返します。「<code>group_by</code>」でグループ変数を指定した場合は，それぞれのグループごとの分散が返されます。
+</dd>
+</dl>
+</section>
+</section>
+<section id="app:logical" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="app:logical">論理関数</h3>
+<dl>
+<dt>IF(<code>条件式</code>, <code>真の場合の値・処理</code>, <code>偽の場合の値・処理</code>)</dt>
+<dd>
+<code>条件式</code>が<code>真</code>である場合と<code>偽</code>の場合で異なる値（または処理）を使用します。
+</dd>
+<dd>
+例）<code>IF(A==1,'Y','N')</code>では，変数Aの値が<code>1</code>の場合に<code>Y</code>が，そうでない場合に<code>N</code>が返されます。
+</dd>
+<dt>IFMISS(<code>変数</code>, <code>真の場合の値</code>, <code>偽の場合の値</code>)</dt>
+<dd>
+<code>変数</code>の値が欠損値である場合（<code>真</code>）とそうでない場合（<code>偽</code>）で異なる値を使用します。
+</dd>
+<dd>
+例）<code>IF(A,9,A)</code>では，変数Aの値が欠損値の場合には<code>9</code>を代入し，そうでない場合には変数Aの値をそのまま使用します。
+</dd>
+<dt>NOT(<code>条件式</code>)</dt>
+<dd>
+<code>条件式</code>の結果が<code>真</code>ならば<code>偽</code>(0)を，<code>偽</code>ならば<code>真</code>(1)を返します。
+</dd>
+<dd>
+例）<code>NOT(A=='Y')</code>は，変数Aの値が<code>Y</code>でないならば<code>1</code>（真），<code>Y</code>ならば<code>0</code>（偽）を返します。
+</dd>
+</dl>
+</section>
+<section id="app:text" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="app:text">文字関数</h3>
+<dl>
+<dt>CONTAINS(<code>項目1</code>,<code>項目2</code>, … ,<code>検索対象1</code>,<code>検索対象2</code>)</dt>
+<dd>
+<code>検索対象</code>の中に<code>項目</code>が含まれているかどうかを判定します。含まれていれば<code>1</code>（真），含まれていなければ<code>0</code>（偽）を返します。
+</dd>
+<dd>
+例）<code>CONTAINS('YES',A)</code>の結果は，変数Aの値に<code>YES</code>という文字列が含まれていれば<code>1</code>（真），含まれていなければ<code>0</code>（偽）になります。
+</dd>
+<dt>SPLIT(<code>文字列</code> [, <code>区切り文字</code>, <code>抽出要素</code>])</dt>
+<dd>
+指定した文字列を<code>区切り文字</code>（初期値は<code>,</code>（コンマ））で区切った結果を返します。<code>抽出要素</code>を指定すると，その部分だけを抜き出した結果が返されます。
+</dd>
+<dd>
+例）<code>SPLIT('a,b,c,d')</code>は<code>a b c d</code>という結果を返します。<code>SPLIT('a,b,c,d',',',2)</code>は，文字列をコンマで区切った場合の2つ目の要素（<code>b</code>）が結果として返されます。
+</dd>
+<dt>TEXT(<code>数値</code>)</dt>
+<dd>
+指定された<code>数値</code>を文字列に変換します。
+</dd>
+<dt>VALUE(<code>文字列</code>)</dt>
+<dd>
+数字で構成された<code>文字列</code>を数値に変換します。
+</dd>
+</dl>
+</section>
+<section id="app:reference" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="app:reference">参照関数</h3>
+<dl>
+<dt>HLOOKUP(<code>位置</code>,<code>値1</code>,<code>値2</code>, …)</dt>
+<dd>
+<code>値1</code>,<code>値2</code>, … のうち，<code>位置</code>で示された位置にある<code>値</code>を返します。
+</dd>
+<dd>
+例）<code>HLOOKUP(X,'S','A','B','C','D')</code>は，変数<code>X</code>の値が<code>1</code>の場合には<code>S</code>（1番目の値），<code>3</code>の場合には<code>B</code>（3番目の値）を返します。
+</dd>
+<dt>MATCH(<code>検索値</code>,<code>値1</code>,<code>値2</code>, …)</dt>
+<dd>
+<code>検索値</code>が<code>値1</code>,<code>値2</code>, … の何番目の位置にあるかを返します。
+</dd>
+<dd>
+例）<code>MATCH(X,'S','A','B','C','D')</code>は，変数<code>X</code>の値が<code>A</code>の場合には<code>2</code>，<code>C</code>の場合には<code>4</code>を返します。
+</dd>
+</dl>
+</section>
+<section id="app:misc" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="app:misc">その他の関数</h3>
+<dl>
+<dt>FILTER(<code>変数</code>,<code>フィルタ条件式</code>)</dt>
+<dd>
+<code>フィルタ条件式</code>を使用して<code>変数</code>をフィルタリングします。
+</dd>
+<dt>INT(<code>値</code>)</dt>
+<dd>
+指定された<code>値</code>を整数値に変換します。
+</dd>
+<dt>OFFSET(<code>変数</code>, <code>整数値</code>)</dt>
+<dd>
+<code>整数値</code>で指定した数値を<code>変数</code>に加えます。<code>整数値</code>にマイナスの値を指定すると，その分だけ<code>変数</code>の値が減じられます。
+</dd>
+<dt>ROW()</dt>
+<dd>
+その行の行数を返します。
+</dd>
+<dt>SAMPLE(<code>変数</code>, <code>個数</code> [, <code>非選択時の値</code>])</dt>
+<dd>
+<code>変数</code>に含まれる値の中から，無作為に<code>個数</code>で指定された個数の値を選択します。選択されなかった部分は初期設定では空白（<code>欠損値</code>）になりますが，3つ目の要素として<code>非選択時の値</code>を設定すると，選択された値が含まれる行以外は，すべてその指定値になります。
+</dd>
+<dd>
+例）<code>SAMPLE(A,20)</code>は，変数Aに含まれる値を無作為に20個（20行）選択します。<code>SAMPLE(A,20,0)</code>では，変数Aに含まれる値が無作為に20個（20行）選択され，残りの部分はすべて値が<code>0</code>になります。
+</dd>
+<dt>VROWS(<code>変数</code> [, group_by=<code>グループ変数</code>])</dt>
+<dd>
+指定した<code>変数</code>の行数を返します。「<code>group_by</code>」でグループ変数を指定した場合は，それぞれのグループごとの行数が返されます。
+</dd>
+</dl>
+</section>
+<section id="app:simulation" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="app:simulation">シミュレーション関数</h3>
+<dl>
+<dt>BETA(<code>α</code>,<code>β</code>)</dt>
+<dd>
+指定した<code>α</code>と<code>β</code>をパラメータとするベータ分布にそった乱数を発生させます。
+</dd>
+<dt>GAMMA(<code>形状パラメータ</code>,<code>尺度パラメータ</code>)</dt>
+<dd>
+指定した形状パラメータと尺度パラメータをもつガンマ分布にそった乱数を発生させます。
+</dd>
+<dt>NORM(<code>平均値</code>,<code>標準偏差</code>)</dt>
+<dd>
+指定した<code>平均値</code>と<code>標準偏差</code>をパラメータとする正規分布（ガウス分布）にそった乱数を発生させます。
+</dd>
+<dt>UNIF(<code>最小値</code>,<code>最大値</code>)</dt>
+<dd>
+指定した<code>最小値</code>から<code>最大値</code>までの範囲で一様分布にそった乱数を発生させます。
+</dd>
+</dl>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./12-part4.html" class="pagination-link" aria-label="付録">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">付録</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/sbtseiji/jmv_compguide/blob/main/13-Appendix.qmd" class="toc-action"><i class="bi bi-github"></i>ソースコード</a></li></ul></div></div></div></footer><script src="site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>
