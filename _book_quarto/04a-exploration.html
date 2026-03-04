@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="フリーの統計ソフト jamovi の使用方法についての日本語ガイドです。データの編集方法から分散分析や因子分析の設定方法まで、基本機能のすべてについて一通り説明しています。">
+
+<title>5&nbsp; 探索 – jamovi完全攻略ガイド</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./05-t-tests.html" rel="next">
+<link href="./04-part2.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-777ac567918ecbb99a2fd73912d84d5b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "一致なし",
+    "search-matching-documents-text": "一致した文書",
+    "search-copy-link-title": "検索へのリンクをコピー",
+    "search-hide-matches-text": "追加の検索結果を非表示",
+    "search-more-match-text": "追加の検索結果",
+    "search-more-matches-text": "追加の検索結果",
+    "search-clear-button-title": "消去",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "取消",
+    "search-submit-button-title": "検索",
+    "search-label": "サーチ"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+<script>
+MathJax ={chtml: {
+      mtextFont: 'arial',
+      // mtextInheritFont: true,
+   },
+};
+</script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js?config=TeX-AMS_HTML"></script>
+
+
+<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="nav-sidebar docked quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="サイドバーを切り替える" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./04-part2.html">分析編</a></li><li class="breadcrumb-item"><a href="./04a-exploration.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">探索</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="サイドバーを切り替える" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="サーチ" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">jamovi完全攻略ガイド</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/sbtseiji/jmv_compguide" title="ソースコード" class="quarto-navigation-tool px-1" aria-label="ソースコード"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="サーチ"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">jamovi完全攻略ガイド</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./00-part1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">導入編</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false" aria-label="セクションを切り替え">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-getting-started.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">jamoviの導入</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">データ操作</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-basics2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">分析と編集</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./04-part2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">分析編</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="セクションを切り替え">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04a-exploration.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">探索</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-t-tests.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">t検定</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-ANOVA.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">分散分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-Regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">回帰分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08-Frequencies.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">度数分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09-Factor.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">因子分析</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./10-part3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">作図編</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="セクションを切り替え">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-chart.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">棒グラフ</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11a-boxplot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">箱ひげ図</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11b-histogram.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">ヒストグラム</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11c-scatterplot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">散布図</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11d-linechart.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">折れ線グラフ</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./12-part4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">付録</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false" aria-label="セクションを切り替え">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./13-Appendix.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">関数一覧</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">目次</h2>
+   
+  <ul>
+  <li><a href="#sec-exp-exploration-descriptives" id="toc-sec-exp-exploration-descriptives" class="nav-link active" data-scroll-target="#sec-exp-exploration-descriptives"><span class="header-section-number">5.1</span> 記述統計</a>
+  <ul class="collapse">
+  <li><a href="#subsec:exp-statistics" id="toc-subsec:exp-statistics" class="nav-link" data-scroll-target="#subsec\:exp-statistics"><span class="header-section-number">5.1.1</span> 統計量</a></li>
+  <li><a href="#subsec:exp-plots" id="toc-subsec:exp-plots" class="nav-link" data-scroll-target="#subsec\:exp-plots"><span class="header-section-number">5.1.2</span> グラフ</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/sbtseiji/jmv_compguide/blob/main/04a-exploration.qmd" class="toc-action"><i class="bi bi-github"></i>ソースコード</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./04-part2.html">分析編</a></li><li class="breadcrumb-item"><a href="./04a-exploration.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">探索</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="sec-ch-exploration" class="quarto-section-identifier"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">探索</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>まずは「<img src="images/assets/analysis-descriptives.svg" class="img-fluid" alt="inline"> 探索」ツールから見ていきましょう。このツールはデータを記述要約するためのものです。データの特徴を知るためには欠かせないツールですので，使い方をしっかり理解しましょう。</p>
+<p>この分析ツールの使い方を見るために，簡単なサンプルデータ（<a href="https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/exploration_data01.omv">exploration_data01.omv</a>）を用いることにします（<a href="#fig-exploration-sample" class="quarto-xref">図&nbsp;<span>5.1</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-exploration-sample" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-exploration-sample-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/exploration/exploration-sample.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-exploration-sample-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;5.1: サンプルデータ
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>このサンプルデータには，男女計50人分の次の変数値が格納されています<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>。これらの内容は「変数」タブでも確認することができます。</p>
+<div class="jmvvar">
+<ul>
+<li><code>ID</code>　対象者のID：<img src="images/assets/variable-id.svg" class="img-fluid" alt="inline"> ID型</li>
+<li><code>性別</code>　対象者の性別：<img src="images/assets/variable-nominal.svg" class="img-fluid" alt="inline"> 名義型</li>
+<li><code>年齢</code>　対象者の年齢：<img src="images/assets/variable-continuous.svg" class="img-fluid" alt="inline"> 連続型</li>
+<li><code>身長</code>　対象者の身長（cm）：<img src="images/assets/variable-continuous.svg" class="img-fluid" alt="inline"> 連続型</li>
+<li><code>体重</code>　対象者の体重（kg）：<img src="images/assets/variable-continuous.svg" class="img-fluid" alt="inline"> 連続型</li>
+<li><code>血液型</code>　対象者の血液型：<img src="images/assets/variable-nominal.svg" class="img-fluid" alt="inline"> 名義型</li>
+<li><code>体力</code>　対象者の体力レベル（5段階判定）：<img src="images/assets/variable-ordinal.svg" class="img-fluid" alt="inline"> 順序型</li>
+<li><code>学力</code>　対象者の学力レベル（5段階判定）：<img src="images/assets/variable-ordinal.svg" class="img-fluid" alt="inline"> 順序型</li>
+</ul>
+</div>
+<p>この「<img src="images/assets/analysis-descriptives.svg" class="img-fluid" alt="inline"> 探索」は，記述統計など，データの特徴を掴むために使用するツールです。jamoviの基本構成では，ここには「記述統計」という項目が含まれています（<a href="#fig-Exploration-menu" class="quarto-xref">図&nbsp;<span>5.2</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-Exploration-menu" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-Exploration-menu-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/exploration/Exploration-menu.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-Exploration-menu-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;5.2: 探索ツールの構成
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>それでは，メニューから「記述統計」を選択してください。これで分析開始です。</p>
+<section id="sec-exp-exploration-descriptives" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="sec-exp-exploration-descriptives"><span class="header-section-number">5.1</span> 記述統計</h2>
+<p>記述統計の設定パネルは<a href="#fig-Exploration-descriptives-panel" class="quarto-xref">図&nbsp;<span>5.3</span></a>のようになっています。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-Exploration-descriptives-panel" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-Exploration-descriptives-panel-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/exploration/Exploration-descriptives-panel.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-Exploration-descriptives-panel-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;5.3: 記述統計の分析設定パネル
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>画面左側の部分は，データファイルに含まれている変数の一覧です。ここから，分析したい変数を選択し，それをその右側にある「変数」の欄に移動すると，指定した変数に関する記述統計量を算出することができます。また，画面の下のほうには［統計量］や［グラフ］と書かれた部分がありますが，この部分の左側にある「<img src="images/assets/modules-analyses-arrow-r.svg" class="img-fluid" alt="inline">」をクリックすると，それぞれ統計量の算出や作図に関する詳細設定項目が表示されるようになっています。</p>
+<p>各項目の詳細の説明は後回しにして，まずは実際にいろいろと分析してみましょう。まず，「性別」について記述統計量を求めてみます。左側の変数リストで「性別」を選択したら，変数の隣にある「<img src="images/assets/action-forward.svg" class="img-fluid" alt="inline">」をクリックしてください。すると，「性別」が左の変数リストから右側の変数に移動され，それと同時に画面右側の出力ウィンドウに計算結果が表示されます（<a href="#fig-Exploration-descriptives-seibetsu" class="quarto-xref">図&nbsp;<span>5.4</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-Exploration-descriptives-seibetsu" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-Exploration-descriptives-seibetsu-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/exploration/Exploration-descriptives-seibetsu.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-Exploration-descriptives-seibetsu-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;5.4: 「性別」の記述統計量の算出
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>ここがjamoviのおもしろいところで，分析画面で変数を指定したり，あるいは分析の設定を変更したりすると，その変更がすぐに結果画面に反映されるのです。他の多くの統計ソフトでは，分析対象の変数を変更したり，分析の設定を変更したりした場合には，分析の再実行を行わないと結果は更新されません。しかし，jamoviでは，このようにほぼリアルタイムに結果が更新されていくので，設定変更による結果を確認しながら分析を進めていくことができます。</p>
+<p>では，計算結果についても簡単に見ておきましょう。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-Exploration-descriptives-seibetsu-table" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-Exploration-descriptives-seibetsu-table-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/exploration/Exploration-descriptives-seibetsu-table.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-Exploration-descriptives-seibetsu-table-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;5.5: 「性別」の記述統計量
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><a href="#fig-Exploration-descriptives-seibetsu-table" class="quarto-xref">図&nbsp;<span>5.5</span></a>の結果から，N（データの総数）が「50」，平均値が「1.34」といったことがわかります。</p>
+<p>また，この結果では各統計量が縦（行）に並び，変数が横（列）に並んでいますが，変数が多く，算出する統計量の種類が少ない場合には，縦と横の表示を入れ替えた方が見やすいでしょう。その場合には，設定パネルの変数一覧の下にある「記述統計」の横の「列に変数を配置」となっている部分を「行に変数を配置」に変更することで，行方向と列方向の表示を入れ替えることもできます（<a href="#fig-Exploration-descriptives-seibetsu-table-direction" class="quarto-xref">図&nbsp;<span>5.6</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-Exploration-descriptives-seibetsu-table-direction" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-Exploration-descriptives-seibetsu-table-direction-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/exploration/Exploration-descriptives-seibetsu-table-direction.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-Exploration-descriptives-seibetsu-table-direction-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;5.6: 結果表示の方向を変更
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>さて，これでひとまず結果は出たのですが，この計算結果には問題があります。「性別」は名義型変数なので，平均値は意味をなしません。この変数は男性を「1」，女性を「2」として入力されていて，平均値の計算自体はできるのですが，この「性別の平均値が1.34」というのはまったく意味がないのです。</p>
+<p>このような名義尺度データでは，まず男性と女性がそれぞれ何人ずつなのか，といったことを知りたいはずです。その場合，変数リストのすぐ下にある「度数分布表」のチェックをオンにします（<a href="#fig-Exploration-descriptives-seibetsu-frequency-tables" class="quarto-xref">図&nbsp;<span>5.7</span></a>）。なお，この「度数分布表」のところには<img src="images/assets/variable-nominal.svg" class="img-fluid" alt="inline"> <img src="images/assets/variable-ordinal.svg" class="img-fluid" alt="inline">というアイコンが付けられています。これは，この項目は分析変数の型が「<img src="images/assets/variable-nominal.svg" class="img-fluid" alt="inline"> 名義」と「<img src="images/assets/variable-ordinal.svg" class="img-fluid" alt="inline"> 順序」の場合のみ使用できるということを意味しています。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-Exploration-descriptives-seibetsu-frequency-tables" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-Exploration-descriptives-seibetsu-frequency-tables-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/exploration/Exploration-descriptives-seibetsu-frequency-tables.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-Exploration-descriptives-seibetsu-frequency-tables-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;5.7: 度数分布表の表示設定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>このチェックをオンにすると，すぐに出力ウィンドウに<a href="#fig-Exploration-descriptives-seibetsu-table2" class="quarto-xref">図&nbsp;<span>5.8</span></a>のような度数分布表が表示されます。度数分布表には，変数値ごとの度数とその全体における比率（全体%），および累積パーセント値が示されています。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-Exploration-descriptives-seibetsu-table2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-Exploration-descriptives-seibetsu-table2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/exploration/Exploration-descriptives-seibetsu-table2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-Exploration-descriptives-seibetsu-table2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;5.8: 度数分布表
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<section id="subsec:exp-statistics" class="level3" data-number="5.1.1">
+<h3 data-number="5.1.1" class="anchored" data-anchor-id="subsec:exp-statistics"><span class="header-section-number">5.1.1</span> 統計量</h3>
+<p>さて，これで度数分布表はできましたが，先ほどの平均値の表はそのままになっていますので，これをなんとかしたいですね。そこで，結果に表示させる値をもう少し細かく設定することにしましょう。そのためには，<span class="groupbar"><img src="images/assets/modules-analyses-arrow-r.svg" width="10pt/">| 統計量</span>の左側にある「<img src="images/assets/modules-analyses-arrow-r.svg" class="img-fluid" alt="inline">」をクリックし，詳細項目を展開します。</p>
+<p>すると，非常にたくさんの項目が表示されました（<a href="#fig-Exploration-descriptives-statistics" class="quarto-xref">図&nbsp;<span>5.9</span></a>）。各項目の使い方についてはまた後ほど説明することとして，ここではこの画面で設定可能な項目の一覧を見ておきましょう。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-Exploration-descriptives-statistics" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-Exploration-descriptives-statistics-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/exploration/Exploration-descriptives-statistics.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-Exploration-descriptives-statistics-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;5.9: 統計量の詳細設定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvsettings">
+<ul>
+<li><strong>標本サイズ</strong>　標本サイズに関連する情報の設定を行います。
+<ul>
+<li>N　分析変数に含まれるデータ総数を表示します。</li>
+<li>欠損値　分析変数に含まれる欠損値の個数を表示します。</li>
+</ul></li>
+<li><strong>パーセンタイル値</strong>　パーセンタイル値や分位数に関する設定を行います。
+<ul>
+<li>均等に［　］群に分割　データ全体をn等分する位置にある値を算出します。</li>
+<li>パーセンタイル　値の小さいほうから数えてn%の位置にある値を算出します。複数のパーセント点を指定する場合は，それらの値をコンマで区切って入力します。</li>
+</ul></li>
+<li><strong>ばらつき</strong>　ばらつきに関する設定を行います。
+<ul>
+<li>標準偏差　標準偏差を算出します。</li>
+<li>分散　分散を算出します。</li>
+<li>範囲　範囲（最大値 – 最小値の幅）を算出します。</li>
+<li>最小値　最小値を算出します。</li>
+<li>最大値　最大値を算出します。</li>
+<li>四分位範囲　四分位範囲を算出します。</li>
+</ul></li>
+<li><strong>平均値のばらつき</strong>
+<ul>
+<li>平均値の標準誤差　平均値の推定における標準誤差を算出します。</li>
+<li>平均値の信頼区間　平均値の信頼区間（下限値と上限値）を算出します。初期設定では95%信頼区間を算出しますが，数値を変更すれば90%や99％などで信頼区間を算出することができます。</li>
+</ul></li>
+<li><strong>中心傾向</strong>　データの中心位置に関する統計量を算出します。
+<ul>
+<li>平均値　平均値を算出します。</li>
+<li>中央値　中央値を算出します。</li>
+<li>最頻値　最頻値を算出します。</li>
+<li>合計値　合計値を算出します。</li>
+</ul></li>
+<li><strong>分布</strong>　データの分布に関する統計量を算出します。
+<ul>
+<li>歪度　歪度（分布が左右対称からずれている程度）を算出します。</li>
+<li>尖度　尖度（分布が中心に集中している程度）を算出します。</li>
+</ul></li>
+<li><strong>正規性</strong>
+<ul>
+<li>シャピロ=ウィルク検定　分布が正規分布からずれているかどうかを検定します。</li>
+</ul></li>
+<li><strong>外れ値</strong>
+<ul>
+<li>最極値　指定した個数の最上位および最下位の値を表示します。</li>
+</ul></li>
+</ul>
+</div>
+<p>「性別」の記述統計で平均値などの不要な値を表示しないようにするには，この画面で「平均値」などの不要な項目のチェックを外すだけです。「N」と「欠損値」だけを残してそれ以外のチェックを外すと，結果の表示は<a href="#fig-Exploration-descriptives-seibetsu-table3" class="quarto-xref">図&nbsp;<span>5.10</span></a>のようになります。これですっきりです。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-Exploration-descriptives-seibetsu-table3" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-Exploration-descriptives-seibetsu-table3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/exploration/Exploration-descriptives-seibetsu-table3.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-Exploration-descriptives-seibetsu-table3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;5.10: 設定変更後の結果
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>では，他の変数についても同様に記述統計量を算出しましょう。次は，「性別」と同じく名義尺度型変数である「血液型」について記述統計量を算出することにします。まずは，設定パネルの右上にある<img src="images/assets/action-back-circle.svg" class="img-fluid" alt="inline">をクリックして，この設定パネルをいったん閉じましょう。</p>
+<p>そして，再度「<img src="images/assets/analysis-descriptives.svg" class="img-fluid" alt="inline"> 探索」から「記述統計」を実行して設定パネルを開きます。すると，先ほどの分析結果の下に新しい結果の表が作成され，そして再び先ほどの設定パネルが現れます。</p>
+<p>「血液型」でも，性別のときと同様に度数分布表を作成することにしましょう。また，性別と違って血液型には4種類の値が含まれていますので，今回は<em>最頻値</em>についても算出することにします。この場合，分析の設定パネルは<a href="#fig-Exploration-descriptives-ketsueki" class="quarto-xref">図&nbsp;<span>5.11</span></a>のようになります。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-Exploration-descriptives-ketsueki" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-Exploration-descriptives-ketsueki-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/exploration/Exploration-descriptives-ketsueki.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-Exploration-descriptives-ketsueki-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;5.11: 血液型の記述統計
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>最頻値は<code>1.00</code>となっていますが，このデータでは血液型が「A=1，B=2，O=3，AB=4」として入力されているので，最頻値は「A型」ということになります。度数分布表では値そのものではなく変数ラベルが表示されるのですが，記述統計量の表では残念ながら変数ラベルではなく値そのものが表示されるので，その点は注意が必要です。</p>
+<section id="subsub:exp-ordinal" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="subsub:exp-ordinal">順序尺度データの記述統計</h4>
+<p>今度は順序尺度データである「体力」と「学力」について記述統計量を算出しましょう。いったんこの設定パネルを閉じ，再び「<img src="images/assets/analysis-descriptives.svg" class="img-fluid" alt="inline"> 探索」から「記述統計」を選択して設定パネルを開いてください。</p>
+<p>なお，この「体力」と「学力」の変数の値はどちらも5段階評価によるもので，値が大きいほど評価が高いことを意味します。このように，この2つの変数は共通した部分が多いのでまとめて分析することにしましょう。変数の欄に，「体力」と「学力」の2つを移動させると，出力ウィンドウにはこれらの変数についての計算結果がひとまとめに表示されます。</p>
+<p>この2つの変数は，値が5種類しかない順序尺度変数ですので，今回も度数分布表を作成することにしましょう。また，順序尺度データなので，平均値や標準偏差にはあまり意味はありませんね。ですので，これらは非表示にしておきます。その代わり，データのばらつきの指標として<em>四分位数</em>を算出したいと思います。四分位数を算出するには，設定パネルの「均等に［］群に分割」の部分にチェックを入れ，入力欄の数値を「4」にします。なお，第2四分位数（50％点）は<em>中央値</em>と同じですので，「中央値」のチェックは外してしまいましょう（<a href="#fig-Exploration-descriptives-tairyoku" class="quarto-xref">図&nbsp;<span>5.12</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-Exploration-descriptives-tairyoku" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-Exploration-descriptives-tairyoku-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/exploration/Exploration-descriptives-tairyoku.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-Exploration-descriptives-tairyoku-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;5.12: 体力と学力の記述統計の算出
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>この設定にすると，分析結果には2変数の測定値の総数と欠損値の個数，第1四分位数（25％点），第2四分位数（50％点=中央値），第3四分位数（75％点）が含まれた記述統計量の表と，それぞれの変数の度数分布表が表示されます（<a href="#fig-Exploration-descriptives-tairyoku-tables" class="quarto-xref">図&nbsp;<span>5.13</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-Exploration-descriptives-tairyoku-tables" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-Exploration-descriptives-tairyoku-tables-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/exploration/Exploration-descriptives-tairyoku-tables.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-Exploration-descriptives-tairyoku-tables-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;5.13: 体力と学力の記述統計量
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>記述統計量だけで見ると2つの変数は非常によく似た結果になっていますが，度数分布表を見ると「体力」のほうがややばらつきが大きいようです。</p>
+</section>
+<section id="subsub:exp-continuous" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="subsub:exp-continuous">間隔・比率尺度データの記述統計</h4>
+<p>最後に連続型変数，つまり，間隔尺度あるいは比率尺度による測定値の記述統計です。サンプルデータでは「年齢」，「身長」，「体重」の3つがこの型です。「記述統計」の設定パネルを閉じ，再び「<img src="images/assets/analysis-descriptives.svg" class="img-fluid" alt="inline"> 探索」から「記述統計」を選択して分析を実行してください。</p>
+<p>「年齢」，「身長」，「体重」の3つを変数に移動したら，せっかくなので［統計量］で設定できるさまざまな値を算出してみましょう<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>。「<strong>ばらつき</strong>」，「<strong>平均値のばらつき</strong>」，「<strong>分布</strong>」，「<strong>正規性</strong>」，「<strong>外れ値</strong>」にある項目のすべてにチェックを入れてみてください（<a href="#fig-Exploration-descriptives-continuous-setting" class="quarto-xref">図&nbsp;<span>5.14</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-Exploration-descriptives-continuous-setting" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-Exploration-descriptives-continuous-setting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/exploration/Exploration-descriptives-continuous-setting.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-Exploration-descriptives-continuous-setting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;5.14: 分析の設定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>なお，連続型の変数の場合には「度数分布表」のチェックをオンにしても度数分布表は作成されません。度数分布表は，その横のアイコンからわかるように，名義型（<img src="images/assets/variable-nominal.svg" class="img-fluid" alt="inline">）と順序型（<img src="images/assets/variable-ordinal.svg" class="img-fluid" alt="inline">）の変数の場合のみの機能だからです。</p>
+<p>設定が終わると，分析結果は<a href="#fig-Exploration-descriptives-continuous-table" class="quarto-xref">図&nbsp;<span>5.15</span></a>のようになっているはずです。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-Exploration-descriptives-continuous-table" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-Exploration-descriptives-continuous-table-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/exploration/Exploration-descriptives-continuous-table.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-Exploration-descriptives-continuous-table-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;5.15: 記述統計の結果の表
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>結果の表には，上から順に標本サイズ，中心傾向，ばらつき，分布，正規性に関する値が示されています。「平均値のばらつき」で設定を行う「平均値の標準誤差」と「95%信頼区間下限」，「95%信頼区間上限」の値は，平均値の推定精度に関する指標のため，中心傾向の項目である「平均値」のすぐ下に示されます。</p>
+<p>その下には「極値」の表が示されていますが，これは「外れ値」の項目で設定した「最極値」の数に応じて表示される表です。ここでは最極値の数を「5」に設定しているので，それぞれの変数について最上位5個と最下位5個の値と，その値が含まれる行番号が表示されています。</p>
+<p>なお，ほとんどの統計ソフトでもそうなのですが，jamoviで算出される分散や標準偏差などのばらつきの指標は，このデータの母集団がもつ値についての推定値であって，データそのものについての値ではありません。そのため，「分散」は，平均値からの偏差2乗の合計を「標本サイズ – 1」で割った，<em>不偏分散</em>の値になっています。また，「標準偏差」には，この不偏分散の正の平方根が用いられていますので，その点は注意してください（<a href="#fig-exp-dispersion" class="quarto-xref">図&nbsp;<span>5.16</span></a>）<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-exp-dispersion" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-exp-dispersion-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/exploration/dispersion.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-exp-dispersion-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;5.16: 統計ソフトで算出される分散と標準偏差の値
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>その下の「分布」の項目については，あまり馴染みがないかもしれません。これらは，このデータの分布（標本）から推定される母集団の分布が<em>正規分布</em>からどれだけずれているかを示すものです。心理統計におけるさまざまな分析手法は，その多くがデータの母集団が正規分布であることを前提としていますので，分布に極端な偏りがないことを確認しておくことはとても重要です。この分布の指標は，そうした偏りの程度を数値化したものです（<a href="#fig-exp-distribution" class="quarto-xref">図&nbsp;<span>5.17</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-exp-distribution" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-exp-distribution-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/exploration/distribution.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-exp-distribution-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;5.17: 歪度と尖度
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>このうちの「<em>歪度</em>」は，分布の中心が左右にどれだけ偏っているかを示す値です。歪度がプラスの値の場合には，分布の中心が真ん中より左にずれていることを，マイナスの値の場合には右にずれていることを示します。歪度が「0」の場合には分布の中心が分布全体のちょうど真ん中にあるということです。jamoviでは，この歪度の推定値とその標準誤差が算出されます。一般に，この歪度の絶対値がその標準誤差の2倍以上の大きさである場合，分布が左右にかなり偏っているとみなされます。</p>
+<p>もう1つの「<em>尖度</em>」は，分布がどの程度尖った形になっているかを示す値です。分布が尖った形になっているというのは，中心部分に多くの値が集まり，周辺部分には値が少ないことを意味します。反対に，分布が平たい形の場合には，値が全体的に広い範囲に散らばっているということになります。この尖度がプラスの値の場合，その母集団分布は正規分布よりも尖った形に，マイナスの値の場合には，正規分布よりも平たい形になっていることを意味します。この尖度の値についても，推定値と標準誤差が算出され，尖度の絶対値がその標準誤差の2倍以上の大きさである場合，分布の尖り具合に偏りが大きいとみなされます。</p>
+<p>一番下の「<em>シャピロ=ウィルク検定</em>」は，このデータの母集団の分布が正規分布から大きくずれているかどうかについての検定です。シャピロ=ウィルク検定では，「母集団分布は正規分布である（母集団の分布と正規分布のずれは0である）」という<em>帰無仮説</em>を用いた統計的仮説検定を実施します。結果の表の「シャピロ=ウィルクのW」は，この検定で算出される検定統計量Wの値で，この値が1であれば正規分布からのずれが0であり，そこから値が小さくなるほど正規分布からのずれが大きいことを意味します。ただし，正規分布からのずれが大きいといえるかどうかの基準は標本サイズ（データの総数）によって異なるため，このWの値だけでは判断が困難です。そこで，「シャピロ=ウィルク（p値）」として，このWの値の有意確率（<em>p値</em>）の算出結果が合わせて示されます。一般に，このp値が有意水準（一般にα=0.05）未満である場合に，母集団の分布が正規分布でないとみなされます。</p>
+</section>
+<section id="subsub:exp-groupby" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="subsub:exp-groupby">グループごとの記述統計</h4>
+<p>ところで，先ほど算出した身長や体重の平均値は，男女を区別せず，すべての測定値を用いて算出されています。ですが，身長や体重というのは男女差が比較的大きいですよね？ですので，平均値や標準偏差などは男女別に算出しておいたほうがよさそうです。その場合，どうすればよいでしょうか。その1つとして，「男性のデータのみ」，「女性のデータのみ」というフィルタ（<a href="02-basics.html">第<span class="quarto-xref"><span>3</span></span>章</a>「<a href="02-basics.html#sec-data-filter">フィルタ</a>参照」）を作成し，そのフィルタを結果に適用するという方法が挙げられます。ただ，その場合，男性と女性の結果を同時に見ることはできません。それでは不便ですので，別の方法を用いたほうがよいでしょう。</p>
+<p>このような場合，設定パネルの「変数」の下にある「グループ変数」を使うと便利です。変数リストから「性別」を選び，それを「グループ変数」に移動しましょう。すると，すべての記述統計量が男女別に算出されます（<a href="#fig-Exploration-descriptives-split-by" class="quarto-xref">図&nbsp;<span>5.18</span></a>）。なお，この「グループ変数」には右下に名義型変数のアイコン（<img src="images/assets/variable-nominal.svg" class="img-fluid" alt="inline">）がついていますので，ここに指定できるのは名義型変数だけです。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-Exploration-descriptives-split-by" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-Exploration-descriptives-split-by-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/exploration/Exploration-descriptives-split-by.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-Exploration-descriptives-split-by-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;5.18: グループごとの分析
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="subsec:exp-plots" class="level3" data-number="5.1.2">
+<h3 data-number="5.1.2" class="anchored" data-anchor-id="subsec:exp-plots"><span class="header-section-number">5.1.2</span> グラフ</h3>
+<p>ここまでは「記述統計」を使った記述統計量の算出方法を見てきました。多くの場合，これらの機能だけでも十分ではあるのですが，数値だけではわかりにくい部分もあるので，データの特徴を視覚的に捉えることができるといいですね。jamoviには基本的な作図機能も備わっていますので，今度はデータの視覚化の方法について見ていきましょう。</p>
+<section id="subsub:exp-plot-nominal" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="subsub:exp-plot-nominal">名義型・順序型データの視覚化</h4>
+<p>ではまず，名義型（<img src="images/assets/variable-nominal.svg" class="img-fluid" alt="inline">）データである血液型の分析結果をグラフ表示してみようと思います。なお，順序型（<img src="images/assets/variable-ordinal.svg" class="img-fluid" alt="inline">）データの場合も視覚化の手順は同じです。</p>
+<p>画面右側の出力ウィンドウから，「血液型」の分析結果を探し，それをクリックしてください。すると，この分析の際に使用した設定パネルが表示されます。これもjamoviのおもしろくて便利なところで，jamoviでは一度実行した分析をクリックすれば，いつでもその分析の設定を変更することができるのです。</p>
+<p>また，<a href="03-basics2.html">第<span class="quarto-xref"><span>4</span></span>章</a>の「<a href="03-basics2.html#subsec:basic2-modify-analysis">分析の修正</a>」のところで見たように，jamoviの分析結果はデータに修正を加えると分析結果も自動的に更新されるようになっています。SPSSなどの統計ソフトでは，一度実行した分析の結果は変更できません。そのため，分析の設定を変更したい場合には，再度分析をやり直すしかありませんし，データに修正が生じた場合も分析をやり直すしかないのですが，jamoviならそうした手間は不要です。</p>
+<p>さて，「血液型」の分析画面を開いたら，その下のほうにある<span class="groupbar"><img src="images/assets/modules-analyses-arrow-r.svg" width="10pt/">| グラフ</span>の欄を展開して表示させてください。統計量については変更しませんので，<span class="groupbar"><img src="images/assets/modules-analyses-arrow-r.svg" width="10pt/">| 統計量</span>の部分は畳んで設定項目を非表示にしておくとよいでしょう。</p>
+<p><span class="groupbar"><img src="images/assets/modules-analyses-arrow-r.svg" width="10pt/">| グラフ</span>には，次の項目が含まれています（<a href="#fig-Exploration-descriptives-plots-setting" class="quarto-xref">図&nbsp;<span>5.19</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-Exploration-descriptives-plots-setting" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-Exploration-descriptives-plots-setting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/exploration/Exploration-descriptives-plots-setting.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-Exploration-descriptives-plots-setting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;5.19: 作図の設定項目
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvsettings">
+<ul>
+<li><strong>ヒストグラム</strong>　ヒストグラムに関する設定項目です。
+<ul>
+<li>ヒストグラム　度数分布をヒストグラムとして図示します。</li>
+<li>密度曲線　度数分布をカーネル平滑化した密度曲線グラフを作成します。</li>
+</ul></li>
+<li><strong>Q-Qプロット</strong>　正規Q-Qプロットの設定項目です。
+<ul>
+<li>Q-Qプロット　正規Q-Qプロットを作成します。</li>
+</ul></li>
+<li><strong>箱ひげ図</strong>　箱ひげ図（ボックスプロット）に関する設定項目です。
+<ul>
+<li>箱ひげ図　箱ひげ図を作成します。
+<ul>
+<li>外れ値にラベル　外れ値の可能性がある値にラベルを表示します。</li>
+</ul></li>
+<li>バイオリン図　バイオリン図を作成します。</li>
+<li>データ　1つ1つのデータを点として表示します。</li>
+<li>平均値　箱ひげ図やバイオリン図上に平均値を表示します。</li>
+</ul></li>
+<li><strong>棒グラフ</strong>　棒グラフに関する設定項目です。
+<ul>
+<li>棒グラフ　棒グラフを作成します。</li>
+</ul></li>
+</ul>
+</div>
+<p>これらのうち，名義尺度データで有効なのは「<strong>棒グラフ</strong>」の項目です。それ以外の項目も使用できなくはないですが，グラフの性質上，意味のある結果は得られません。</p>
+<p>「<strong>棒グラフ</strong>」にある「棒グラフ」のチェックをオンにすると，<a href="#fig-Exploration-descriptives-plots-bar-plot" class="quarto-xref">図&nbsp;<span>5.20</span></a>のようなグラフが作成されます。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-Exploration-descriptives-plots-bar-plot" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-Exploration-descriptives-plots-bar-plot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/exploration/Exploration-descriptives-plots-bar-plot.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-Exploration-descriptives-plots-bar-plot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;5.20: 棒グラフ
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="subsub:exp-plot-continuous" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="subsub:exp-plot-continuous">連続型データの視覚化</h4>
+<p>今度は連続型（<img src="images/assets/variable-continuous.svg" class="img-fluid" alt="inline">）のデータを視覚化してみましょう。「年齢」，「身長」，「体重」の分析結果をクリックし，これらの変数に関する分析設定パネルを表示させてください。連続型のデータでは，<span class="groupbar"><img src="images/assets/modules-analyses-arrow-r.svg" width="10pt/">| グラフ</span>にあるすべての項目が使用可能です。順番に見ていきましょう。</p>
+</section>
+<section id="subsubsub:exp-plots-histograms" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="subsubsub:exp-plots-histograms">ヒストグラム</h4>
+<p>「<strong>ヒストグラム</strong>」には，「ヒストグラム」と「密度曲線」の2つの項目があります。この2つは，組み合わせて使用することもできます。<a href="#fig-Exploration-descriptives-plots-histograms" class="quarto-xref">図&nbsp;<span>5.21</span></a>は，「体重」のヒストグラムと密度曲線，その2つを組み合わせた場合の結果のグラフです。ここでは性別をグループ変数として用いているので，男女別に図が作成されています。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-Exploration-descriptives-plots-histograms" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-Exploration-descriptives-plots-histograms-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/exploration/Exploration-descriptives-plots-histograms.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-Exploration-descriptives-plots-histograms-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;5.21: ヒストグラム
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<section id="ヒストグラム" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="ヒストグラム">ヒストグラム</h5>
+<p>2種類のグラフのうち，<em>ヒストグラム</em>についてはとくに説明は必要ないでしょう。これは度数分布を視覚化する際によく用いられるグラフです。なお，身長や体重のような連続変数で度数を集計する際の測定値の間隔（<em>階級</em>，<em>ビン</em>）は，jamoviでは自動的に設定されます。残念ながら階級の幅を自分で設定することはできませんので，思ったとおりの結果が得られない場合には，ExcelやRなどを用いて自分で作成する必要があります。</p>
+</section>
+<section id="密度曲線" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="密度曲線">密度曲線</h5>
+<p>2つ目の<em>密度曲線</em>は，<em>カーネル平滑化</em>と呼ばれる手法を用い，度数分布を滑らかな曲線で表現したものです。こうすることによってヒストグラムに見られる細かな凸凹が平滑化され，全体的な傾向を捉えやすくなります。</p>
+</section>
+</section>
+<section id="subsubsub:exp-plots-qq" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="subsubsub:exp-plots-qq">Q-Qプロット</h4>
+<p>「<strong>Q-Qプロット</strong>」にある「Q-Qプロット」の項目では，<em>Q-Qプロット</em>や<em>正規Q-Qプロット</em>と呼ばれる図を作成します（<a href="#fig-Exploration-descriptives-plots-qq" class="quarto-xref">図&nbsp;<span>5.22</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-Exploration-descriptives-plots-qq" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-Exploration-descriptives-plots-qq-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/exploration/Exploration-descriptives-plots-qq.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-Exploration-descriptives-plots-qq-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;5.22: 正規Q-Qプロット
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>これはデータの分布が<em>正規分布</em>になっているかどうかを視覚的に確かめるために用いられるもので，グラフの横軸にはこのデータが正規分布である場合にとると考えられる値（理論的分位点），そして縦軸は「標準化残差」となっていますが，ここでは実際の測定値の標準得点がとられています。このグラフのデータ点が，グラフ中央の直線上に並べばデータが正規分布しているといえ，そこから大きくずれていれば正規分布から外れているということになります。</p>
+</section>
+<section id="subsubsub:exp-plots-box" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="subsubsub:exp-plots-box">箱ひげ図</h4>
+<p>「<strong>箱ひげ図</strong>」には，箱ひげ図やそれに関連した作図の項目が含まれています。</p>
+<section id="箱ひげ図" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="箱ひげ図">箱ひげ図</h5>
+<p>1つ目の「箱ひげ図」は，箱ひげ図（ボックスプロット）と呼ばれるグラフを作成します（<a href="#fig-Exploration-descriptives-plots-box" class="quarto-xref">図&nbsp;<span>5.23</span></a>）。箱ひげ図は，中央値と四分位数を用いてデータのばらつきを示すためのグラフで，「箱」の部分には四分位数，「ひげ」の部分には<em>四分位範囲</em>（第3四分位数 – 第1四分位数の幅）の1.5倍の範囲内における最大値および最小値までの幅が示されます。また，それより外の範囲にあるデータは<em>外れ値</em>として点で示されます。</p>
+<p>その際，「外れ値にラベル」をチェックしておくと，外れ値の値がグラフ上に表示されます。</p>
+</section>
+<section id="バイオリン図" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="バイオリン図">バイオリン図</h5>
+<p>その下にある「バイオリン図」で作成されるバイオリン図は，密度曲線を横倒しにし，さらに左右対称にして分布の特徴を表したものです（<a href="#fig-Exploration-descriptives-plots-box" class="quarto-xref">図&nbsp;<span>5.23</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-Exploration-descriptives-plots-box" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-Exploration-descriptives-plots-box-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/exploration/Exploration-descriptives-plots-box.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-Exploration-descriptives-plots-box-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;5.23: 箱ひげ図とバイオリン図
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="データ" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="データ">データ</h5>
+<p>一番下の「データ」のチェックをオンにすると，1つ1つのデータが点として示されます（<a href="#fig-Exploration-descriptives-plots-data-jittered" class="quarto-xref">図&nbsp;<span>5.24</span></a>）。その際，その下のメニューで，それぞれのデータ点が重ならないように点の位置をちりばめるようにしてずらす（ちりばめ）か，積み上げるような形にして表示する（積み上げ）かを選択することができます。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-Exploration-descriptives-plots-data-jittered" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-Exploration-descriptives-plots-data-jittered-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/exploration/Exploration-descriptives-plots-data-jittered.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-Exploration-descriptives-plots-data-jittered-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;5.24: データ点の表示
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>この箱ひげ図とバイオリン図，データ点の表示は，複数を重ね合わせて使用することもできます（<a href="#fig-Exploration-descriptives-plots-box-combined" class="quarto-xref">図&nbsp;<span>5.25</span></a>）。また，<strong>箱ひげ図</strong>の一番下にある「平均値」にチェックを入れると，各グループの平均値をグラフ上に示すことができます。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-Exploration-descriptives-plots-box-combined" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-Exploration-descriptives-plots-box-combined-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/exploration/Exploration-descriptives-plots-box-combined.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-Exploration-descriptives-plots-box-combined-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;5.25: グラフの重ね合わせ
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="subsubsub:exp-plots-bar" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="subsubsub:exp-plots-bar">棒グラフ</h4>
+<p>連続型の変数の場合，「<strong>棒グラフ</strong>」の「棒グラフ」では平均値の棒グラフが作成されます。このとき，グラフには平均値とその<em>標準誤差</em>が示されます（<a href="#fig-Exploration-descriptives-plots-bar" class="quarto-xref">図&nbsp;<span>5.26</span></a>）。グラフの誤差線（ひげの部分）は標準偏差ではありませんので，その点は注意してください。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-Exploration-descriptives-plots-bar" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-Exploration-descriptives-plots-bar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/exploration/Exploration-descriptives-plots-bar.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-Exploration-descriptives-plots-bar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;5.26: 棒グラフ
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+
+
+</section>
+</section>
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p>本書で利用するサンプルデータはすべて架空のデータです。<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>ここでは説明のためにいろいろな値を算出していますが，実際の分析では必要なものだけを選んで実行してください。<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>なお，不偏分散の正の平方根は，母集団標準偏差の不偏値にはなっていません。そのため，この値を「不偏標準偏差」と表現するのは適切ではありません。<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./04-part2.html" class="pagination-link" aria-label="分析編">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">分析編</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./05-t-tests.html" class="pagination-link" aria-label="t検定">
+        <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">t検定</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/sbtseiji/jmv_compguide/blob/main/04a-exploration.qmd" class="toc-action"><i class="bi bi-github"></i>ソースコード</a></li></ul></div></div></div></footer><script src="site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

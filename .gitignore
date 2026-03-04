@@ -22,3 +22,6 @@ rsconnect/documents/index.Rmd/bookdown.org/sbtseiji/jamovi_complete_guide.dcf
 _book/
 _bookdown_files/
 
+
+/.quarto/
+**/*.quarto_ipynb

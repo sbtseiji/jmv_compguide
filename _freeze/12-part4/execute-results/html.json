@@ -1,0 +1,15 @@
+{
+  "hash": "8c896580bddc70332404af2935345bcd",
+  "result": {
+    "engine": "knitr",
+    "markdown": "# (PART\\*) 付録 {-#part-four}\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

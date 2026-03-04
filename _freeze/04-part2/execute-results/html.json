@@ -1,0 +1,17 @@
+{
+  "hash": "fff893a0c2b5a0a21de043cc4ff657b4",
+  "result": {
+    "engine": "knitr",
+    "markdown": "# 分析編 {-#part-two}\n\n\n::: {.cell}\n\n:::\n\n\n分析編では，jamoviに搭載されている分析機能について見ていきます。  \n\nこの「分析編」では，jamoviの分析メニューに含まれる各手法を順に取り上げ，設定パネルの構成と使い方を説明します。\n\n本書では，個々の分析手法について，基本的な実行手順だけでなく，設定パネルに含まれる各項目を一通り確認できるように構成しています。そのため，はじめて分析を試すときの入門としてだけでなく，特定のオプションの意味や使い方を調べるためのリファレンスとしても使えるはずです。",
+    "supporting": [
+      "04-part2_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

@@ -1,0 +1,70 @@
+project:
+  type: book
+  output-dir: _book_quarto
+
+book:
+  title: "jamovi完全攻略ガイド"
+  author: "芝田 征司"
+  description: "フリーの統計ソフト jamovi の使用方法についての日本語ガイドです。データの編集方法から分散分析や因子分析の設定方法まで、基本機能のすべてについて一通り説明しています。"
+  page-navigation: true
+  search: true
+  sidebar:
+    style: docked
+    collapse-level: 1
+    pinned: true
+  repo-url: https://github.com/sbtseiji/jmv_compguide
+  repo-actions: [source]
+  chapters:
+    - index.qmd
+    - part: 00-part1.qmd
+      chapters:
+        - 01-getting-started.qmd
+        - 02-basics.qmd
+        - 03-basics2.qmd
+    - part: 04-part2.qmd
+      chapters:
+        - 04a-exploration.qmd
+        - 05-t-tests.qmd
+        - 06-ANOVA.qmd
+        - 07-Regression.qmd
+        - 08-Frequencies.qmd
+        - 09-Factor.qmd
+    - part: 10-part3.qmd
+      chapters:
+        - 11-chart.qmd
+        - 11a-boxplot.qmd
+        - 11b-histogram.qmd
+        - 11c-scatterplot.qmd
+        - 11d-linechart.qmd
+    - part: 12-part4.qmd
+      chapters:
+        - 13-Appendix.qmd
+
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    smooth-scroll: true
+    anchor-sections: true
+    theme: cosmo
+    link-external-newwindow: true
+    code-copy: false
+    respect-user-color-scheme: false
+    css:
+      - css/style.css
+    include-in-header:
+      - html/mathjax.html
+    grid:
+      sidebar-width: 320px
+      body-width: 900px
+      margin-width: 240px
+
+crossref:
+  fig-title: "図"
+  tbl-title: "表"
+
+execute:
+  freeze: auto
+
+lang: ja

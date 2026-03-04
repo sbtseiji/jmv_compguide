@@ -1,0 +1,3293 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="フリーの統計ソフト jamovi の使用方法についての日本語ガイドです。データの編集方法から分散分析や因子分析の設定方法まで、基本機能のすべてについて一通り説明しています。">
+
+<title>9&nbsp; 度数分析 – jamovi完全攻略ガイド</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./09-Factor.html" rel="next">
+<link href="./07-Regression.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-777ac567918ecbb99a2fd73912d84d5b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "一致なし",
+    "search-matching-documents-text": "一致した文書",
+    "search-copy-link-title": "検索へのリンクをコピー",
+    "search-hide-matches-text": "追加の検索結果を非表示",
+    "search-more-match-text": "追加の検索結果",
+    "search-more-matches-text": "追加の検索結果",
+    "search-clear-button-title": "消去",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "取消",
+    "search-submit-button-title": "検索",
+    "search-label": "サーチ"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+<script>
+MathJax ={chtml: {
+      mtextFont: 'arial',
+      // mtextInheritFont: true,
+   },
+};
+</script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js?config=TeX-AMS_HTML"></script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="nav-sidebar docked quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="サイドバーを切り替える" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./04-part2.html">分析編</a></li><li class="breadcrumb-item"><a href="./08-Frequencies.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">度数分析</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="サイドバーを切り替える" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="サーチ" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">jamovi完全攻略ガイド</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/sbtseiji/jmv_compguide" title="ソースコード" class="quarto-navigation-tool px-1" aria-label="ソースコード"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="サーチ"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">jamovi完全攻略ガイド</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./00-part1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">導入編</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false" aria-label="セクションを切り替え">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-getting-started.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">jamoviの導入</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">データ操作</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-basics2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">分析と編集</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./04-part2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">分析編</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="セクションを切り替え">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04a-exploration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">探索</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-t-tests.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">t検定</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-ANOVA.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">分散分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-Regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">回帰分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08-Frequencies.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">度数分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09-Factor.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">因子分析</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./10-part3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">作図編</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="セクションを切り替え">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-chart.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">棒グラフ</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11a-boxplot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">箱ひげ図</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11b-histogram.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">ヒストグラム</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11c-scatterplot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">散布図</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11d-linechart.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">折れ線グラフ</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./12-part4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">付録</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false" aria-label="セクションを切り替え">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./13-Appendix.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">関数一覧</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">目次</h2>
+   
+  <ul>
+  <li><a href="#sec-frequencies-binomial" id="toc-sec-frequencies-binomial" class="nav-link active" data-scroll-target="#sec-frequencies-binomial"><span class="header-section-number">9.1</span> 2値目的変数［2項検定］</a>
+  <ul class="collapse">
+  <li><a href="#sub:frequencies-binomial-basics" id="toc-sub:frequencies-binomial-basics" class="nav-link" data-scroll-target="#sub\:frequencies-binomial-basics"><span class="header-section-number">9.1.1</span> 考え方</a></li>
+  <li><a href="#sub:frequencies-binomial-procedure" id="toc-sub:frequencies-binomial-procedure" class="nav-link" data-scroll-target="#sub\:frequencies-binomial-procedure"><span class="header-section-number">9.1.2</span> 分析手順</a></li>
+  <li><a href="#sub:frequencies-binomial-results" id="toc-sub:frequencies-binomial-results" class="nav-link" data-scroll-target="#sub\:frequencies-binomial-results"><span class="header-section-number">9.1.3</span> 分析結果</a></li>
+  <li><a href="#sub:frequencies-binomial-bayes" id="toc-sub:frequencies-binomial-bayes" class="nav-link" data-scroll-target="#sub\:frequencies-binomial-bayes"><span class="header-section-number">9.1.4</span> ベイズ統計量</a></li>
+  </ul></li>
+  <li><a href="#sec-frequencies-n-outcomes" id="toc-sec-frequencies-n-outcomes" class="nav-link" data-scroll-target="#sec-frequencies-n-outcomes"><span class="header-section-number">9.2</span> 多値目的変数［χ²適合度検定］</a>
+  <ul class="collapse">
+  <li><a href="#sub:frequencies-n-outcomes-basics" id="toc-sub:frequencies-n-outcomes-basics" class="nav-link" data-scroll-target="#sub\:frequencies-n-outcomes-basics"><span class="header-section-number">9.2.1</span> 考え方</a></li>
+  <li><a href="#sub:frequencies-n-outcomes-procedure" id="toc-sub:frequencies-n-outcomes-procedure" class="nav-link" data-scroll-target="#sub\:frequencies-n-outcomes-procedure"><span class="header-section-number">9.2.2</span> 分析手順</a></li>
+  <li><a href="#sub:frequencies-n-outcomes-expected-proportions" id="toc-sub:frequencies-n-outcomes-expected-proportions" class="nav-link" data-scroll-target="#sub\:frequencies-n-outcomes-expected-proportions"><span class="header-section-number">9.2.3</span> 期待比率</a></li>
+  <li><a href="#sub:frequencies-n-outcomes-results" id="toc-sub:frequencies-n-outcomes-results" class="nav-link" data-scroll-target="#sub\:frequencies-n-outcomes-results"><span class="header-section-number">9.2.4</span> 分析結果</a></li>
+  </ul></li>
+  <li><a href="#sec-frequencies-chisq" id="toc-sec-frequencies-chisq" class="nav-link" data-scroll-target="#sec-frequencies-chisq"><span class="header-section-number">9.3</span> 対応なし［χ²独立性検定］</a>
+  <ul class="collapse">
+  <li><a href="#sub:frequencies-chisq-basics" id="toc-sub:frequencies-chisq-basics" class="nav-link" data-scroll-target="#sub\:frequencies-chisq-basics"><span class="header-section-number">9.3.1</span> 考え方</a></li>
+  <li><a href="#sub:frequencies-chisq-procedure" id="toc-sub:frequencies-chisq-procedure" class="nav-link" data-scroll-target="#sub\:frequencies-chisq-procedure"><span class="header-section-number">9.3.2</span> 分析手順</a></li>
+  <li><a href="#sub:frequencies-chisq-results" id="toc-sub:frequencies-chisq-results" class="nav-link" data-scroll-target="#sub\:frequencies-chisq-results"><span class="header-section-number">9.3.3</span> 分析結果</a></li>
+  <li><a href="#sub:frequencies-chisq-layered" id="toc-sub:frequencies-chisq-layered" class="nav-link" data-scroll-target="#sub\:frequencies-chisq-layered"><span class="header-section-number">9.3.4</span> 層別分析</a></li>
+  <li><a href="#sub:frequencies-chisq-statistics" id="toc-sub:frequencies-chisq-statistics" class="nav-link" data-scroll-target="#sub\:frequencies-chisq-statistics"><span class="header-section-number">9.3.5</span> 統計量</a></li>
+  <li><a href="#sub:frequencies-chisq-cells" id="toc-sub:frequencies-chisq-cells" class="nav-link" data-scroll-target="#sub\:frequencies-chisq-cells"><span class="header-section-number">9.3.6</span> セル</a></li>
+  <li><a href="#sub:frequencies-chisq-post-hoc" id="toc-sub:frequencies-chisq-post-hoc" class="nav-link" data-scroll-target="#sub\:frequencies-chisq-post-hoc"><span class="header-section-number">9.3.7</span> 事後検定</a></li>
+  <li><a href="#sub:frequencies-chisq-plots" id="toc-sub:frequencies-chisq-plots" class="nav-link" data-scroll-target="#sub\:frequencies-chisq-plots"><span class="header-section-number">9.3.8</span> グラフ</a></li>
+  </ul></li>
+  <li><a href="#sec-frequencies-mcnemar" id="toc-sec-frequencies-mcnemar" class="nav-link" data-scroll-target="#sec-frequencies-mcnemar"><span class="header-section-number">9.4</span> 対応あり［マクニマー検定］</a>
+  <ul class="collapse">
+  <li><a href="#sub:frequencies-mcnemar-basics" id="toc-sub:frequencies-mcnemar-basics" class="nav-link" data-scroll-target="#sub\:frequencies-mcnemar-basics"><span class="header-section-number">9.4.1</span> 考え方</a></li>
+  <li><a href="#sub:frequencies-mcnemar-procedure" id="toc-sub:frequencies-mcnemar-procedure" class="nav-link" data-scroll-target="#sub\:frequencies-mcnemar-procedure"><span class="header-section-number">9.4.2</span> 分析手順</a></li>
+  <li><a href="#sub:frequencies-mcnemar-results" id="toc-sub:frequencies-mcnemar-results" class="nav-link" data-scroll-target="#sub\:frequencies-mcnemar-results"><span class="header-section-number">9.4.3</span> 分析結果</a></li>
+  <li><a href="#sub:frequencies-mcnemar-options" id="toc-sub:frequencies-mcnemar-options" class="nav-link" data-scroll-target="#sub\:frequencies-mcnemar-options"><span class="header-section-number">9.4.4</span> 分析オプション</a></li>
+  </ul></li>
+  <li><a href="#sec-frequencies-loglin" id="toc-sec-frequencies-loglin" class="nav-link" data-scroll-target="#sec-frequencies-loglin"><span class="header-section-number">9.5</span> 対数線形回帰</a>
+  <ul class="collapse">
+  <li><a href="#sub:frequencies-loglin-basics" id="toc-sub:frequencies-loglin-basics" class="nav-link" data-scroll-target="#sub\:frequencies-loglin-basics"><span class="header-section-number">9.5.1</span> 考え方</a></li>
+  <li><a href="#sub:frequencies-loglin-procedure" id="toc-sub:frequencies-loglin-procedure" class="nav-link" data-scroll-target="#sub\:frequencies-loglin-procedure"><span class="header-section-number">9.5.2</span> 基本手順</a></li>
+  <li><a href="#sub:frequencies-loglin-results" id="toc-sub:frequencies-loglin-results" class="nav-link" data-scroll-target="#sub\:frequencies-loglin-results"><span class="header-section-number">9.5.3</span> 分析結果</a></li>
+  <li><a href="#sub:frequencies-loglin-modelbuilder" id="toc-sub:frequencies-loglin-modelbuilder" class="nav-link" data-scroll-target="#sub\:frequencies-loglin-modelbuilder"><span class="header-section-number">9.5.4</span> モデルビルダー</a></li>
+  <li><a href="#sub:frequencies-loglin-referencelevels" id="toc-sub:frequencies-loglin-referencelevels" class="nav-link" data-scroll-target="#sub\:frequencies-loglin-referencelevels"><span class="header-section-number">9.5.5</span> 基準レベル</a></li>
+  <li><a href="#sub:frequencies-loglin-modelfit" id="toc-sub:frequencies-loglin-modelfit" class="nav-link" data-scroll-target="#sub\:frequencies-loglin-modelfit"><span class="header-section-number">9.5.6</span> モデル適合度</a></li>
+  <li><a href="#sub:frequencies-loglin-coeff" id="toc-sub:frequencies-loglin-coeff" class="nav-link" data-scroll-target="#sub\:frequencies-loglin-coeff"><span class="header-section-number">9.5.7</span> モデル係数</a></li>
+  <li><a href="#sub:frequencies-loglin-emm" id="toc-sub:frequencies-loglin-emm" class="nav-link" data-scroll-target="#sub\:frequencies-loglin-emm"><span class="header-section-number">9.5.8</span> 推定周辺平均</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/sbtseiji/jmv_compguide/blob/main/08-Frequencies.qmd" class="toc-action"><i class="bi bi-github"></i>ソースコード</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./04-part2.html">分析編</a></li><li class="breadcrumb-item"><a href="./08-Frequencies.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">度数分析</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="sec-ch-frequencies" class="quarto-section-identifier"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">度数分析</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>この章では，「<img src="images/assets/analysis-frequencies.svg" class="img-fluid" alt="inline"> 度数分析」ツールについて見ていきます。jamoviの基本構成では，ここには次の分析メニューが含まれています（<a href="#fig-frequencies-menu" class="quarto-xref">図&nbsp;<span>9.1</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-menu" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-menu-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/menu.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-menu-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.1: 度数分析のメニュー
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvmenu">
+<ul>
+<li><strong>1標本比率検定</strong>
+<ul>
+<li>2値目的変数［2項検定］</li>
+<li>多値目的変数［<span class="math inline">\(\chi^{2}\)</span>適合度検定］</li>
+</ul></li>
+<li><strong>クロス集計表</strong>
+<ul>
+<li>対応なし［<span class="math inline">\(\chi^{2}\)</span>独立性検定］</li>
+<li>対応あり［マクニマー検定］</li>
+</ul></li>
+<li>その他
+<ul>
+<li>対数線形回帰</li>
+</ul></li>
+</ul>
+</div>
+<p>これらの分析メニューは，いずれも観測データの度数や比率について分析を行うものです。分析メニューは，1標本の検定と<em>クロス集計表</em>（<em>分割表</em>）の検定に分けられています。また，それらとは別に「対数線形回帰」のメニューも用意されています。「回帰」という名前がついていますが，これも度数に関する分析手法の1つです。</p>
+<section id="sec-frequencies-binomial" class="level2" data-number="9.1">
+<h2 data-number="9.1" class="anchored" data-anchor-id="sec-frequencies-binomial"><span class="header-section-number">9.1</span> 2値目的変数［2項検定］</h2>
+<p>とりうる値が「はい・いいえ」のように2種類しか存在しない<em>2値変数</em>について，その値の「はい・いいえ」の比率が基準の比率，または想定される比率と同じかどうかを確かめたい場合には，<em>2項検定</em>と呼ばれる検定方法が用いられます。</p>
+<p>jamoviでは，従来型の一般的な方法による2項検定の他に，ベイズ統計の考え方を用いた検定を実施することも可能です。</p>
+<section id="sub:frequencies-binomial-basics" class="level3" data-number="9.1.1">
+<h3 data-number="9.1.1" class="anchored" data-anchor-id="sub:frequencies-binomial-basics"><span class="header-section-number">9.1.1</span> 考え方</h3>
+<p>次の例について考えてみましょう。同月齢の80人の幼児を対象としてある認知課題を実施しました。この課題は，この月齢の幼児では通過率70%といわれてきたのですが，今回の実施で課題を通過したのは80人中46人（通過率57.5%）でした（<a href="#tbl-frequencies-table-pf" class="quarto-xref">表&nbsp;<span>9.1</span></a>）。この課題の通過率は，本当に70%なのでしょうか。</p>
+<div class="cell" data-layout-align="center">
+<div id="tbl-frequencies-table-pf" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-frequencies-table-pf-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+表&nbsp;9.1: 認知課題の通過率
+</figcaption>
+<div aria-describedby="tbl-frequencies-table-pf-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="do-not-create-environment cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">結果</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">人数</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">%</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">通過</td>
+<td style="text-align: right;">46</td>
+<td style="text-align: right;">57.5%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">非通過</td>
+<td style="text-align: right;">34</td>
+<td style="text-align: right;">42.5%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">計</td>
+<td style="text-align: right;">80</td>
+<td style="text-align: right;">100%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>この例のように，測定値のとりうる値が「通過」または「非通過」の2とおりしかない場合，そのデータにおける「通過」または「非通過」の比率がどのように分布するかは，<em>2項分布</em>と呼ばれる確率分布を用いて確率的に求めることができます。</p>
+<p>たとえば，この課題の通過率が実際に70%だったとしたとき，無作為に選んだ80人を対象とした調査で80人のうちの70%，つまり56人が課題に通過する確率は，2項分布を用いて計算すると0.0969…で，約9.7%の確率です<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>。これは一見すると低いようにも感じられますが，全体（母集団）における比率が70%だからといって，そこから抽出した標本で毎回70%ちょうどになるわけではありません。それより1人少ない55人の場合や1人多い57人の場合を含めて考えてみると，80人中55人が通過する確率は0.093（9.3%），80人中57人なら0.095（9.5%）ですので，課題の通過者が80人中55〜57人になる場合であれば28%程度の確率で生じうるわけです。</p>
+<p>先ほどは説明のために70%ちょうどの56人から前後1人の幅で考えましたが，実際の場面ではこれよりもっとばらつくことは普通にあるでしょう。極端な話，80人全員が課題に通過する場合や，その逆に全員が通過できない場合というのも，非常にまれなことには違いないですが，確率的には0ではありません。</p>
+<p>そこで，母集団における通過率が70%である場合に，80人の標本で通過者が0人である場合から80人である場合までのすべての場合について確率を算出し，それを図示したのが<a href="#fig-frequencies-binomial-distribution" class="quarto-xref">図&nbsp;<span>9.2</span></a>です。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-binomial-distribution" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-binomial-distribution-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/binomial-distribution.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-binomial-distribution-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.2: 母集団における通過率が70%の場合の確率の分布
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>さすがに通過者が0人の場合や80人の場合というのは確率的には数値が小さすぎてグラフ上では0になってしまいますが，こうしてみると，母集団における通過率が70%の場合に，今回の結果のように通過者が46人になるというケースはそれなりにありうることだというのがわかります。とはいえ，今回の結果と同じか，あるいはそれよりも極端な結果になる確率というのはかなり小さく，確率的に見てまれな出来事であることには違いありません。</p>
+<p>このように，2項検定では想定される比率をもつ母集団から標本データで得られた比率（およびそれより極端な比率）が得られる確率がどの程度であるかを算出します。そして，その確率が有意水準よりも小さい場合に，想定される母集団における比率と標本データの母集団の比率が有意に異なると判断します。</p>
+</section>
+<section id="sub:frequencies-binomial-procedure" class="level3" data-number="9.1.2">
+<h3 data-number="9.1.2" class="anchored" data-anchor-id="sub:frequencies-binomial-procedure"><span class="header-section-number">9.1.2</span> 分析手順</h3>
+<p>分析に入る前に，先ほどの調査結果を次のようにスプレッドシートに入力しましょう（<a href="#fig-frequencies-data01" class="quarto-xref">図&nbsp;<span>9.3</span></a>）。なお，人数は実際には連続変数ですが，分析の都合上，ここでは「名義型（<img src="images/assets/variable-nominal.svg" class="img-fluid" alt="inline">）」として設定してください。</p>
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-data01" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-data01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/data01.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-data01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.3: サンプルデータ
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvvar">
+<ul>
+<li><code>結果</code>　課題の結果（通過，非通過）</li>
+<li><code>人数</code>　通過・非通過の人数（通過：46人，非通過：34人）</li>
+</ul>
+</div>
+<p>それでは分析です。2項検定は，分析タブの「<img src="images/assets/analysis-frequencies.svg" class="img-fluid" alt="inline"> 度数分析」で「1標本比率検定」のところにある「2値目的変数［2項検定］」を選択して実行します（<a href="#fig-frequencies-binomial-menu" class="quarto-xref">図&nbsp;<span>9.4</span></a>）。</p>
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-binomial-menu" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-binomial-menu-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/binomial-menu.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-binomial-menu-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.4: 2項検定の実行
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>すると，<a href="#fig-frequencies-binomial-setting" class="quarto-xref">図&nbsp;<span>9.5</span></a>のような画面が表示されます。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-binomial-setting" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-binomial-setting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/binomial-setting.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-binomial-setting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.5: 2項検定の設定パネル
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvsettings">
+<ul>
+<li>度数として処理　度数が入力されている変数で分析を行う場合に使用します。</li>
+<li>検定値　比較対象に使用する比率を指定します。</li>
+<li><strong>仮説</strong>　検定の対立仮説に関する設定を行います。
+<ul>
+<li>≠ 検定値　比率が検定値と異なるかどうかを検定します（両側検定）</li>
+<li>&gt; 検定値　比率が検定値より大きいかどうかを検定します（片側検定）</li>
+<li>&lt; 検定値　比率が検定値より小さいかどうかを検定します（片側検定）</li>
+</ul></li>
+<li><strong>追加の統計量</strong>　追加の統計量に関する設定を行います。
+<ul>
+<li>信頼区間　比率の信頼区間を算出します。</li>
+</ul></li>
+<li><span class="groupbar"><img src="images/assets/modules-analyses-arrow-r.svg" width="10pt/">| ベイズ統計量</span>　ベイズ統計の手法を用いて検定する場合の設定項目です。</li>
+</ul>
+</div>
+<p>ここで，<a href="#fig-frequencies-binomial-set-var" class="quarto-xref">図&nbsp;<span>9.6</span></a>のように設定を行います。まず，「人数」を選択して右側に移動してください。下のアイコンを見てもらえばわかるように，この欄には，名義型（<img src="images/assets/variable-nominal.svg" class="img-fluid" alt="inline">）か順序型（<img src="images/assets/variable-ordinal.svg" class="img-fluid" alt="inline">）の変数でなければ移動することができません。先ほど「人数」を名義型に設定したのはこのためです。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-binomial-set-var" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-binomial-set-var-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/binomial-set-var.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-binomial-set-var-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.6: 2項検定の分析設定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>また，今回の分析データでは，課題通過者，非通過者の人数（度数）をデータとして入力してありますので，「度数として処理」にチェックを入れます。各対象者の「通過・非通過」の結果が1行ずつ入力されている場合には，このチェックは必要ありません。</p>
+<p>それから，今回の仮説では，「この課題の通過率は70%（0.7）である」というのが正しいといえるかどうかを確かめたいので，「検定値」の値は「0.7」に設定します。</p>
+<p>基本の設定はこれで終了ですが，それ以外の設定項目についてもここで見ておきましょう。</p>
+<section id="仮説" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="仮説">仮説</h4>
+<p>「<strong>仮説</strong>」では，検定に使用する対立仮説の設定を行います。</p>
+<div class="jmvsettings">
+<ul>
+<li>≠ 検定値　比率が検定値と異なるかどうかを検定します（両側検定）</li>
+<li>&gt; 検定値　比率が検定値より大きいかどうかを検定します（片側検定）</li>
+<li>&lt; 検定値　比率が検定値より小さいかどうかを検定します（片側検定）</li>
+</ul>
+</div>
+<p>今回のデータでは，想定される母集団の比率どおりであれば80 × 0.7 = 56，課題通過者は46人なので，仮説は「&lt; 検定値」にすべきではないかと思う人もいるかもしれません。ですが，統計的仮説検定の仮説はデータを見る前に設定するものなので，その場合，観測データで通過率が0.7より高いか低いかは見当がつきません。そこで，ここでの検定における対立仮説は「≠ 検定値」で両側検定とします。</p>
+</section>
+<section id="追加の統計量" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="追加の統計量">追加の統計量</h4>
+<p>また，「<strong>追加の統計量</strong>」の部分では，信頼区間を算出するかどうかの設定を行います。今回はこの設定は使用しませんが，信頼区間を算出したい場合は「信頼区間」の部分にチェックを入れてください。</p>
+</section>
+</section>
+<section id="sub:frequencies-binomial-results" class="level3" data-number="9.1.3">
+<h3 data-number="9.1.3" class="anchored" data-anchor-id="sub:frequencies-binomial-results"><span class="header-section-number">9.1.3</span> 分析結果</h3>
+<p>それでは結果を見てみましょう。分析結果は，<a href="#fig-frequencies-binomial-results" class="quarto-xref">図&nbsp;<span>9.7</span></a>のような形で示されます。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-binomial-results" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-binomial-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/binomial-results.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-binomial-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.7: 2項検定の分析結果
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>課題通過者の人数，非通過者の人数という集計結果をデータとして分析を行った場合，結果にはどちらが「通過」でどちらが「非通過」なのかは示されませんので，結果を見る際には注意してください。結果には，スプレッドシートに入力した順に「水準」欄に「1」，「2」として表示されます。分析に使用したデータでは1行目に通過者の人数，2行目に非通過者の人数を入力しましたので，この結果では水準が「1」の方が通過者です。</p>
+<p>分析結果には，通過者の比率と非通過者の比率のそれぞれについての分析結果が示されますが，ここで見る必要があるのは通過者の比率（水準が1の行）の結果のみです。</p>
+<p>この分析結果ではp = 0.020ですので，80人中46人が通過（通過率57.5%）という比率は，想定される通過率70%とは有意に異なるということがいえます。</p>
+</section>
+<section id="sub:frequencies-binomial-bayes" class="level3" data-number="9.1.4">
+<h3 data-number="9.1.4" class="anchored" data-anchor-id="sub:frequencies-binomial-bayes"><span class="header-section-number">9.1.4</span> ベイズ統計量</h3>
+<p>すでに分析結果は得られましたが，jamoviの2項検定では<em>ベイズ統計</em>の考え方を用いた検定も可能ですので，その方法についても見ておくことにしましょう。</p>
+<p>まず，先ほどの分析結果をクリックして，2項検定の分析設定パネルを開いてください。設定パネルの<span class="groupbar"><img src="images/assets/modules-analyses-arrow-r.svg" width="10pt/">| ベイズ統計量</span>を展開すると，次の設定項目が表示されます（<a href="#fig-frequencies-binomial-bayes-setting" class="quarto-xref">図&nbsp;<span>9.8</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-binomial-bayes-setting" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-binomial-bayes-setting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/binomial-bayes-setting.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-binomial-bayes-setting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.8: ベイズ統計量の設定パネル
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvsettings">
+<ul>
+<li><strong>事前分布</strong>
+<ul>
+<li>パラメータa　ベータ分布のaを設定します。</li>
+<li>パラメータb　ベータ分布のbを設定します。</li>
+</ul></li>
+<li><strong>グラフ</strong>
+<ul>
+<li>事後分布のグラフ　事後分布を図示します。</li>
+</ul></li>
+<li><strong>統計量</strong>
+<ul>
+<li>ベイズ因子　ベイズ因子を算出します。</li>
+<li>ベイズ信頼区間　ベイズ信頼区間（確信区間）を算出します。</li>
+</ul></li>
+</ul>
+</div>
+<section id="subsub:frequencies-binomial-bayes-prior" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="subsub:frequencies-binomial-bayes-prior">事前分布</h4>
+<p>ベイズ統計の詳細についてはベイズ統計の教科書を参照して欲しいと思いますが，ベイズ統計では，分析対象についての確率分布をあらかじめ設定し，その分布に対して観測データを与えて分析結果を得るという手順で分析を実施します。この際，分析対象についてあらかじめ設定する分布のことを<em>事前分布</em>と呼びます。<span class="groupbar"><img src="images/assets/modules-analyses-arrow-r.svg" width="10pt/">| ベイズ統計量</span>の「<strong>事前分布</strong>」の部分は，この事前分布についての設定です。</p>
+<p>jamoviの2項検定では，分析の事前分布として<em>ベータ分布</em>と呼ばれる確率分布を使用することができます。このベータ分布は，aとb（またはαとβ）という2つの<em>パラメータ</em><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>をもち，この2つの値の設定の仕方によって，じつにさまざまな形状の分布を表現することが可能です。そして，このベータ分布のパラメータaの値を「パラメータa」の入力欄に，パラメータbの値を「パラメータb」の入力欄に入力します。</p>
+<p>しかし，パラメータの値を2つ入力してください，といわれても，どんな値を入力したらよいのか検討もつきませんね。すでに先行研究や予備調査などで分析対象のおおよその分布がわかっている場合には，事前分布がその形状になるようにaとbを設定することになりますが，そうでない場合，一般には特別な情報をもたない分布を事前分布として使用するという方法が用いられます。そしてその場合，もっとも一般に用いられる分布が<em>一様分布</em>と呼ばれる分布です。</p>
+<p>この一様分布は，「サイコロの1から6の目が出る確率はすべて1/6で等しい」というように，どのような結果になる確率もすべて同率で等しいとする分布です。ベータ分布では，「a = b = 1」の場合にこの一様分布が得られます。jamoviの分析画面では，「パラメータa」も「パラメータb」も初期設定値は「1」になっていますが，それはこのような理由からです。ここでは「実際の課題通過率」に関して特別な仮説は持ち合わせていませんので，初期設定値どおり，aもbも「1」のままにしておきましょう。</p>
+</section>
+<section id="subsub:frequencies-binomial-bayes-statistics" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="subsub:frequencies-binomial-bayes-statistics">統計量</h4>
+<p>次に設定するのは「<strong>統計量</strong>」の部分です。ここの「ベイズ因子」の部分にチェックを入れない限り，ベイズ統計による分析結果は表示されません。ですので，ベイズ統計量が必要な場合には，「ベイズ因子」にチェックを入れておきましょう。</p>
+<p>その下の「ベイズ信頼区間」は，<em>ベイズ信頼区間</em>あるいは<em>確信区間</em>などと呼ばれる，ベイズ統計の考え方にそった区間推定値を算出するための設定です。名前はよく似ていますが，従来型の推測統計における「信頼区間」とは別物ですので注意してください。ここでは，この設定はオフのままにしておきます。</p>
+<p>ここまでの設定が終わったところで分析結果を見てみると，先ほどの結果の表の右端に，「ベイズ因子<span class="math inline">\(_{10}\)</span>」という欄が追加されているはずです（<a href="#fig-frequencies-binomial-bayes-results" class="quarto-xref">図&nbsp;<span>9.9</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-binomial-bayes-results" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-binomial-bayes-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/binomial-bayes-results.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-binomial-bayes-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.9: ベイズ因子の計算結果
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>ベイズ統計の場合も，分析結果の表で見る必要があるのは課題通過者についての行（<strong>水準</strong>が1の行）だけです。この行のベイズ因子の値は2.24で，これは対立仮説が正しい場合の確率が，帰無仮説が正しい場合の確率に比べて2.24倍大きいということを意味しています。</p>
+<p>このベイズ因子の大きさの解釈については，複数の研究者によってさまざまな目安が提供されていますが，そのうちの1つ，<a href="https://www.tandfonline.com/doi/abs/10.1080/01621459.1995.10476572">Kass &amp; Raftery (1995)</a><a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>では，<a href="#tbl-frequencies-binomial-bayes-factor-interpretation" class="quarto-xref">表&nbsp;<span>9.2</span></a>のように示されています。一般には，この値（ベイズ因子<span class="math inline">\(_{10}\)</span>）が3を超える場合に，対立仮説を支持する証拠があるとみなされることが多いようです。</p>
+<div class="cell" data-layout-align="center">
+<div id="tbl-frequencies-binomial-bayes-factor-interpretation" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-frequencies-binomial-bayes-factor-interpretation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+表&nbsp;9.2: ベイズ因子の解釈の目安
+</figcaption>
+<div aria-describedby="tbl-frequencies-binomial-bayes-factor-interpretation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="table do-not-create-environment cell caption-top table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: center;" data-quarto-table-cell-role="th">ベイズ因子</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">根拠としての強さ</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">150〜</td>
+<td style="text-align: center;">非常に強い</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">20〜150</td>
+<td style="text-align: center;">強い</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">3〜20</td>
+<td style="text-align: center;">肯定的</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">1〜3</td>
+<td style="text-align: center;">取るに足りない</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>今回の分析結果ではベイズ因子は2.24でしたので，対立仮説を支持する証拠としては弱いものです。つまり，この分析結果からは，「課題の通過率は70%ではない」とまではいえないことになります。</p>
+</section>
+<section id="subsub:frequencies-binomial-bayes-plots" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="subsub:frequencies-binomial-bayes-plots">グラフ</h4>
+<p>最後に，「<strong>グラフ</strong>」の設定についても見ておきましょう。この「事後分布のグラフ」にチェックを入れると，課題通過と非通過のそれぞれについて，事前分布，尤度，事後分布を示したグラフが表示されます（<a href="#fig-frequencies-binomial-bayes-posterior" class="quarto-xref">図&nbsp;<span>9.10</span></a>）。ここでは，課題通過の場合についてのプロットを見てみましょう。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-binomial-bayes-posterior" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-binomial-bayes-posterior-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/binomial-bayes-posterior.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-binomial-bayes-posterior-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.10: 課題通過率についての事前・事後分布のグラフ
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>このグラフの横軸には通過率，縦軸には<em>確率密度</em>が示されています。確率密度というのは確率とはまた別物なのですが，ここでは大まかに確率の高さを表していると考えてもらって構いません。少し見づらいですが，グラフ中の青の点線が事前分布（一様分布）で，黄色の曲線が事後分布です。</p>
+<p>このグラフを見ると，0.575周辺での確率がもっとも高く，そこから離れるにつれて確率が低くなっていくのがわかります。これは，80人中46人が課題通過というデータが得られた場合に，その母集団における通過率（母比率）は0.575周辺である可能性がもっとも高く，それより離れた値である可能性は低いということを示しています。</p>
+<p>この事後分布のグラフでは，母集団における通過率が0.7である可能性というのは実際にはかなり低いことがわかります。ただし，先ほど分析結果でみたベイズ因子の値が示す限りでは，この程度であっても「この標本の母集団における通過率は70%ではない」というには証拠としてまだ弱いのです。</p>
+</section>
+</section>
+</section>
+<section id="sec-frequencies-n-outcomes" class="level2" data-number="9.2">
+<h2 data-number="9.2" class="anchored" data-anchor-id="sec-frequencies-n-outcomes"><span class="header-section-number">9.2</span> 多値目的変数［χ²適合度検定］</h2>
+<p>変数のとりうる値が「はい・いいえ」や「あり・なし」のような2値でなく，3つ以上ある場合で，各変数値（カテゴリー）の比率について検定したい場合には，<em>カイ2乗適合度検定</em>と呼ばれる手法が用いられます。</p>
+<section id="sub:frequencies-n-outcomes-basics" class="level3" data-number="9.2.1">
+<h3 data-number="9.2.1" class="anchored" data-anchor-id="sub:frequencies-n-outcomes-basics"><span class="header-section-number">9.2.1</span> 考え方</h3>
+<p>次の例について考えてみましょう。</p>
+<p>人の学習スタイルを大きく「視覚型（映像やイメージを利用した学習を好むスタイル）」，「聴覚型（音声を利用した学習を好むスタイル）」，「運動感覚型（運動や動作を用いた学習を好むスタイル）」の3とおりに分類したとすると，その一般的な比率は視覚型が65%，聴覚型が30%，運動感覚型が5%程度なのだそうです。</p>
+<p>ここで，ある地域で小学生児童150人を無作為に選び，その児童の学習スタイルの判定を行ったところ，<a href="#tbl-frequencies-chisq-table1" class="quarto-xref">表&nbsp;<span>9.3</span></a>の結果が得られました。この地域の小学生における学習スタイルの比率は，一般的な比率とは異なっているのでしょうか。</p>
+<div class="cell" data-layout-align="center">
+<div id="tbl-frequencies-chisq-table1" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-frequencies-chisq-table1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+表&nbsp;9.3: 学習スタイルの度数分布
+</figcaption>
+<div aria-describedby="tbl-frequencies-chisq-table1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="do-not-create-environment cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">項目</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">視覚型</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">聴覚型</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">運動感覚型</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">人数</td>
+<td style="text-align: right;">89</td>
+<td style="text-align: right;">48</td>
+<td style="text-align: right;">13</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">比率</td>
+<td style="text-align: right;">59.3%</td>
+<td style="text-align: right;">32.0%</td>
+<td style="text-align: right;">8.7%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>まず，この結果が想定される比率と異なるかどうかを見るためには，想定される比率の場合にどのような人数配分になるのかを知る必要があります。そこで，測定結果が想定される比率どおりであった場合に，それぞれのタイプの児童が何人ずつになると考えられるのかを考えてみましょう。一般的な比率が視覚型が65%，聴覚型が30%，運動感覚型が5%であるとした場合，150人の児童をこの比率に割り振ると<a href="#tbl-frequencies-chisq-table2" class="quarto-xref">表&nbsp;<span>9.4</span></a>のようになります。</p>
+<div class="cell" data-layout-align="center">
+<div id="tbl-frequencies-chisq-table2" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-frequencies-chisq-table2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+表&nbsp;9.4: 学習スタイルの期待度数
+</figcaption>
+<div aria-describedby="tbl-frequencies-chisq-table2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="do-not-create-environment cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">項目</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">視覚型</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">聴覚型</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">運動感覚型</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">人数</td>
+<td style="text-align: right;">97.5</td>
+<td style="text-align: right;">45</td>
+<td style="text-align: right;">7.5</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">比率</td>
+<td style="text-align: right;">65%</td>
+<td style="text-align: right;">30%</td>
+<td style="text-align: right;">5%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>このような，想定される比率どおりに全体の人数を割り振った値は<em>期待度数</em>と呼ばれます。人数なのに「97.5人」と小数点を含む値になっているのは変だと思うかもしれませんが，これはあくまでも理論上の数値ですので，これで問題ありません。</p>
+<p>そして，この状態と実際の観測データにおける人数（これを<em>観測度数</em>といいます）が異なるかどうかを知りたいわけですから，この期待度数と観測度数がどれだけずれているか，両者の差を求めてみます（<a href="#tbl-frequencies-chisq-table3" class="quarto-xref">表&nbsp;<span>9.5</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div id="tbl-frequencies-chisq-table3" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-frequencies-chisq-table3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+表&nbsp;9.5: 期待度数と観測度数のずれ
+</figcaption>
+<div aria-describedby="tbl-frequencies-chisq-table3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="do-not-create-environment cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">項目</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">視覚型</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">聴覚型</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">運動感覚型</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">観測度数</td>
+<td style="text-align: right;">89</td>
+<td style="text-align: right;">48</td>
+<td style="text-align: right;">13</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">期待度数</td>
+<td style="text-align: right;">97.5</td>
+<td style="text-align: right;">45</td>
+<td style="text-align: right;">7.5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">差：観測 - 期待</td>
+<td style="text-align: right;">-8.5</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">5.5</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>こうしてみると，それぞれのスタイルで観測度数と期待度数にずれがあることがわかります。なお，観測度数も期待度数も合計人数は150人で同じですから，期待度数と観測度数のずれがあるということは，この2つの間で3つのスタイルの比率が異なっているということです。</p>
+<p>そこで，このようにして求めた各スタイルにおける観測度数と期待度数のずれの大きさを1つの値にまとめ，その値を用いて観察された結果と想定される比率の間に差があるといえるかどうかを判断しようとするのがカイ2乗適合度検定の考え方です。</p>
+<p>なお，それぞれのスタイルにおけるずれの大きさを1つの値にまとめる際，「ずれの大きさ」の値がマイナスというのは扱いづらいですので，ずれの値は2乗してマイナスが取り除かれます。また，97.5人いることが期待される視覚型と7.5人しかいないことが期待される運動感覚型とでは「1人のずれ」の大きさがもつ意味合いが同じとはいえません。そこで，これら2乗したずれの値をさらに期待度数の大きさで調整してから合計することによって，全体的なずれの大きさが求められます。このようにして求めた値は，<span class="math inline">\(\chi^2\)</span>（カイ2乗）と呼ばれる値の分布に近似的に従うことがわかっています。</p>
+<p>そこで，<span class="math inline">\(\chi^2\)</span>分布を利用して，帰無仮説（母集団の比率と想定される比率の差は0である）のもとでその大きさのずれが生じる確率を計算します。そして，その確率が有意水準未満であった場合に，「母集団の比率と想定される比率は有意に異なる」と判断するのです。</p>
+</section>
+<section id="sub:frequencies-n-outcomes-procedure" class="level3" data-number="9.2.2">
+<h3 data-number="9.2.2" class="anchored" data-anchor-id="sub:frequencies-n-outcomes-procedure"><span class="header-section-number">9.2.2</span> 分析手順</h3>
+<p>2項検定の場合と同様に，まずは分析用のデータを作成しましょう。先ほどの調査結果を，スプレッドシートに次のように入力してください（<a href="#fig-frequencies-data02" class="quarto-xref">図&nbsp;<span>9.11</span></a>）。</p>
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-data02" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-data02-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/data02.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-data02-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.11: サンプルデータ
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvvar">
+<ul>
+<li><code>スタイル</code>　学習スタイル（視覚型，聴覚型，運動感覚型）</li>
+<li><code>人数</code>　各スタイルの人数（視覚型：89，聴覚型：48，運動感覚型：13）</li>
+</ul>
+</div>
+<p>データの入力が終わったら早速分析しましょう。カイ2乗適合度検定を実施するには，分析タブの「<img src="images/assets/analysis-frequencies.svg" class="img-fluid" alt="inline"> 度数分析」で「1標本比率検定」のところにある「多値目的変数［<span class="math inline">\(\chi^2\)</span>適合度検定］」を選択します（<a href="#fig-frequencies-n-outcomes-goodness" class="quarto-xref">図&nbsp;<span>9.12</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-n-outcomes-goodness" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-n-outcomes-goodness-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/n-outcomes-goodness.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-n-outcomes-goodness-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.12: 適合度検定の実行
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>すると，<a href="#fig-frequencies-n-outcomes-goodness-setting" class="quarto-xref">図&nbsp;<span>9.13</span></a>のような設定パネルが表示されます。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-n-outcomes-goodness-setting" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-n-outcomes-goodness-setting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/n-outcomes-goodness-setting.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-n-outcomes-goodness-setting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.13: 適合度検定の設定パネル
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvsettings">
+<ul>
+<li>変数　分析対象の変数を設定します。</li>
+<li>度数（オプション）データが度数として入力されている場合に設定します。</li>
+<li>期待度数　期待度数を算出します。</li>
+<li><span class="groupbar"><img src="images/assets/modules-analyses-arrow-r.svg" width="10pt/">| 期待比率</span>　比較対象となる比率を設定します。</li>
+</ul>
+</div>
+<p>この画面で，「スタイル」を「変数」に移動します（<a href="#fig-frequencies-n-outcomes-goodness-set-var" class="quarto-xref">図&nbsp;<span>9.14</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-n-outcomes-goodness-set-var" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-n-outcomes-goodness-set-var-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/n-outcomes-goodness-set-var.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-n-outcomes-goodness-set-var-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.14: 分析対象の変数を設定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>なお今回のデータは，2項検定のサンプルデータと同じく，すでに集計済みの度数が入力されています。「スタイル」には，視覚型，聴覚型，運動感覚型の値は1つずつしか含まれていませんので，このままではうまく分析できません。</p>
+<p>そこで，各スタイルの度数が入った変数（「人数」）を「度数（オプション）」のところへ移動して，jamoviがそれぞれのスタイルの人数を認識できるようにします（<a href="#fig-frequencies-n-outcomes-goodness-set-count" class="quarto-xref">図&nbsp;<span>9.15</span></a>）。この操作は，集計済みでないデータ（各個人の値が1行ずつ入力されているデータ）の場合には必要ありません。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-n-outcomes-goodness-set-count" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-n-outcomes-goodness-set-count-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/n-outcomes-goodness-set-count.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-n-outcomes-goodness-set-count-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.15: 各スタイルの度数を設定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>これで分析の設定は終わりですといいたいところですが，このままではどのような比率とデータを比較するのかがわかりません。そのままでは適切な分析結果が得られませんので，比較対象となる比率を設定してやる必要があります。</p>
+</section>
+<section id="sub:frequencies-n-outcomes-expected-proportions" class="level3" data-number="9.2.3">
+<h3 data-number="9.2.3" class="anchored" data-anchor-id="sub:frequencies-n-outcomes-expected-proportions"><span class="header-section-number">9.2.3</span> 期待比率</h3>
+<p>比較対象となる比率を設定するには，<span class="groupbar"><img src="images/assets/modules-analyses-arrow-r.svg" width="10pt/">| 期待比率</span>を展開し，各変数値の「比率」のところに適切な数値を入力します（<a href="#fig-frequencies-n-outcomes-goodness-set-proportion" class="quarto-xref">図&nbsp;<span>9.16</span></a>）。なお，日本語訳では真ん中の欄と一番右の欄がどちらも「比率」と表示されていますが，値を入力できるのは真ん中の欄のみです。真ん中の欄は正確には「比」で，ここに入力した数値をもとに計算された比率が一番右の欄に表示されます。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-n-outcomes-goodness-set-proportion" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-n-outcomes-goodness-set-proportion-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/n-outcomes-goodness-set-proportion.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-n-outcomes-goodness-set-proportion-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.16: 各スタイルの度数を設定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>今回の例では，期待される割合は視覚型が65%，聴覚型が30%，運動感覚型が5%ですので，「視覚」の比に「65」，「聴覚」に「30」，「運動」に「5」を入力します。すると，その右の「比率」欄に，それぞれの型の比率が表示されます。入力の際には「水準」欄をよく確認し，入力する行を間違えないように注意しましょう。</p>
+<p>なお，今回は使用しませんが，この設定を行ったあとに，<span class="groupbar"><img src="images/assets/modules-analyses-arrow-r.svg" width="10pt/">| 期待比率</span>のすぐ上にある「期待度数」にチェックを入れると，指定した比率における期待度数を結果に表示させることもできます。</p>
+<p>これで分析の設定は終了です。</p>
+</section>
+<section id="sub:frequencies-n-outcomes-results" class="level3" data-number="9.2.4">
+<h3 data-number="9.2.4" class="anchored" data-anchor-id="sub:frequencies-n-outcomes-results"><span class="header-section-number">9.2.4</span> 分析結果</h3>
+<p>カイ2乗適合度検定の結果は次のような形で表示されます（<a href="#fig-frequencies-n-outcomes-goodness-results" class="quarto-xref">図&nbsp;<span>9.17</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-n-outcomes-goodness-results" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-n-outcomes-goodness-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/n-outcomes-goodness-results.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-n-outcomes-goodness-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.17: 適合度検定の分析結果
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>結果の1つ目の表は，観測データについての度数分布表です。今回は集計された度数をデータとして入力しましたが，1人1人の値が入力されているデータで分析を行う場合には，この度数分布表で各水準（変数値）の度数をよく確認しておきましょう。</p>
+<p>その下の2つ目の表が適合度検定の結果です。適合度検定の結果の表には，検定統計量（<span class="math inline">\(\chi^2\)</span>）と自由度，そして有意確率（p）の値が示されています。この表のpの値が有意水準を下回る場合に，このデータの母集団の比率が想定される比率と有意に異なると判断します。</p>
+<p>今回の分析結果ではp = 0.083ですので，このデータ（小学生児童150人）の母集団における比率は，想定されている比率と有意に異なるとはいえません。</p>
+</section>
+</section>
+<section id="sec-frequencies-chisq" class="level2" data-number="9.3">
+<h2 data-number="9.3" class="anchored" data-anchor-id="sec-frequencies-chisq"><span class="header-section-number">9.3</span> 対応なし［χ²独立性検定］</h2>
+<p>ここからは<strong>クロス集計表</strong>（分割表）の分析について見ていきましょう。クロス集計表とは，行と列にそれぞれ異なる変数をとり，次のようにして複数の変数の値を組み合わせた形で集計をした表のことをいいます（<a href="#tbl-frequencies-chisq-salad-table" class="quarto-xref">表&nbsp;<span>9.6</span></a>）。</p>
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div id="tbl-frequencies-chisq-salad-table" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-frequencies-chisq-salad-table-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+表&nbsp;9.6: 性別とサラダの好き嫌いについてのクロス集計表
+</figcaption>
+<div aria-describedby="tbl-frequencies-chisq-salad-table-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="table do-not-create-environment cell caption-top table-sm table-striped small">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th" style="empty-cells: hide; border-bottom: hidden"></th>
+<th colspan="2" data-quarto-table-cell-role="th" style="text-align: center; border-bottom: hidden; padding-bottom: 0; padding-left: 3px; padding-right: 3px;"><div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+サラダ
+</div></th>
+<th data-quarto-table-cell-role="th" style="empty-cells: hide; border-bottom: hidden"></th>
+</tr>
+<tr class="even">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">好き</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">嫌い</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">計</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd" data-grouplength="2">
+<td colspan="4" style="border-bottom: 1px solid"><strong>性別</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">男</td>
+<td style="text-align: left;">70</td>
+<td style="text-align: center;">30</td>
+<td style="text-align: center;">100</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">女</td>
+<td style="text-align: left;">90</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">100</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">計</td>
+<td style="text-align: left;">160</td>
+<td style="text-align: center;">40</td>
+<td style="text-align: center;">200</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>このようなクロス集計表を用いた分析では，表の列に位置する変数と行に位置する変数が互いに「独立」であるかどうかを確かめる<em>独立性検定</em>がよく用いられます。2つの変数が「互いに独立」であるとは，互いに無関係であるということです。</p>
+<p>たとえば，先ほどの<a href="#tbl-frequencies-chisq-salad-table" class="quarto-xref">表&nbsp;<span>9.6</span></a>はサラダの好き嫌いと性別（男女）のクロス集計表ですが，この表を見ると，サラダが嫌いという回答の比率は，女性よりも男性の方が高くなっています。この場合，サラダを嫌いと答えたのは男性で100人中30人，女性では100人中10人というように，性別によってサラダの好き嫌いに違いが見られるので，サラダの好き嫌いと性別には関連があるということになります。</p>
+<p>これに対し，次の<a href="#tbl-frequencies-chisq-hamburg-table" class="quarto-xref">表&nbsp;<span>9.7</span></a>では，男性と女性でハンバーグを好きだと答えた人と嫌いだと答えた人の比率は同じです。この場合には，ハンバーグの好き嫌いが性別によって異なるということはなく，ハンバーグの好き嫌いと性別は無関係（独立）であるといえます。</p>
+<div class="cell" data-layout-align="center">
+<div id="tbl-frequencies-chisq-hamburg-table" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-frequencies-chisq-hamburg-table-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+表&nbsp;9.7: 性別とハンバーグの好き嫌いについてのクロス集計表
+</figcaption>
+<div aria-describedby="tbl-frequencies-chisq-hamburg-table-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="table do-not-create-environment cell caption-top table-sm table-striped small">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th" style="empty-cells: hide; border-bottom: hidden"></th>
+<th colspan="2" data-quarto-table-cell-role="th" style="text-align: center; border-bottom: hidden; padding-bottom: 0; padding-left: 3px; padding-right: 3px;"><div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+ハンバーグ
+</div></th>
+<th data-quarto-table-cell-role="th" style="empty-cells: hide; border-bottom: hidden"></th>
+</tr>
+<tr class="even">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">好き</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">嫌い</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">計</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd" data-grouplength="2">
+<td colspan="4" style="border-bottom: 1px solid"><strong>性別</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">男</td>
+<td style="text-align: left;">95</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">100</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">女</td>
+<td style="text-align: left;">95</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">100</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">計</td>
+<td style="text-align: left;">190</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">200</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<section id="sub:frequencies-chisq-basics" class="level3" data-number="9.3.1">
+<h3 data-number="9.3.1" class="anchored" data-anchor-id="sub:frequencies-chisq-basics"><span class="header-section-number">9.3.1</span> 考え方</h3>
+<p>ここでは，次の例を用いて独立性検定の考え方を見ていきましょう。</p>
+<p>成人男女各100人を対象に，「ショートケーキ」，「チーズケーキ」，「チョコレートケーキ」の中でどれが一番好きかを選んでもらいました。その結果をまとめたものがこのサンプルデータ（<a href="https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/frequencies_data03.omv">frequencies_data03.omv</a>）です（<a href="#fig-frequencies-data03" class="quarto-xref">図&nbsp;<span>9.18</span></a>）。</p>
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-data03" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-data03-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/data03.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-data03-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.18: サンプルデータ
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvvar">
+<ul>
+<li><code>性別</code>　性別（男，女）</li>
+<li><code>ケーキ</code>　ケーキの種類
+<ul>
+<li>ショートケーキ：<code>ショート</code></li>
+<li>チーズケーキ：<code>チーズ</code></li>
+<li>チョコレートケーキ：<code>チョコ</code></li>
+</ul></li>
+<li><code>人数</code>　そのケーキを選んだ人数</li>
+</ul>
+</div>
+<p>この結果から，好きなケーキに男女で違いがあるといえるかどうか（独立でないといえるかどうか）を見たいとします。</p>
+<p>まず，サンプルデータを選択したケーキと性別のクロス集計表の形にすると<a href="#tbl-frequencies-cake-table1" class="quarto-xref">表&nbsp;<span>9.8</span></a>のようになります。</p>
+<div class="cell" data-layout-align="center">
+<div id="tbl-frequencies-cake-table1" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-frequencies-cake-table1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+表&nbsp;9.8: 性別とケーキの選択についてのクロス集計表
+</figcaption>
+<div aria-describedby="tbl-frequencies-cake-table1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="table do-not-create-environment cell caption-top table-sm table-striped small">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th" style="empty-cells: hide; border-bottom: hidden"></th>
+<th colspan="3" data-quarto-table-cell-role="th" style="text-align: center; border-bottom: hidden; padding-bottom: 0; padding-left: 3px; padding-right: 3px;"><div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+ケーキの種類
+</div></th>
+<th data-quarto-table-cell-role="th" style="empty-cells: hide; border-bottom: hidden"></th>
+</tr>
+<tr class="even">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">ショートケーキ</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">チーズケーキ</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">チョコレートケーキ</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">計</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd" data-grouplength="2">
+<td colspan="5" style="border-bottom: 1px solid"><strong>性別</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">男</td>
+<td style="text-align: left;">49</td>
+<td style="text-align: center;">37</td>
+<td style="text-align: center;">14</td>
+<td style="text-align: center;">100</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">女</td>
+<td style="text-align: left;">31</td>
+<td style="text-align: center;">48</td>
+<td style="text-align: center;">21</td>
+<td style="text-align: center;">100</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">計</td>
+<td style="text-align: left;">80</td>
+<td style="text-align: center;">85</td>
+<td style="text-align: center;">35</td>
+<td style="text-align: center;">200</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>さて，この結果から，ケーキの好み（どのケーキを選択したか）に男女による違いがあるかどうかをみるにはどうすればよいのでしょうか。統計的仮説検定の常として，そのような場合には，まず男女による違いが「ない」場合にどのようになるかを考えます。</p>
+<p>ケーキの好みに男女による違いがない場合というのは，男性も女性も各ケーキの選択率が同じということです。もしそうだったとすると，男女ともに全体におけるケーキの選択率と同じ比率でそれぞれのケーキが選択されるはずです。つまり，<a href="#tbl-frequencies-cake-table2" class="quarto-xref">表&nbsp;<span>9.9</span></a>のような人数配分になるはずです。</p>
+<div class="cell" data-layout-align="center">
+<div id="tbl-frequencies-cake-table2" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-frequencies-cake-table2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+表&nbsp;9.9: 性別とケーキの選択の期待度数
+</figcaption>
+<div aria-describedby="tbl-frequencies-cake-table2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="table do-not-create-environment cell caption-top table-sm table-striped small">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th" style="empty-cells: hide; border-bottom: hidden"></th>
+<th colspan="3" data-quarto-table-cell-role="th" style="text-align: center; border-bottom: hidden; padding-bottom: 0; padding-left: 3px; padding-right: 3px;"><div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+ケーキの種類
+</div></th>
+<th data-quarto-table-cell-role="th" style="empty-cells: hide; border-bottom: hidden"></th>
+</tr>
+<tr class="even">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">ショートケーキ</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">チーズケーキ</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">チョコレートケーキ</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">計</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd" data-grouplength="2">
+<td colspan="5" style="border-bottom: 1px solid"><strong>性別</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">男</td>
+<td style="text-align: left;">40</td>
+<td style="text-align: center;">42.5</td>
+<td style="text-align: center;">17.5</td>
+<td style="text-align: center;">100</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">女</td>
+<td style="text-align: left;">40</td>
+<td style="text-align: center;">42.5</td>
+<td style="text-align: center;">17.5</td>
+<td style="text-align: center;">100</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">計</td>
+<td style="text-align: left;">80</td>
+<td style="text-align: center;">85.0</td>
+<td style="text-align: center;">35.0</td>
+<td style="text-align: center;">200</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>そしてこれが，ケーキの選択と性別が独立（無関係）である場合の「期待度数」ということになります。</p>
+<p>ここから先は，カイ2乗適合度検定の場合と考え方は同じです。この期待度数と，実際の観測データ（観測度数）の間で差を求め，その差の大きさを1つの値にまとめたうえで，そのようなずれの生じる確率がどの程度であるかを算出します。</p>
+<p>この場合の帰無仮説は「ケーキの選択と性別は独立である」で，検定結果が有意であった場合には，「ケーキの選択と性別には関連がある（独立でない）」ということになります。</p>
+</section>
+<section id="sub:frequencies-chisq-procedure" class="level3" data-number="9.3.2">
+<h3 data-number="9.3.2" class="anchored" data-anchor-id="sub:frequencies-chisq-procedure"><span class="header-section-number">9.3.2</span> 分析手順</h3>
+<p>独立性検定を実施するには，分析タブの「<img src="images/assets/analysis-frequencies.svg" class="img-fluid" alt="inline"> 度数分析」で「クロス集計表」のところにある「対応なし［<span class="math inline">\(\chi^2\)</span>独立性検定］」を選択します（<a href="#fig-frequencies-chisq-menu" class="quarto-xref">図&nbsp;<span>9.19</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-chisq-menu" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-chisq-menu-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/chisq-menu.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-chisq-menu-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.19: 独立性検定の実行
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>すると，<a href="#fig-frequencies-chisq-setting" class="quarto-xref">図&nbsp;<span>9.20</span></a>のような画面が表示されます。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-chisq-setting" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-chisq-setting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/chisq-setting.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-chisq-setting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.20: 独立性検定の設定パネル
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvsettings">
+<ul>
+<li>行　クロス集計表の行に配置する変数を指定します。</li>
+<li>列　クロス集計表の列に配置する変数を指定します。</li>
+<li>度数（オプション）度数が含まれている変数を指定します（オプション）。</li>
+<li>階層　クロス集計表を分割する変数を指定します。</li>
+<li><span class="groupbar"><img src="images/assets/modules-analyses-arrow-r.svg" width="10pt/">| 統計量</span>　統計量に関する設定を行います。</li>
+<li><span class="groupbar"><img src="images/assets/modules-analyses-arrow-r.svg" width="10pt/">| セル</span>　クロス集計表の各セルに関する設定を行います。</li>
+<li><span class="groupbar"><img src="images/assets/modules-analyses-arrow-r.svg" width="10pt/">| 事後検定</span>　事後検定に関する設定を行います。</li>
+<li><span class="groupbar"><img src="images/assets/modules-analyses-arrow-r.svg" width="10pt/">| グラフ</span>　結果をグラフに示します。</li>
+</ul>
+</div>
+<p>たくさんの設定項目があるのですが，基本的な分析はそれらを使用しなくても可能です。</p>
+<p>分析では，クロス集計表の行と列に配置する変数を指定します。今回は，行に「性別」を，列に「ケーキ」を配置することにしましょう。</p>
+<p>また，今回のデータもこれまでと同様に度数を集計済みのものですので，度数が入った変数（「人数」）を「度数（オプション）」のところに指定します。各個人の回答が1行ずつ入力されているデータの場合，この部分の設定は不要です。</p>
+<p>設定後の画面は<a href="#fig-frequencies-chisq-setvar" class="quarto-xref">図&nbsp;<span>9.21</span></a>のようになります。これで基本の分析設定は終了です。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-chisq-setvar" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-chisq-setvar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/chisq-setvar.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-chisq-setvar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.21: 分析する変数を設定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="sub:frequencies-chisq-results" class="level3" data-number="9.3.3">
+<h3 data-number="9.3.3" class="anchored" data-anchor-id="sub:frequencies-chisq-results"><span class="header-section-number">9.3.3</span> 分析結果</h3>
+<p>それでは結果を見てみましょう。分析結果は<a href="#fig-frequencies-chisq-results" class="quarto-xref">図&nbsp;<span>9.22</span></a>のような形で得られます。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-chisq-results" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-chisq-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/chisq-results.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-chisq-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.22: 独立性検定の分析結果
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>1つ目の表は，観測データについての度数分布表です。行と列が正しく設定されているか確認しましょう。また，集計済みのデータではなく，1人1人の回答が入力されているデータで分析を行う場合には，この度数分布表でそれぞれの度数をよく確認しておきましょう。</p>
+<p>その下の2つ目の表が独立性検定の結果です。独立性検定の結果の表には，適合度検定の場合と同じで検定統計量（<span class="math inline">\(\chi^2\)</span>）と自由度，そして有意確率（p）の値が示されています。また，独立性検定の場合には，総度数（N）についても示されています。この表のpの値が有意水準を下回る場合に，このデータの母集団の比率が想定される比率と有意に異なると判断します。</p>
+<p>今回の分析結果ではp = 0.032ですので，ケーキの選択と性別には関連がある（独立でない）ということになります。</p>
+</section>
+<section id="sub:frequencies-chisq-layered" class="level3" data-number="9.3.4">
+<h3 data-number="9.3.4" class="anchored" data-anchor-id="sub:frequencies-chisq-layered"><span class="header-section-number">9.3.4</span> 層別分析</h3>
+<p>ここで，もう1つ別のデータを<strong>見て</strong>みましょう。次のサンプルデータ（<a href="https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/frequencies_data04.omv">frequencies_data04.omv</a>）を開いてください。このデータは先ほどのデータとよく似ていますが，これは先ほどのデータに子供を対象に調査した結果を加えたものになっています（<a href="#fig-frequencies-data04" class="quarto-xref">図&nbsp;<span>9.23</span></a>）。</p>
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-data04" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-data04-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/data04.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-data04-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.23: サンプルデータ
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvvar">
+<ul>
+<li><code>性別</code>　性別（男，女）</li>
+<li><code>年齢</code>　年齢（大人，子供）</li>
+<li><code>ケーキ</code>　ケーキの種類
+<ul>
+<li>ショートケーキ：<code>ショート</code></li>
+<li>チーズケーキ：<code>チーズ</code></li>
+<li>チョコレートケーキ：<code>チョコ</code></li>
+</ul></li>
+<li><code>人数</code>　そのケーキを選んだ人数</li>
+</ul>
+</div>
+<p>先ほどと同様に，今回もケーキの選択と性別に関連があるか（独立でないか）について検討したいと思います。ただし，ここで気をつけなくてはならないのが，このデータには大人を対象とした調査結果と子供を対象とした調査結果が混在しているということです。大人と子供でケーキの好みに違いがなければ大人と子供のデータを一まとめにして分析してもよいでしょうが，大人と子供でケーキの好みに大きな違いがあるのであれば，正しい分析結果が得られない可能性が高くなります。</p>
+<p>このようなデータの場合，ケーキの選択と性別の関連を適切に把握するために，分析対象のクロス集計表を大人と子供にグループ分けしたうえで分析するという方法がとられます。このようにしてクロス集計表を別のグループ変数で分割して分析する方法は，<em>層別分析</em>と呼ばれます。jamoviでは，この層別分析についても簡単に実行できるようになっています。</p>
+<section id="subsub:frequencies-chisq-layer" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="subsub:frequencies-chisq-layer">分析手順</h4>
+<p>層別分析を実施するためには，「<img src="images/assets/analysis-frequencies.svg" class="img-fluid" alt="inline"> 度数分析」から「対応なし［<span class="math inline">\(\chi^2\)</span>独立性検定］」を選択し，先ほどと同様に「行」に「性別」，「列」に「ケーキ」，そして「度数（オプション）」に「人数」を指定します。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-chisq-layer-set-var1" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-chisq-layer-set-var1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/chisq-layer-set-var1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-chisq-layer-set-var1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.24: 層別分析の設定（その1）
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>なお，「度数（オプション）」の設定は，各個人の回答が1行ずつ入力されているデータの場合には不要です。</p>
+<p>そしてそのうえで，グループ変数である「年齢」を，設定パネルの「階層」に設定します。</p>
+<!--  -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-chisq-layer-set-var2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-chisq-layer-set-var2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/chisq-layer-set-var2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-chisq-layer-set-var2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.25: 層別分析の設定（その2）
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>層別分析の設定はこれで終わりです。結果を見てみましょう。</p>
+</section>
+<section id="subsub:frequencies-chisq-layer-results" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="subsub:frequencies-chisq-layer-results">分析結果</h4>
+<p>分析の設定パネルでグループ変数を「階層」に設定すると，分析結果は<a href="#fig-frequencies-chisq-layer-results" class="quarto-xref">図&nbsp;<span>9.26</span></a>のような形になります。全体としての構成は大きく変わりませんが，度数分布表と独立性検定の結果には，データ全体での結果と，大人と子供というグループごとの結果（層別の分析結果）の両方が含まれています。</p>
+<!--  -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-chisq-layer-results" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-chisq-layer-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/chisq-layer-results.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-chisq-layer-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.26: 層別分析の結果
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>この結果を見ると，大人ではケーキの選択と性別に有意な関連が見られますが，子供では有意な関連は見られません。つまり，大人か子供かによって，ケーキの選択の仕方と性別の関連は異なるということになります。</p>
+<p>なお，全体での結果はp = 0.048で有意ですが，このデータでは大人は男女各100人であるのに対し，子供は男女各50人ですので，データ全体においては子供よりも大人の結果の影響が強く反映されているためと考えられます。したがって，この場合には全体の検定結果はあまり意味がありません。</p>
+</section>
+</section>
+<section id="sub:frequencies-chisq-statistics" class="level3" data-number="9.3.5">
+<h3 data-number="9.3.5" class="anchored" data-anchor-id="sub:frequencies-chisq-statistics"><span class="header-section-number">9.3.5</span> 統計量</h3>
+<p>ここからは分析設定の詳細について見ていきましょう。<span class="groupbar"><img src="images/assets/modules-analyses-arrow-r.svg" width="10pt/">| 統計量</span>を展開すると，次の項目が表示されます（<a href="#fig-frequencies-chisq-statistics" class="quarto-xref">図&nbsp;<span>9.27</span></a>）。</p>
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-chisq-statistics" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-chisq-statistics-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/chisq-statistics.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-chisq-statistics-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.27: 統計量の設定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvsettings">
+<ul>
+<li><strong>検定</strong>　検定統計量に関する設定を行います。</li>
+<li><strong>仮説</strong>　対立仮説に関する設定を行います。</li>
+<li><strong>比較指標</strong>（2行2列の場合のみ）。</li>
+<li><strong>名義尺度</strong>　名義尺度の関連についての指標を設定します。</li>
+<li><strong>順序尺度</strong>　順序尺度の関連についての指標を設定します。</li>
+</ul>
+</div>
+<p>非常にたくさんの項目が含まれていますが，ただ項目が多いだけでなく，この中には2行2列のクロス集計表の場合のみ適用可能な項目や，層別分析の場合のみ適用可能な項目などがあり，少し複雑です。ここでは，これらを1つ1つ順番に見ていくことにしましょう。</p>
+<section id="subsub:frequencies-chisq-statistics-tests" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="subsub:frequencies-chisq-statistics-tests">検定</h4>
+<p>「<strong>検定</strong>」の部分では，クロス集計表の検定に用いる検定手法についての設定を行うことができます（<a href="#fig-frequencies-chisq-statistics-tests" class="quarto-xref">図&nbsp;<span>9.28</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-chisq-statistics-tests" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-chisq-statistics-tests-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/chisq-statistics-tests.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-chisq-statistics-tests-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.28: 検定の設定項目
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvsettings">
+<ul>
+<li><span class="math inline">\(\chi^2\)</span>　<span class="math inline">\(\chi^2\)</span>統計量を算出します。</li>
+<li>連続性の修正　<span class="math inline">\(\chi^2\)</span>値に対して連続性の修正を行います。</li>
+<li>尤度比　尤度比カイ2乗検定を行います。</li>
+<li>フィッシャーの正確確率検定　フィッシャーの正確確率検定を行います。</li>
+<li>比率の差のz検定　比率の差に対してz検定を実施します。</li>
+</ul>
+</div>
+<p>一番最初の<span class="math inline">\(\chi^2\)</span>については説明の必要はないと思いますので，2つ目以降の項目について簡単に見ていきます。</p>
+<section id="連続性の修正" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="連続性の修正">連続性の修正</h5>
+<p>独立性の検定や適合度検定に用いられる検定統計量は<span class="math inline">\(\chi^2\)</span>と呼ばれますが，実際には<span class="math inline">\(\chi^2\)</span>の近似値であって，<span class="math inline">\(\chi^2\)</span>の値そのものではありません。そのため，クロス集計表の特徴によっては，この近似の程度が低くなる場合があるのです。そしてそのような場合に，算出した検定統計量を<span class="math inline">\(\chi^2\)</span>分布にできるだけ近づけるように，<em>イェーツの修正</em>，あるいは<em>イェーツの連続性の修正</em>と呼ばれる修正を加えることがあります。このイェーツの修正は，一般にはクロス集計表が2行2列である場合，標本サイズが小さく，クロス集計表に期待度数が5未満のセルが1つ以上ある場合に用いられます。</p>
+<p>この「連続性の修正」の項目にチェックを入れると，イェーツの修正を行った後の<span class="math inline">\(\chi^2\)</span>の値が算出されます（<a href="#fig-frequencies-chisq-continuity" class="quarto-xref">図&nbsp;<span>9.29</span></a>）。</p>
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-chisq-continuity" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-chisq-continuity-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/chisq-continuity.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-chisq-continuity-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.29: 連続性の修正
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>この結果は大人のみのデータを使ったクロス集計表の分析結果に連続性の修正を適用したものですが，このデータでは連続性の修正をしてもしなくても同じ結果になっています。</p>
+<p>なお，イェーツの修正については，値を「修正しすぎる」傾向があることが知られています。そのため，このような修正を行うべきかどうかについては専門家の間でも意見が分かれるところです。</p>
+</section>
+<section id="尤度比" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="尤度比">尤度比</h5>
+<p>「カイ2乗検定」というのは，検定統計量として<span class="math inline">\(\chi^2\)</span>を用いるものの総称です。そして，独立性の検定として一般に用いられるカイ2乗検定は，<em>ピアソンのカイ2乗検定</em>とも呼ばれます。このように呼ばれるということは，それ以外のカイ2乗検定があるということです。</p>
+<p>そして，その1つが<em>尤度比カイ2乗検定</em>です。ピアソンのカイ2乗検定では，<span class="math inline">\(\chi^2\)</span>の値は期待度数と観測度数の差の2乗を元に算出されますが，尤度比カイ2乗検定では，<span class="math inline">\(\chi^2\)</span>の値を期待度数と観測度数の比を用いて算出します。ほとんどの場合，この尤度比カイ2乗検定の結果はピアソンのカイ2乗検定の結果とよく似たものになります。また，結果の見方はピアソンのカイ2乗検定の場合と同じです（<a href="#fig-frequencies-chisq-lr" class="quarto-xref">図&nbsp;<span>9.30</span></a>）。</p>
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-chisq-lr" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-chisq-lr-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/chisq-lr.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-chisq-lr-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.30: 尤度比
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="フィッシャーの正確確率検定" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="フィッシャーの正確確率検定">フィッシャーの正確確率検定</h5>
+<p>カイ2乗検定で算出される検定統計量は近似値であるため，標本サイズが小さいデータでは正確な結果が得られないといわれています。その場合，一般には<em>正確確率検定</em>と呼ばれる手法を用いて，今回の観測データと同じ結果になる確率がどの程度あるのかを直接的に計算して検定するという方法がとられます。その正確確率検定の中で，もっとも代表的なのが<em>フィッシャーの正確確率検定</em>，あるいは<em>フィッシャーの直接確率検定</em>と呼ばれる検定手法です。</p>
+<p>この「フィッシャーの正確確率検定」にチェックを入れると，<em>フィッシャーの正確確率検定</em>による検定結果を表示することができます。なお，この方法では直接的に確率を計算するため，検定統計量は算出されません（<a href="#fig-frequencies-chisq-fisher" class="quarto-xref">図&nbsp;<span>9.31</span></a>）。そのため，結果の表にはpの値だけが表示されます。このpの値が有意水準を下回る場合に，2つの変数の間に関連がある（独立でない）と判断します。</p>
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-chisq-fisher" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-chisq-fisher-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/chisq-fisher.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-chisq-fisher-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.31: フィッシャーの正確確率検定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="比率の差のz検定" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="比率の差のz検定">比率の差のz検定</h5>
+<p>この項目は，クロス集計表が2行2列の場合にのみ適用可能なオプションです。</p>
+<p>独立性検定の最初のところで用いたハンバーグへの好みと性別のクロス集計表のように，クロス集計表の行と列に関連がなく，互いに独立である場合には，男女でハンバーグの好き・嫌いの比率は同じになり，また，ハンバーグの好き・嫌いで男女比は同じになります。ということは，このようにして行ごと，列ごとで見た比率が同じでなければ，行に置かれた変数と列に置かれた変数は独立でないということになります。</p>
+<p>「比率の差のz検定」の項目では，このような考え方から，各行および各列で度数の比率が同じといえるかどうかの検定を行います。度数の比率が等しければ，それは行と列が互いに独立であるということを意味し，そうでなければ行と列には関連があるということを意味するわけです。</p>
+<p>たとえば，男女各100人にイヌとネコのどちらが好きかをたずねた結果をまとめたクロス集計表があるとしましょう（<a href="#tbl-frequencies-chisq-cats-and-dogs" class="quarto-xref">表&nbsp;<span>9.10</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div id="tbl-frequencies-chisq-cats-and-dogs" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-frequencies-chisq-cats-and-dogs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+表&nbsp;9.10: 性別とイヌ派・ネコ派についてのクロス集計表
+</figcaption>
+<div aria-describedby="tbl-frequencies-chisq-cats-and-dogs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="table do-not-create-environment cell caption-top table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">イヌ</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">ネコ</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">計</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd" data-grouplength="2">
+<td colspan="4" style="border-bottom: 1px solid"><strong>性別</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">男</td>
+<td style="text-align: left;">70</td>
+<td style="text-align: center;">30</td>
+<td style="text-align: center;">100</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">女</td>
+<td style="text-align: left;">55</td>
+<td style="text-align: center;">45</td>
+<td style="text-align: center;">100</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">計</td>
+<td style="text-align: left;">125</td>
+<td style="text-align: center;">75</td>
+<td style="text-align: center;">200</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>この表では，自分がイヌ派（ネコよりイヌが好き）と答えたのは男性では100人中70人（比率0.7），女性では100人中55人（比率0.55）ですので，男女の間でイヌ派の比率には0.15の差があります。この検定では，このようにして求めた比率の差を，全体におけるイヌ派の比率と男女それぞれの人数を用いてzに変換し，このzの値を用いて検定を行います。検定の結果が有意であった場合，2つの比率に差があるとみなします（<a href="#fig-frequencies-chisq-ztest" class="quarto-xref">図&nbsp;<span>9.32</span></a>）。</p>
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-chisq-ztest" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-chisq-ztest-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/chisq-ztest.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-chisq-ztest-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.32: 比率の差のz検定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>イヌ派・ネコ派のデータについて比率の差の検定を行ったところ，p = 0.028で検定結果は有意となりました。この結果から，男女でイヌ派・ネコ派の比率に有意な差があるということになります。</p>
+</section>
+</section>
+<section id="仮説-1" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="仮説-1">仮説</h4>
+<p>「<strong>仮説</strong>」では，「比率の差のz検定」における対立仮説を設定します（<a href="#fig-frequencies-chisq-statistics" class="quarto-xref">図&nbsp;<span>9.27</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-chisq-statistics-hypothesis" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-chisq-statistics-hypothesis-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/chisq-statistics-hypothesis.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-chisq-statistics-hypothesis-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.33: 仮説の設定項目
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvsettings">
+<ul>
+<li>グループ1 ≠ グループ2　グループ1と2で比率が異なるかどうかを検定します（両側検定）</li>
+<li>グループ1 &gt; グループ2　グループ1の比率がグループ2より大きいかどうかを検定します（片側検定）</li>
+<li>グループ1 &lt; グループ2　グループ1の比率がグループ2より小さいかどうかを検定します（片側検定）</li>
+</ul>
+</div>
+<p>この設定項目が結果に影響するのは，「比率の差のz検定」にチェックが入っている場合のみです。なお，片側検定を使用する際には，結果の「<span class="math inline">\(\chi^2\)</span>検定」の表の下にある注釈で，比較の向きが正しいかどうかをよく確認してください。また，この「<strong>仮説</strong>」の右側にある「比較方法」の部分を「行」に設定すると行ごとの比率の差の検定，「列」にすると列ごとの比率の差の検定になります。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-chisq-hypothesis" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-chisq-hypothesis-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/chisq-hypothesis.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-chisq-hypothesis-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.34: 片側検定の場合は比較の向きに注意
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="比較指標2行2列の場合のみ" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="比較指標2行2列の場合のみ">比較指標（2行2列の場合のみ）</h4>
+<p>ここに含まれている設定項目は，2行2列（2×2）のクロス集計表の場合のみ有効なものです。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-chisq-comparative" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-chisq-comparative-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/chisq-comparative.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-chisq-comparative-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.35: 2行2列のクロス集計表における比較指標
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvsettings">
+<ul>
+<li>オッズ比</li>
+<li>対数オッズ比</li>
+<li>リスク比</li>
+<li>比率の差</li>
+<li>信頼区間</li>
+<li>比較方法</li>
+</ul>
+</div>
+<p>ここでは，オッズや比率を2つのグループ間で比較する際に用いられる指標の設定を行いますが，その際，行での比較を行うか，列での比較を行うかは，各指標の下にある「比較方法」で設定します。</p>
+<p>この「比較方法」を「行」に設定すると，オッズや比率が行ごとに算出され，それらの間で比較が行われます。先ほどのイヌ派とネコ派のクロス集計表でいうと，男性におけるイヌ派の比率と，女性におけるイヌ派の比率の間で比較が行われます（<a href="#fig-frequencies-chisq-compare-setting" class="quarto-xref">図&nbsp;<span>9.36</span></a>）。</p>
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-chisq-compare-setting" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-chisq-compare-setting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/chisq-compare-setting.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-chisq-compare-setting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.36: 比較方法の設定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>これに対して，「比較方法」を「列」に設定すると，ネコ派における男女比と，イヌ派における男女比の間での比較になります。この「比較方法」の設定は，「比率の差のz検定」にも反映されます。</p>
+<p>では，ここで設定できる各種指標について簡単に見ておきましょう。</p>
+<section id="オッズ比" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="オッズ比">オッズ比</h5>
+<p>「あり・なし」や「はい・いいえ」などの2値変数において，「あり」である確率と「なし」である確率の比をとったものを<em>オッズ</em>と呼びます。先ほどの「イヌ派」と「ネコ派」の例でいえば，「イヌ派率」と「ネコ派率」を「イヌ派率/ネコ派率」の形で表したものが「イヌ派のオッズ」です。</p>
+<p>そして，さらにそのオッズ2種類を比の形にして表したものが<em>オッズ比</em>です。先ほどの例では，男性ではイヌ派のオッズは「0.7/0.3 = 2.33」，女性ではイヌ派のオッズは「0.55/0.45 = 1.22」ですので，イヌ派についての男女のオッズ比は「2.33/1.22 = 1.91」となります。</p>
+</section>
+<section id="対数オッズ比" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="対数オッズ比">対数オッズ比</h5>
+<p>2つの確率の比であるオッズは，2つの確率のうちの小さな値を基準（分母）におくか，大きな値を基準におくかで値のとりうる範囲が大きく異なります。たとえば，男性のイヌ派のオッズは「70/30 = 2.33」ですが，これは男性の場合，イヌ派である確率の方がネコ派である確率の2.33倍であることを意味します。このように小さい方の値を基準とした場合には，オッズは1から無限大までの範囲をとりうる値になります。</p>
+<p>これに対し，男性のネコ派のオッズは「0.3/0.7 = 0.43」で，これはネコ派の確率がイヌ派の確率の0.43倍であるということになるのですが，このように大きい方の値を基準としてオッズを算出した場合，オッズの値は0から1までの範囲にしかなりません。</p>
+<p>また，イヌ派のオッズとネコ派のオッズは，0.7/0.3と0.3/0.7というように分数の上下を入れ替えただけの違いであるのに，その値は2.33と0.43というようにまったく異なる数値になっていて，とくに関連があるようには見えません。</p>
+<p>ところが，これらのオッズを対数変換すると，「log(0.7/0.3) = 0.85」，「log(0.3/0.7) = <span class="math inline">\(-\textsf{0.85}\)</span>」となって，両者が方向を逆転させた関係にあることがわかりやすくなります。また，この場合には，プラスの値は0から無限大まで，マイナスの値もマイナス無限大の値をとることができるようになるのです。このように，オッズを用いる場合には，それを対数変換した方が関係を理解しやすくなることが多いのです。</p>
+<p>これはオッズ比の場合も同様で，そしてオッズ比を対数に変換したものが<em>対数オッズ比</em>です。先ほどの例の，イヌ派についての男女のオッズ比を対数オッズ比に直すと，「log 1.91 = 0.65」になります。</p>
+</section>
+<section id="リスク比" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="リスク比">リスク比</h5>
+<p>オッズ比が2グループのオッズの比であるのに対して，2グループの確率をそのまま比の形で表したものが<em>リスク比</em>です。先ほどのイヌ派・ネコ派の例でいうと，イヌ派の割合は男性では0.7（70%），女性では0.55（55%）ですので，「0.7/0.55 = 1.27」というのがイヌ派についての男女のリスク比ということになります。</p>
+</section>
+<section id="比率の差" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="比率の差">比率の差</h5>
+<p>これは，2つのグループにおける比率の差です。「<strong>検定</strong>」の設定項目にある「比率の差のz検定」は，この2グループの比率の差をzに変換して検定を行っています。</p>
+<p>イヌ派・ネコ派の例では，イヌ派の割合は男性で0.7，女性で0.55ですので，比率の差の値は「<span class="math inline">\(\textsf{0.7}-\textsf{0.55} =  \textsf{0.15}\)</span>」になります。</p>
+<p>ここまでの指標の関係をまとめると<a href="#fig-frequencies-chisq-comparative-measures" class="quarto-xref">図&nbsp;<span>9.37</span></a>のようになります。</p>
+<!--  -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-chisq-comparative-measures" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-chisq-comparative-measures-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/chisq-comparative-measures.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-chisq-comparative-measures-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.37: 比較指標の関係と一覧
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="信頼区間" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="信頼区間">信頼区間</h5>
+<p>「信頼区間」の項目にチェックを入れると，オッズ比や対数オッズ比，リスク比などの各指標について，指定した幅の信頼区間が算出されます。</p>
+</section>
+</section>
+<section id="名義尺度" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="名義尺度">名義尺度</h4>
+<p>「<strong>名義尺度</strong>」では，分析対象のデータが名義型変数（<img src="images/assets/variable-nominal.svg" class="img-fluid" alt="inline">）である場合の<strong>連関係数</strong>に関する設定を行います。連関係数とは，クロス集計表における行の要素と列の要素の間の関連の強さを表す指標のことです。</p>
+<p>ここには，次の2つの設定項目が含まれています（<a href="#fig-frequencies-chisq-contingency" class="quarto-xref">図&nbsp;<span>9.38</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-chisq-contingency" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-chisq-contingency-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/chisq-contingency.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-chisq-contingency-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.38: 名義尺度の連関係数
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvsettings">
+<ul>
+<li>コンティンジェンシー係数</li>
+<li>ファイ係数とクラメールのV</li>
+</ul>
+</div>
+<section id="コンティンジェンシー係数" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="コンティンジェンシー係数">コンティンジェンシー係数</h5>
+<p><em>コンティンジェンシー係数</em>は，<span class="math inline">\(\chi^2\)</span>の値を「<span class="math inline">\(\chi^2\)</span>+総度数」で割った値の平方根で，これはクロス集計表の行要素と列要素の関連の強さを示します。この値は<em>ピアソンの連関係数C</em>とも呼ばれます。この値は，行と列の連関が0である（行と列が独立である）場合に0となり，連関が強いほど1に近い値になります。</p>
+</section>
+<section id="ファイ係数とクラメールのv" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="ファイ係数とクラメールのv">ファイ係数とクラメールのV</h5>
+<p>この項目にチェックを入れると，<em>ファイ係数</em>と<em>クラメールの連関係数V</em>の2種類の値が算出されます。</p>
+<p>ファイ（<span class="math inline">\(\varphi\)</span>）係数と呼ばれるものには，<span class="math inline">\(\chi^2\)</span>の値を総度数で割ったものの平方根として求められるものと，ピアソンの積率相関係数を2行2列のクロス集計表に適用したもの（これは<em>四分点相関係数</em>とも呼ばれます）の2種類が存在しますが，jamoviで算出されるのは後者です。このファイ係数は，2行2列のクロス集計表でのみ算出されます。</p>
+<p>もう1つのクラメールの連関係数Vは，<span class="math inline">\(\chi^2\)</span>の値を行数と列数の小さい方の値で割って平方根を求めたもので，こちらは2行2列よりも大きなサイズのクロス集計表に対しても算出されます。なお，2行2列のクロス集計表では，ファイ係数とクラメールのVは同じ値になります。</p>
+<p>これらの値も，コンティンジェンシー係数と同様に，行と列の連関が0である（行と列が独立である）場合に0となり，連関が強いほど1に近い値になります。</p>
+</section>
+</section>
+<section id="順序尺度" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="順序尺度">順序尺度</h4>
+<p>「<strong>順序尺度</strong>」では，分析対象のデータが順序型変数（<img src="images/assets/variable-ordinal.svg" class="img-fluid" alt="inline">）である場合の関連度指標に関する設定を行います。</p>
+<p>ここには，次の3つの項目が含まれています（<a href="#fig-frequencies-chisq-ordinal" class="quarto-xref">図&nbsp;<span>9.39</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-chisq-ordinal" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-chisq-ordinal-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/chisq-ordinal.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-chisq-ordinal-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.39: 順序尺度の関連度
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvsettings">
+<ul>
+<li>グッドマン=クラスカルのガンマ</li>
+<li>ケンドールの順位相関係数</li>
+<li>マンテル=ヘンツェルの傾向性検定</li>
+</ul>
+</div>
+<section id="グッドマンクラスカルのガンマ" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="グッドマンクラスカルのガンマ">グッドマン=クラスカルのガンマ</h5>
+<p><em>グッドマン=クラスカルのガンマ</em>は，順位相関係数の一種です。2行2列のクロス集計表の場合には，このガンマの値は<em>ユールのQ</em>と呼ばれることもあります。グッドマン=クラスカルのガンマは，スピアマンの順位相関係数などと同様に<span class="math inline">\(-\textsf{1}\)</span>から1までの範囲をとります。</p>
+<p>この設定は，クロス集計表の行と列の両方が順序型変数である場合に有効です。それ以外の場合にも計算結果は表示されますが，それらの値は適切ではない可能性があります。</p>
+</section>
+<section id="ケンドールの順位相関係数" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="ケンドールの順位相関係数">ケンドールの順位相関係数</h5>
+<p>この項目にチェックを入れると，ケンドールの順位相関係数が算出されます。</p>
+<p>この設定は，クロス集計表の行と列の両方が順序型変数である場合に有効です。それ以外の場合にも計算結果は表示されますが，それらの値は適切ではない可能性があります。</p>
+</section>
+<section id="マンテルヘンツェルの傾向性検定" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="マンテルヘンツェルの傾向性検定">マンテル=ヘンツェルの傾向性検定</h5>
+<p><em>マンテル=ヘンツェルの傾向性検定</em>は，行数または列数が2で，もう一方が順序型変数である場合のクロス集計表に使用可能な検定です。</p>
+<p>たとえば<a href="#tbl-frequencies-chisq-feature-table" class="quarto-xref">表&nbsp;<span>9.11</span></a>のようなクロス集計表があったとします。この表には，行方向にはある特徴のあり・なしが，列方向には学年が置かれています。このようなクロス集計表で，その特徴のあり・なしと学年の間に関連が見られるかどうかを確かめるのがマンテル=ヘンツェルの傾向性検定です。よく似た名前をもつ検定にコクラン=マンテル=ヘンツェル検定がありますが，これとは別物ですので注意してください。</p>
+<div class="cell" data-layout-align="center">
+<div id="tbl-frequencies-chisq-feature-table" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-frequencies-chisq-feature-table-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+表&nbsp;9.11: 特徴の有無と学年についてのクロス集計表
+</figcaption>
+<div aria-describedby="tbl-frequencies-chisq-feature-table-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="table do-not-create-environment cell caption-top table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">低学年</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">中学年</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">高学年</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">計</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd" data-grouplength="2">
+<td colspan="5" style="border-bottom: 1px solid"><strong>特徴</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">あり</td>
+<td style="text-align: left;">10</td>
+<td style="text-align: center;">20</td>
+<td style="text-align: center;">40</td>
+<td style="text-align: center;">70</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">なし</td>
+<td style="text-align: left;">90</td>
+<td style="text-align: center;">80</td>
+<td style="text-align: center;">60</td>
+<td style="text-align: center;">230</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">計</td>
+<td style="text-align: left;">100</td>
+<td style="text-align: center;">100</td>
+<td style="text-align: center;">100</td>
+<td style="text-align: center;">300</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>この検定では，順序型変数（低学年・中学年・高学年）を「1，2，3」という数値に置き換え，名義型変数（あり・なし）を「1，2」に置き換えて，2つの変数の間のピアソンの積率相関係数を算出します。そしてその相関係数の2乗値に「総度数−1」をかけた値が<span class="math inline">\(\chi^2\)</span>として算出されます。この検定の結果，有意確率pの値が有意水準を下回る場合に，2つの変数の間に関連があると判断します。</p>
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-chisq-mantel" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-chisq-mantel-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/chisq-mantel.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-chisq-mantel-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.40: マンテル=ヘンツェルの傾向性検定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="sub:frequencies-chisq-cells" class="level3" data-number="9.3.6">
+<h3 data-number="9.3.6" class="anchored" data-anchor-id="sub:frequencies-chisq-cells"><span class="header-section-number">9.3.6</span> セル</h3>
+<p>ここでは，クロス集計表のセル（1つ1つのマス目）に表示する値についての設定を行います（<a href="#fig-frequencies-chisq-cells" class="quarto-xref">図&nbsp;<span>9.41</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-chisq-cells" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-chisq-cells-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/chisq-cells.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-chisq-cells-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.41: セルの設定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvsettings">
+<ul>
+<li><strong>度数</strong>
+<ul>
+<li>観測度数　観測度数を表示します。</li>
+<li>期待度数　期待度数を表示します。</li>
+</ul></li>
+<li><strong>パーセント</strong>
+<ul>
+<li>行　それぞれの行における各セルのパーセントを示します。</li>
+<li>列　それぞれの列における各セルのパーセントを示します。</li>
+<li>全体　各セルの度数が総度数に占めるパーセントを示します。</li>
+</ul></li>
+</ul>
+</div>
+<p>「<strong>度数</strong>」にある「観測度数」と「期待度数」は，それぞれ観測度数と期待度数を表示に関する設定項目です。これらの項目にチェックを入れると，チェックした項目の値がクロス集計表に表示されます（<a href="#fig-frequencies-chisq-cells-expected" class="quarto-xref">図&nbsp;<span>9.42</span></a>）。</p>
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-chisq-cells-expected" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-chisq-cells-expected-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/chisq-cells-expected.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-chisq-cells-expected-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.42: 期待度数の表示
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>また，「<strong>パーセント</strong>」にある設定項目は，各セルのパーセント値の表示・非表示についての設定です。「行」にチェックを入れると，それぞれの行ごとに各列の値の占める割合がその行の度数の何%であるかが表示されます。同様に，「列」にチェックを入れると，それぞれの列ごとに各行の値がその列に占める割合が何%であるかが表示されます（<a href="#fig-frequencies-chisq-cells-percentage" class="quarto-xref">図&nbsp;<span>9.43</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-chisq-cells-percentage" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-chisq-cells-percentage-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/chisq-cells-percentage.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-chisq-cells-percentage-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.43: パーセントの表示
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>「全体」も同様で，この項目にチェックを入れると各セルの度数が総度数の何%を占めるかがクロス集計表に表示されます。</p>
+</section>
+<section id="sub:frequencies-chisq-post-hoc" class="level3" data-number="9.3.7">
+<h3 data-number="9.3.7" class="anchored" data-anchor-id="sub:frequencies-chisq-post-hoc"><span class="header-section-number">9.3.7</span> 事後検定</h3>
+<p>ここでは，クロス集計表の値を用いた事後検定の設定を行います（<a href="#fig-frequencies-chisq-post-hoc" class="quarto-xref">図&nbsp;<span>9.44</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-chisq-post-hoc" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-chisq-post-hoc-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/chisq-post-hoc.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-chisq-post-hoc-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.44: 事後検定の設定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvsettings">
+<ul>
+<li><strong>事後検定</strong>
+<ul>
+<li>非標準化残差　各セルの非標準化残差を表示します。</li>
+<li>ピアソン残差　各セルのピアソン残差を表示します。</li>
+<li>標準化残差（調整済ピアソン）各セルの標準化残差（調整済ピアソン残差）を表示します。</li>
+<li>逸脱残差（ポワソンGLM）各セルの逸脱残差（ポワソンGLM）を表示します。</li>
+</ul></li>
+</ul>
+</div>
+<section id="非標準化残差" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="非標準化残差">非標準化残差</h5>
+<p>非標準化残差は，各セルの観測度数と期待度数の差です。この値は度数がどれだけ期待値からずれているかの直接的な指標となりますが，標準化された値ではないため，各行・列の周辺度数（比率）が異なる場合には適切な比較ができません。そのような場合には，ピアソン残差や標準化残差（調整済みピアソン残差）を用います。なお，標準化残差（調整済みピアソン残差）では，基準値（初期値は2）を超えるものが赤色で強調表示されます。</p>
+</section>
+<section id="ピアソン残差" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="ピアソン残差">ピアソン残差</h5>
+<p>ピアソン残差は，各セルの観測度数と期待度数の差を期待度数の平方根で割った値です。この値は標準化されているため，各行・列の度数が異なる場合にも適切な比較が可能です。</p>
+</section>
+<section id="標準化残差調整済ピアソン" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="標準化残差調整済ピアソン">標準化残差（調整済ピアソン）</h5>
+<p>標準化残差（調整済ピアソン残差）は，ピアソン残差をさらに行・列の周辺度数で調整した値です。通常，独立性検定におけるセル診断においては，この標準化残差が用いられるのが一般的です。</p>
+</section>
+<section id="逸脱残差ポワソンglm" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="逸脱残差ポワソンglm">逸脱残差（ポワソンGLM）</h5>
+<p>逸脱残差（ポワソンGLM）は，ポワソンGLMに基づく各セルの残差で，逸脱度への各セルの寄与を符号付きで表したものです。ピアソン残差と同様にセルごとのずれを見るために用いられますが，尤度（逸脱度）に基づく定義になっている点が異なります。</p>
+</section>
+</section>
+<section id="sub:frequencies-chisq-plots" class="level3" data-number="9.3.8">
+<h3 data-number="9.3.8" class="anchored" data-anchor-id="sub:frequencies-chisq-plots"><span class="header-section-number">9.3.8</span> グラフ</h3>
+<p>ここでは，クロス集計表の値を用いたグラフの作成に関する設定を行います（<a href="#fig-frequencies-chisq-plots" class="quarto-xref">図&nbsp;<span>9.45</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-chisq-plots" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-chisq-plots-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/chisq-plots.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-chisq-plots-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.45: グラフの設定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvsettings">
+<ul>
+<li><strong>グラフ</strong>
+<ul>
+<li>棒グラフ　棒グラフを作成します。</li>
+</ul></li>
+<li><strong>棒グラフのタイプ</strong>
+<ul>
+<li>横並び　グループ別に，棒を横並びにして表示します。</li>
+<li>積み上げ　各グループの度数を縦に積み上げて表示します。</li>
+</ul></li>
+<li><strong>縦軸</strong>
+<ul>
+<li>度数　グラフの縦軸に度数を示します。</li>
+<li>パーセント値　グラフの縦軸に度数のパーセントを示します。</li>
+</ul></li>
+<li><strong>横軸</strong>
+<ul>
+<li>行　クロス集計表の行にある変数の値を横軸に配置します。</li>
+<li>列　クロス集計表の列にある変数の値を横軸に配置します。</li>
+</ul></li>
+</ul>
+</div>
+<p>ここの「<strong>グラフ</strong>」にある「棒グラフ」にチェックを入れると，クロス集計表の値を棒グラフとして示すことができます（<a href="#fig-frequencies-chisq-plots-bar" class="quarto-xref">図&nbsp;<span>9.46</span></a>）。</p>
+<!--  -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-chisq-plots-bar" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-chisq-plots-bar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/chisq-plots-bar.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-chisq-plots-bar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.46: 棒グラフの表示
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>ここで作成できる棒グラフは，グループ別に値を横に並べて表示するスタイルと，それぞれのグループの度数を縦に積み上げて表示するスタイルの2種類のスタイルを選択することができます。「<strong>棒グラフのタイプ</strong>」で「横並び」を選択すると，異なるグループの度数が横並びの形で棒グラフに表示されます。これに対し，「積み上げ」を選択すると，異なるグループの度数が縦に積み上げられる形の棒グラフ（積み上げ棒グラフ）が表示されます（<a href="#fig-frequencies-chisq-plots-bar-stack" class="quarto-xref">図&nbsp;<span>9.47</span></a>）。</p>
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-chisq-plots-bar-stack" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-chisq-plots-bar-stack-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/chisq-plots-bar-stack.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-chisq-plots-bar-stack-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.47: 棒グラフのスタイル
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>「<strong>縦軸</strong>」に含まれているのは，グラフの縦軸（数値軸）に示す値についての設定項目です。ここで「度数」を選択すると，グラフの縦軸には度数が示されます。これに対し，「パーセント」を選択した場合には，グラフの縦軸にはその度数が全体または行・列に占めるパーセントの値が縦軸に示されます（<a href="#fig-frequencies-chisq-plots-bar-percentage" class="quarto-xref">図&nbsp;<span>9.48</span></a>）。</p>
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-chisq-plots-bar-percentage" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-chisq-plots-bar-percentage-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/chisq-plots-bar-percentage.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-chisq-plots-bar-percentage-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.48: グラフの縦軸の設定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>また，全体，行，列のいずれに対するパーセント値を表示させるかは，「パーセント」の横のプルダウンメニューから選択して設定します。ここが「全体」になっている場合には全体におけるパーセント，「行」になっている場合には各行におけるパーセント，「列」になっている場合には各列におけるパーセントになります。</p>
+<p>「<strong>横軸</strong>」に含まれているのは，グラフの横軸（項目軸）に用いる値についての設定項目です。ここで「行」を選択すると，グラフの横軸にはクロス集計表の行にある変数の値が用いられます。これに対し，「列」を選択した場合には，グラフの横軸にはクロス集計表の列にある変数の値が用いられます（<a href="#fig-frequencies-chisq-plots-bar-xaxis" class="quarto-xref">図&nbsp;<span>9.49</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-chisq-plots-bar-xaxis" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-chisq-plots-bar-xaxis-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/chisq-plots-bar-xaxis.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-chisq-plots-bar-xaxis-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.49: グラフの横軸の設定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="sec-frequencies-mcnemar" class="level2" data-number="9.4">
+<h2 data-number="9.4" class="anchored" data-anchor-id="sec-frequencies-mcnemar"><span class="header-section-number">9.4</span> 対応あり［マクニマー検定］</h2>
+<p>無作為に選抜した生徒100人を対象に，本試験用の問題と追試験用の問題の両方を解いてもらい，それぞれ何人が合格基準に達するかを調べたところ<a href="#tbl-frequencies-mcnemar-table" class="quarto-xref">表&nbsp;<span>9.12</span></a>の結果が得られたとしましょう。</p>
+<div class="cell" data-layout-align="center">
+<div id="tbl-frequencies-mcnemar-table" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-frequencies-mcnemar-table-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+表&nbsp;9.12: 本試験と追試験での合否の結果
+</figcaption>
+<div aria-describedby="tbl-frequencies-mcnemar-table-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="table do-not-create-environment cell caption-top table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">本試験</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">追試験</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">計</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">合格</td>
+<td style="text-align: left;">68</td>
+<td style="text-align: center;">79</td>
+<td style="text-align: center;">147</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">不合格</td>
+<td style="text-align: left;">32</td>
+<td style="text-align: center;">21</td>
+<td style="text-align: center;">53</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">計</td>
+<td style="text-align: left;">100</td>
+<td style="text-align: center;">100</td>
+<td style="text-align: center;">200</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>そしてこの結果から，試験問題の違いによって合格・不合格の程度が異ならない（どちらも難易度が同程度になっている）かどうかを確かめたいとします。この場合，どのように分析すればよいでしょうか。</p>
+<p>このデータは，一見すると独立性の検定で分析できそうに見えるのですが，残念ながらそうではありません。なぜなら，このデータでは「本試験」と「追試験」の両方に同じ人のデータが含まれているからです。これはいわゆる「対応あり」のデータで，データ収集方法にそもそも対応があるわけですから，それに対して「独立」かどうかという検定を行っても適切な結果が得られないのです。</p>
+<p>このような場合，次に取り上げる<em>マクニマー検定</em>と呼ばれる検定が用いられます。</p>
+<section id="sub:frequencies-mcnemar-basics" class="level3" data-number="9.4.1">
+<h3 data-number="9.4.1" class="anchored" data-anchor-id="sub:frequencies-mcnemar-basics"><span class="header-section-number">9.4.1</span> 考え方</h3>
+<p>先ほどのクロス集計表は，残念ながらそのままでは分析ができません。このようなデータの場合には，クロス集計表は本試験の合否を行に，追試験の合否を列に配置するような形で作成する必要があります。</p>
+<p>そこで，もう一度全員の結果を調べ直し，分析に適した形でクロス集計表を作成し直したところ，<a href="#tbl-frequencies-mcnemar-table2" class="quarto-xref">表&nbsp;<span>9.13</span></a>のようになったとします。</p>
+<div class="cell" data-layout-align="center">
+<div id="tbl-frequencies-mcnemar-table2" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-frequencies-mcnemar-table2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+表&nbsp;9.13: 本試験と追試験での合否結果のクロス集計表
+</figcaption>
+<div aria-describedby="tbl-frequencies-mcnemar-table2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="table do-not-create-environment cell caption-top table-sm table-striped small">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th" style="empty-cells: hide; border-bottom: hidden"></th>
+<th colspan="2" data-quarto-table-cell-role="th" style="text-align: center; border-bottom: hidden; padding-bottom: 0; padding-left: 3px; padding-right: 3px;"><div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+追試験
+</div></th>
+<th data-quarto-table-cell-role="th" style="empty-cells: hide; border-bottom: hidden"></th>
+</tr>
+<tr class="even">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">合格</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">不合格</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">計</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd" data-grouplength="2">
+<td colspan="4" style="border-bottom: 1px solid"><strong>本試験</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">合格</td>
+<td style="text-align: left;">58</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">68</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">不合格</td>
+<td style="text-align: left;">21</td>
+<td style="text-align: center;">11</td>
+<td style="text-align: center;">32</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">計</td>
+<td style="text-align: left;">79</td>
+<td style="text-align: center;">21</td>
+<td style="text-align: center;">100</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>この表は先ほどの表と似ていますが，先ほどの表は総度数が200だったのに対し，この表は総度数が100で，調査対象の人数と同じになっています。つまり，先ほどの表はデータの対応がまったく考慮されていなかったのに対し，こちらはデータの対応をきちんと考慮した形で集計表が作成されているのです。</p>
+<p>次に，本試験と追試験で難易度が同じである場合の期待度数について考えてみましょう。ここでは，考え方についてみるために，それぞれのセルの度数をa〜dで表しています（<a href="#tbl-frequencies-mcnemar-table3" class="quarto-xref">表&nbsp;<span>9.14</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div id="tbl-frequencies-mcnemar-table3" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-frequencies-mcnemar-table3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+表&nbsp;9.14: 本試験と追試験での合否結果のクロス集計表
+</figcaption>
+<div aria-describedby="tbl-frequencies-mcnemar-table3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="table do-not-create-environment cell caption-top table-sm table-striped small">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th" style="empty-cells: hide; border-bottom: hidden"></th>
+<th colspan="2" data-quarto-table-cell-role="th" style="text-align: center; border-bottom: hidden; padding-bottom: 0; padding-left: 3px; padding-right: 3px;"><div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+追試験
+</div></th>
+<th data-quarto-table-cell-role="th" style="empty-cells: hide; border-bottom: hidden"></th>
+</tr>
+<tr class="even">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">合格</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">不合格</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">計</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd" data-grouplength="2">
+<td colspan="4" style="border-bottom: 1px solid"><strong>本試験</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">合格</td>
+<td style="text-align: left;">a</td>
+<td style="text-align: center;">b</td>
+<td style="text-align: center;">a+b</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">不合格</td>
+<td style="text-align: left;">c</td>
+<td style="text-align: center;">d</td>
+<td style="text-align: center;">c+d</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">計</td>
+<td style="text-align: left;">a+c</td>
+<td style="text-align: center;">b+d</td>
+<td style="text-align: center;">100</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>2つの試験の難易度が同じであれば，本試験で合格できた人は追試験でも合格するはずです。つまり，「a+b」の人数と「a+c」の人数は同じになるはずです。同様に，本試験で合格できなかった人は追試験でも合格できないはずで，その場合には「c+d」と「b+d」の人数も同じになります。</p>
+<p>そして，これらの関係を整理すると，合格の度数についての「a+b = a+c」という関係は，結局は「b = c」ということですし，また，不合格の度数についての「c+d = b+d」というのも，結局は「b = c」ということになって，2つの試験で難易度が同じである場合に期待されるのは，「b = c」の状態ということになります。</p>
+<p>そこで，マクニマー検定では，観測データにおける右上のセルと左下のセルの値が互いにどれだけずれているかを検定統計量として算出し，そこから2つの試験の難易度に違いがあるといえるかどうかを判断します。</p>
+</section>
+<section id="sub:frequencies-mcnemar-procedure" class="level3" data-number="9.4.2">
+<h3 data-number="9.4.2" class="anchored" data-anchor-id="sub:frequencies-mcnemar-procedure"><span class="header-section-number">9.4.2</span> 分析手順</h3>
+<p>ここでは，次のサンプルデータ（<a href="https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/frequencies_data05.omv">frequencies_data05.omv</a>）を用いて分析を行いましょう。このデータファイルには次の変数が含まれています（<a href="#fig-frequencies-data05" class="quarto-xref">図&nbsp;<span>9.50</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-data05" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-data05-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/data05.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-data05-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.50: サンプルデータ
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvvar">
+<ul>
+<li><code>ID</code>　生徒のID</li>
+<li><code>本試験</code>　本試験の合否（合格，不合格）</li>
+<li><code>追試験</code>　追試験の合否（合格，不合格）</li>
+</ul>
+</div>
+<p>ここでは，各生徒の本試験と追試験の結果が入力されたデータファイルを使用しますが，すでに集計済みのデータで分析を行う場合，スプレッドシートには<a href="#fig-frequencies-data06" class="quarto-xref">図&nbsp;<span>9.51</span></a>のような形でデータが入力されている必要があります。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-data06" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-data06-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/data06.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-data06-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.51: 集計済みデータの入力方法
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>マクニマー検定を実施するには，分析タブの「<img src="images/assets/analysis-frequencies.svg" class="img-fluid" alt="inline"> 度数分析」で「クロス集計表」のところにある「対応あり［マクニマー検定］」を選択します（<a href="#fig-frequencies-mcnemar-menu" class="quarto-xref">図&nbsp;<span>9.52</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-mcnemar-menu" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-mcnemar-menu-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/mcnemar-menu.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-mcnemar-menu-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.52: マクニマー検定の実行
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>すると，<a href="#fig-frequencies-mcnemar-settings" class="quarto-xref">図&nbsp;<span>9.53</span></a>のような画面が表示されます。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-mcnemar-settings" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-mcnemar-settings-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/mcnemar-settings.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-mcnemar-settings-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.53: マクニマー検定の設定パネル
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvsettings">
+<ul>
+<li>行　クロス集計表の行に配置する変数を指定します。</li>
+<li>列　クロス集計表の列に配置する変数を指定します。</li>
+<li>度数（オプション）度数が含まれている変数を指定します（オプション）</li>
+<li><span class="math inline">\(\chi^2\)</span>　<span class="math inline">\(\chi^2\)</span>値を算出します。</li>
+<li>連続性の修正　連続性の修正を行った<span class="math inline">\(\chi^2\)</span>値を算出します。</li>
+<li>正確対数オッズ比　対数オッズ比と正確確率検定の結果を表示します。</li>
+<li><strong>パーセント</strong>
+<ul>
+<li>行　各行におけるパーセント値を算出します。</li>
+<li>列　各列におけるパーセント値を算出します。</li>
+</ul></li>
+</ul>
+</div>
+<p>ここでは，「本試験」を「行」に，「追試験」を「列」に設定しましょう。このデータファイルには一人一人の結果が入力されているので，分析の基本設定はこれで終わりです。「度数（オプション）」の設定は必要ありません。集計済みデータで分析をする場合には，度数が入力されている変数を「度数（オプション）」に指定してください（<a href="#fig-frequencies-mcnemar-set-var" class="quarto-xref">図&nbsp;<span>9.54</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-mcnemar-set-var" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-mcnemar-set-var-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/mcnemar-set-var.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-mcnemar-set-var-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.54: マクニマー検定の分析設定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="sub:frequencies-mcnemar-results" class="level3" data-number="9.4.3">
+<h3 data-number="9.4.3" class="anchored" data-anchor-id="sub:frequencies-mcnemar-results"><span class="header-section-number">9.4.3</span> 分析結果</h3>
+<p>それでは結果を見てみましょう（<a href="#fig-frequencies-mcnemar-results" class="quarto-xref">図&nbsp;<span>9.55</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-mcnemar-results" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-mcnemar-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/mcnemar-results.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-mcnemar-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.55: マクニマー検定の結果
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>結果の表示，および見方は，独立性検定の場合とほぼ同じです。1つ目の表はクロス集計表，2つ目の表が検定結果です。<span class="math inline">\(\chi^2\)</span>値の有意確率は5%の有意水準を下回っているので（p = 0.048），検定結果は有意です。つまり，本試験と追試験で難易度（合格・不合格の比率）が異なるということになります。</p>
+</section>
+<section id="sub:frequencies-mcnemar-options" class="level3" data-number="9.4.4">
+<h3 data-number="9.4.4" class="anchored" data-anchor-id="sub:frequencies-mcnemar-options"><span class="header-section-number">9.4.4</span> 分析オプション</h3>
+<p>マクニマー検定では利用可能な分析オプションは多くありません。分析に関する設定項目は，検定統計量としてイェーツの修正を行った<span class="math inline">\(\chi^2\)</span>を算出する項目と，対数オッズ比を算出するための項目だけです。連続性の修正を行った<span class="math inline">\(\chi^2\)</span>は，独立性検定の場合と同じですので説明は省略します。</p>
+<p>検定オプションの「正確対数オッズ比」は，正確確率を用いた検定結果を表示します（<a href="#fig-frequencies-mcnemar-logodds" class="quarto-xref">図&nbsp;<span>9.56</span></a>）。この方法を用いて分析した場合に表示される「正確対数オッズ比」の値は，クロス集計表の右上および左下のセルの度数について帰無仮説どおりの場合の比率と観測データにおける比率から算出したオッズ比の対数です。</p>
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-mcnemar-logodds" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-mcnemar-logodds-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/mcnemar-logodds.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-mcnemar-logodds-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.56: 対数オッズ比と正確確率検定の結果
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>マクニマー検定では，右上のセルと左下のセルの度数だけを考え，そしてこの2つのセルの度数は同じというのが帰無仮説ですので，右上のセルの左下のセルに対するオッズは「1/1 = 1」となります。そして，今回のデータでは，右上のセルは31人中10人（10/31 = 0.32），左下のセルは31人中21人（21/31 = 0.68）なので，右上のセルのオッズは「0.32/0.68 = 0.47」となります。</p>
+<p>この場合，帰無仮説のオッズを基準（分母）としたオッズ比は「0.47/1 = 0.47」で，これを対数変換すると「log 0.47 = <span class="math inline">\(-\textsf{0.76}\)</span>」となります。途中で四捨五入しながら計算しているので結果の表に表示されている値と完全には一致しませんが，このように計算するとほぼ同じ値になるのがわかります。</p>
+<p>また，マクニマー検定はクロス集計表の右上のセルと左下のセルの度数が同じかどうかを検定していますので，考え方としては，この2つのセルの出現比率が1:1になっているかどうかを2項検定するのと同じことになります。この検定における有意確率pの値は，「31人中10人」という結果について2項検定を行った場合の値に一致します。</p>
+<p>設定パネル右側の「<strong>パーセント</strong>」の項目は，クロス集計表にパーセントを表示するかどうかの設定です。「行」をチェックすれば行ごとのパーセント値が，「列」をチェックすれば列ごとのパーセント値が表示されます。</p>
+</section>
+</section>
+<section id="sec-frequencies-loglin" class="level2" data-number="9.5">
+<h2 data-number="9.5" class="anchored" data-anchor-id="sec-frequencies-loglin"><span class="header-section-number">9.5</span> 対数線形回帰</h2>
+<p>カイ2乗適合度検定は1つの変数についての比率の分析，カイ2乗独立性検定は2つの変数を組み合わせた場合の比率の分析でした。では，3つ以上の場合はどうすればよいでしょうか。jamoviのカイ2乗独立性検定では，3つ目の変数値をグループ変数として層別分析を行うことも可能ですが，その場合，グループ変数と他の変数との関連については見ることができません。</p>
+<p>このような，より複雑なデータの場合に使用可能な分析の1つに<em>対数線形回帰分析</em>があります。</p>
+<section id="sub:frequencies-loglin-basics" class="level3" data-number="9.5.1">
+<h3 data-number="9.5.1" class="anchored" data-anchor-id="sub:frequencies-loglin-basics"><span class="header-section-number">9.5.1</span> 考え方</h3>
+<p>話を単純にするために，ここでは<a href="#tbl-frequencies-loglin-table1" class="quarto-xref">表&nbsp;<span>9.15</span></a>のクロス集計表を例にこの分析の考え方について見てみましょう。これは，独立性検定のところで用いた性別とイヌ派・ネコ派のクロス集計表です。</p>
+<div class="cell" data-layout-align="center">
+<div id="tbl-frequencies-loglin-table1" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-frequencies-loglin-table1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+表&nbsp;9.15: 性別とイヌ派・ネコ派についてのクロス集計表
+</figcaption>
+<div aria-describedby="tbl-frequencies-loglin-table1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="table do-not-create-environment cell caption-top table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">イヌ</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">ネコ</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">計</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd" data-grouplength="2">
+<td colspan="4" style="border-bottom: 1px solid"><strong>性別</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">男</td>
+<td style="text-align: left;">70</td>
+<td style="text-align: center;">30</td>
+<td style="text-align: center;">100</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding-left: 2em;" data-indentlevel="1">女</td>
+<td style="text-align: left;">55</td>
+<td style="text-align: center;">45</td>
+<td style="text-align: center;">100</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">計</td>
+<td style="text-align: left;">125</td>
+<td style="text-align: center;">75</td>
+<td style="text-align: center;">200</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>このようなクロス集計表では，各セルの期待度数は，行の度数と列の度数，クロス集計表全体の総度数を用いて次のように求めることができます。</p>
+<p><span class="math display">\[
+\text{期待度数} = \frac{\text{行の度数}\times\text{列の度数}}{\text{総度数}}
+\]</span></p>
+<p>たとえば，男性でイヌ派のセルの期待度数は，「(100×125)/200 = 62.5」となります。</p>
+<p>このとき，この期待度数の式を対数変換すると，この式は次のように表すことができます<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>。</p>
+<p><span class="math display">\[
+\begin{aligned}
+\log(\text{期待度数})
+&amp;= \log\left(\frac{\text{行の度数}\times\text{列の度数}}{\text{総度数}}\right) \\
+&amp;= \log(\text{行の度数}) + \log(\text{列の度数}) - \log(\text{総度数}) \\
+&amp;= -\log(\text{総度数}) + \log(\text{行の度数}) + \log(\text{列の度数})
+\end{aligned}
+\]</span></p>
+<p>各セルの期待度数について考えたとき，この式の「<span class="math inline">\(\log(\text{行の度数})\)</span>」と「<span class="math inline">\(\log(\text{列の度数})\)</span>」はセルごとに変化しますが，「<span class="math inline">\(-\log(\text{総度数})\)</span>」の部分は，どのセルにおいても共通ですので，これは回帰式における切片のような役割を担っています。このように考えると，この式はさらに次のような回帰式として表せることになります。</p>
+<p><span class="math display">\[
+\log(\text{期待度数}) = b_0 + b_1 \times \text{行の要素} + b_2 \times \text{列の要素}
+\]</span></p>
+<p>一般に，クロス集計表の検定では，行と列が独立であるかどうかについての検定を行いますが，これは行と列の組み合わせによって比率が異なるかどうかを検定しているのと同じです。先ほどの式には行の影響と列の影響しか含まれていませんが，ここに行と列の組み合わせの影響，つまり交互作用による影響を加えると，この式は次のようになります。</p>
+<p><span class="math display">\[
+\log(\text{期待度数}) = b_0 + b_1 \times \text{行の要素} + b_2 \times \text{列の要素} + b_3 \times \text{行と列の交互作用}
+\]</span></p>
+<p>対数線形回帰分析では，このように対数変換を用いて期待度数（の対数）を目的変数，行・列とその交互作用（の対数）を説明変数とする回帰式を作成し，そしてそれぞれの係数を算出するという形で複雑なクロス集計表についての分析を行います。</p>
+</section>
+<section id="sub:frequencies-loglin-procedure" class="level3" data-number="9.5.2">
+<h3 data-number="9.5.2" class="anchored" data-anchor-id="sub:frequencies-loglin-procedure"><span class="header-section-number">9.5.2</span> 基本手順</h3>
+<p>ここでは，独立性検定の層別分析のところで用いたデータ（<a href="https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/frequencies_data04.omv">frequencies_data04.omv</a>）で対数線形回帰分析の実施方法を見ていくことにしましょう。念のため，データファイルに含まれている変数の一覧を示しておきます。</p>
+<div class="jmvvar">
+<ul>
+<li><code>性別</code>　性別（男，女）</li>
+<li><code>年齢</code>　年齢（大人，子供）</li>
+<li><code>ケーキ</code>　ケーキの種類
+<ul>
+<li>ショートケーキ：<code>ショート</code></li>
+<li>チーズケーキ：<code>チーズ</code></li>
+<li>チョコレートケーキ：<code>チョコ</code></li>
+</ul></li>
+<li><code>人数</code>　そのケーキを選んだ人数</li>
+</ul>
+</div>
+<p>このデータを用いて，ケーキの選択に性別と年齢がどのように影響しているかをこれから分析していきます。</p>
+<p>まず，分析タブの「<img src="images/assets/analysis-frequencies.svg" class="img-fluid" alt="inline"> 度数分析」から「対数線形回帰」を選択してください（<a href="#fig-frequencies-loglin-menu" class="quarto-xref">図&nbsp;<span>9.57</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-loglin-menu" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-loglin-menu-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/loglin-menu.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-loglin-menu-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.57: 対数線形回帰分析の実行
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>すると，<a href="#fig-frequencies-loglin-settings" class="quarto-xref">図&nbsp;<span>9.58</span></a>のような画面が表示されます。画面の構成は，回帰分析（<a href="07-Regression.html">第<span class="quarto-xref"><span>8</span></span>章</a>）のものとよく似ています。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-loglin-settings" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-loglin-settings-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/loglin-settings.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-loglin-settings-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.58: 対数線形回帰分析の設定パネル
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvsettings">
+<ul>
+<li>因子　分析に使用する変数を指定します。</li>
+<li>度数（オプション）度数が入力されている変数を指定します（オプション）。</li>
+<li><span class="groupbar"><img src="images/assets/modules-analyses-arrow-r.svg" width="10pt/">| モデルビルダー</span>　交互作用を含むモデルの作成や複数モデルの比較を行います。</li>
+<li><span class="groupbar"><img src="images/assets/modules-analyses-arrow-r.svg" width="10pt/">| 基準レベル</span>　比較基準として用いる水準値を指定します。</li>
+<li><span class="groupbar"><img src="images/assets/modules-analyses-arrow-r.svg" width="10pt/">| モデル適合度</span>　モデル適合度に関する設定を行います。</li>
+<li><span class="groupbar"><img src="images/assets/modules-analyses-arrow-r.svg" width="10pt/">| モデル係数</span>　モデル係数に関する設定を行います。</li>
+<li><span class="groupbar"><img src="images/assets/modules-analyses-arrow-r.svg" width="10pt/">| 推定周辺平均</span>　各主効果の周辺平均値（回帰モデルによる推定値）に関する設定を行います。</li>
+</ul>
+</div>
+<p>基本的な分析は，分析に使用する変数をすべて「因子」の部分に移動するだけです。また，今回のデータファイルのように度数集計済みのデータで分析する場合には，度数が入力されている変数（ここでは「人数」）を「度数（オプション）」の欄に指定します（<a href="#fig-frequencies-loglin-setvar" class="quarto-xref">図&nbsp;<span>9.59</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-loglin-setvar" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-loglin-setvar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/loglin-setvar.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-loglin-setvar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.59: 対数線形回帰分析の設定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>実際にはもう少しいろいろと設定が必要なのですが，ひとまずこれで分析の基本設定はおしまいです。それでは結果を見てみましょう。</p>
+</section>
+<section id="sub:frequencies-loglin-results" class="level3" data-number="9.5.3">
+<h3 data-number="9.5.3" class="anchored" data-anchor-id="sub:frequencies-loglin-results"><span class="header-section-number">9.5.3</span> 分析結果</h3>
+<p>対数線形モデルの結果は，<a href="#fig-frequencies-loglin-results" class="quarto-xref">図&nbsp;<span>9.60</span></a>のような形で表示されます。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-loglin-results" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-loglin-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/loglin-results.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-loglin-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.60: 対数線形回帰分析の結果
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>分析の手順が簡単だった割に，随分と複雑な結果に見えます。この結果の表について，1つずつみていきましょう。</p>
+<p>まず，結果の1つ目の表は，モデルの適合度に関する指標です。この表には，ロジスティック回帰分析の場合と同様に逸脱度とAIC，擬似決定係数が示されています。ただ，この分析結果では，じつはデータは完全に説明されていて，モデルとデータの残差はありません。このように実際の観測データを完全に説明したモデルは<em>飽和モデル</em>と呼ばれます。そのため，逸脱度は0になっており，マクファデンの擬似決定係数も1.00になっています。</p>
+<p>そしてその下の表が回帰係数の推定値ですが，この表はとても複雑です。対数線形モデルでは，分析で説明変数として使用する変数はすべて名義型変数であるため，それらはすべて<em>ダミーコード化</em>されています。そして，その変数値の1つを基準として比較した結果がここにまとめられているために，このように複雑な表になっているのです。</p>
+<p>また，今回のデータにおける「ケーキ」のように，3つ以上のカテゴリーがある変数が含まれている場合，このダミーコード化の際にどの変数値を基準としたかによって，この表に示される係数やその係数が有意かどうかが大きく変化します。</p>
+<p>そのため，実際にはこのままこの分析結果を解釈することはできません。データに含まれる関係の理解のためには，ここからもう少し分析モデルに修正を加えていく必要があります。</p>
+</section>
+<section id="sub:frequencies-loglin-modelbuilder" class="level3" data-number="9.5.4">
+<h3 data-number="9.5.4" class="anchored" data-anchor-id="sub:frequencies-loglin-modelbuilder"><span class="header-section-number">9.5.4</span> モデルビルダー</h3>
+<p>ここからは分析モデルの修正について見ていきましょう。この分析のモデルを修正するには，<span class="groupbar"><img src="images/assets/modules-analyses-arrow-r.svg" width="10pt/">| モデルビルダー</span>を使用します（<a href="#fig-frequencies-loglin-modelbuilder" class="quarto-xref">図&nbsp;<span>9.61</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-loglin-modelbuilder" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-loglin-modelbuilder-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/loglin-modelbuilder.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-loglin-modelbuilder-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.61: モデルビルダー
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>分析の初期設定では，このモデルビルダーの「ブロック」には分析に使用する3つの変数（「性別」，「年齢」，「ケーキ」）の主効果と，これらの1次の交互作用，2次の交互作用のすべてが含まれています。これは先ほど結果の見方のところで説明したように「飽和モデル」と呼ばれるモデルで，このモデルでは観測データを完全に説明することが可能です。</p>
+<p>飽和モデルはデータを完全に説明できる反面，構造が複雑になってしまうため，理解することが困難になりがちです。データ解析の目的は，そのデータに含まれる変数間の関係を解き明かし，理解することにあるわけですから，それでは困ります。そこで，この飽和モデルから結果に大きな影響を与えていない主効果や交互作用を取り除き，モデルを単純化していくことにします。</p>
+<p>まずは，<span class="blueback">ブロックを追加</span>をクリックして，新たなブロックを作成しましょう。そして，その新しく作成したブロックに，飽和モデルに含まれる項目のうち，もっとも複雑な項目である3変数の交互作用（2次の交互作用）「性別＊年齢＊ケーキ」を「<strong>ブロック1</strong>」から「<strong>ブロック2</strong>」にドラッグして移動します（<a href="#fig-frequencies-loglin-modelbuilder-2way-interaction" class="quarto-xref">図&nbsp;<span>9.62</span></a>）。</p>
+<!--  -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-loglin-modelbuilder-2way-interaction" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-loglin-modelbuilder-2way-interaction-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/loglin-modelbuilder-2way-interaction.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-loglin-modelbuilder-2way-interaction-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.62: 2次の交互作用をブロック2に移動
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>この状態で一度結果を見てみましょう。見る必要があるのは，「モデル適合度指標」と「モデルの比較」の部分です（<a href="#fig-frequencies-loglin-modelbuilder-comparison" class="quarto-xref">図&nbsp;<span>9.63</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-loglin-modelbuilder-comparison" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-loglin-modelbuilder-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/loglin-modelbuilder-comparison.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-loglin-modelbuilder-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.63: モデルの比較
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>この結果を見てみると，すべての項目を含む飽和モデル（モデル2）と，そこから2次の交互作用を取り除いたモデル（モデル1）では，飽和モデルの方がAICの値が大きく，また，この2つのモデルで適合度に有意な差はないことがわかります。これはつまり，2次の交互作用はこのデータを説明するうえで余分というか過剰な項目であるということです。そこで，この交互作用は分析モデルから除外してしまいましょう。</p>
+<p>モデルビルダーの「<strong>ブロック2</strong>」にある「性別＊年齢＊ケーキ」を選択し，「<img src="images/assets/action-back.svg" class="img-fluid" alt="inline">」をクリックして分析モデルから除外します（<a href="#fig-frequencies-loglin-modelbuilder-2way-removed" class="quarto-xref">図&nbsp;<span>9.64</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-loglin-modelbuilder-2way-removed" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-loglin-modelbuilder-2way-removed-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/loglin-modelbuilder-2way-removed.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-loglin-modelbuilder-2way-removed-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.64: 分析モデルから交互作用を除外
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>今度は1次の交互作用（2つの変数間の交互作用）についても見ていきましょう。1次の交互作用は，「性別＊年齢」，「性別＊ケーキ」，「年齢＊ケーキ」の3つですが，このうち，「性別＊ケーキ」と「年齢＊ケーキ」の交互作用は，それぞれ「性別によってケーキの選択比率が違う」，「大人か子供かによってケーキの選択比率が違う」という意味ですが，「性別＊年齢」の交互作用は「性別によって大人と子供の比率が違う」という意味で，これは今回の分析における関心とは関連がありません。また，今回のデータは大人も子供も男女同数ですので，この分析においては意味がない項目です。</p>
+<p>そこで，今度はこの「性別＊年齢」を「<strong>ブロック2</strong>」に入れて，これを除外した場合とそうでない場合とでモデルの適合度がどう変化するかを見てみましょう（<a href="#fig-frequencies-loglin-modelbuilder-compare2" class="quarto-xref">図&nbsp;<span>9.65</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-loglin-modelbuilder-compare2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-loglin-modelbuilder-compare2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/loglin-modelbuilder-compare2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-loglin-modelbuilder-compare2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.65: 再度モデルを比較
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>すると，この場合も「性別＊年齢」を除外したモデルの方がAICの値が小さく，相対的な適合度が高いことが示されました。また，2つのモデルで適合度に有意な差はありません。そこで，この交互作用もモデルから除外してしまいましょう。</p>
+<p>1次の交互作用はあと2つ残っています。この2つはどちらも分析の関心と関連があるものですが，念のためモデルへの影響度を見ておきましょう。まずは「年齢＊ケーキ」について，先ほどと同様にして結果を見てみましょう。すると，この場合の結果は<a href="#fig-frequencies-loglin-modelbuilder-comparison3" class="quarto-xref">図&nbsp;<span>9.66</span></a>のようになります。</p>
+<!-- -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-loglin-modelbuilder-comparison3" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-loglin-modelbuilder-comparison3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/loglin-modelbuilder-comparison3.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-loglin-modelbuilder-comparison3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.66: 年齢とケーキの交互作用についての検討
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>この結果では，モデルに「年齢＊ケーキ」の交互作用を加えることによって大きくAICの値が減少しており，また，これを入れたモデルと除外したモデルでは，適合度に有意な差があることがわかります。つまり，この交互作用はモデルから除外すべきではありません。</p>
+<p>同様に，「性別＊ケーキ」についても見てみましょう。この場合は<a href="#fig-frequencies-loglin-modelbuilder-comparison4" class="quarto-xref">図&nbsp;<span>9.67</span></a>の結果が得られます。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-loglin-modelbuilder-comparison4" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-loglin-modelbuilder-comparison4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/loglin-modelbuilder-comparison4.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-loglin-modelbuilder-comparison4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.67: 性別とケーキの交互作用についての検討
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>この結果から，「性別＊ケーキ」の交互作用もモデルから除外しない方が良さそうです。</p>
+<p>さて，次は「性別」，「年齢」，「ケーキ」それぞれの主効果についてですが，ここまでの結果では「性別＊ケーキ」と「年齢＊ケーキ」がモデルに含まれており，そしてこの3つの変数はこの交互作用の少なくとも1つに関係していますので，これらはモデルから除外することができません。そのため，ここでモデルの修正はおしまいということになります。</p>
+<p>このようなモデル修正の結果，性別，年齢，ケーキの選択の各主効果と，性別×ケーキ，年齢×ケーキの交互作用から結果を説明できそうだということがわかりました。なお，ここでの分析の関心は，性別によって選択するケーキの比率に違いがあるか，年齢によって選択するケーキの比率に違いがあるかということでしょうから，これらのうち，とくに交互作用について中心的に見ていくことになります。</p>
+</section>
+<section id="sub:frequencies-loglin-referencelevels" class="level3" data-number="9.5.5">
+<h3 data-number="9.5.5" class="anchored" data-anchor-id="sub:frequencies-loglin-referencelevels"><span class="header-section-number">9.5.5</span> 基準レベル</h3>
+<p>モデルの修正によって分析結果は単純化されたのですが，それでもまだ，「モデル係数」の結果の表の解釈には注意が必要です。基本設定のみの分析結果のところでも説明したように，この係数の値は，各変数のどの値を基準に考えるかによって大きく変わるからです。そのため，分析結果について検討するには，各変数における基準値をよく確認し，必要に応じて基準値を変更しなくてはなりません。</p>
+<p>設定パネルの<span class="groupbar"><img src="images/assets/modules-analyses-arrow-r.svg" width="10pt/">| 基準レベル</span>を展開すると，初期状態では<a href="#fig-frequencies-loglin-referencelevels" class="quarto-xref">図&nbsp;<span>9.68</span></a>のようになっているはずです。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-loglin-referencelevels" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-loglin-referencelevels-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/loglin-referencelevels.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-loglin-referencelevels-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.68: 基準レベルの設定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>そして，この状態での「モデル係数」の表は，<a href="#fig-frequencies-loglin-referencelevels-result1" class="quarto-xref">図&nbsp;<span>9.69</span></a>のようになっています。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-loglin-referencelevels-result1" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-loglin-referencelevels-result1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/loglin-referencelevels-result1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-loglin-referencelevels-result1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.69: 対数線形回帰分析の結果
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>この場合，結果の表では，「男」の「子供」で「ショート（ケーキ）」を選択した度数が入力されているセルが基準となっており，切片の値は，その基準セルについてこの分析モデルから推定される度数の対数値になっています。つまり，切片の値「2.58」を指数変換したもの（<span class="math inline">\(e^{\textsf{2.58}} = \textsf{13.2}\)</span>）が，「男性・子供・ショートケーキ」のセルの推定度数ということです。</p>
+<p>そして，その下の「性別：」の部分には「女 - 男（男性と比較した場合の女性の値）」についての推定値があり，そしてこの値のpは0.049で有意になっていますが，これは，男性に比べて女性の度数が有意に小さいという意味ではなく，「<strong>男性</strong>・子供・ショートケーキ」のセルに比べて「<strong>女性</strong>・子供・ショートケーキ」のセルの度数が有意に小さいという意味です。この場合，「女性・子供・ショートケーキ」の推定度数は，切片の2.58に<span class="math inline">\(-\textsf{0.40}\)</span>を加えた値を指数変換したもの（<span class="math inline">\(e^{\textsf{2.58}+(-\textsf{0.40})} = \textsf{8.85}\)</span>）になります。</p>
+<p>同様に，その下の「年齢：」の部分にある「大人 - 子供」は，子供に比べて大人の度数が大きいということではなく，「男性・<strong>子供</strong>・ショートケーキ」のセルに比べて「男性・<strong>大人</strong>・ショートケーキ」の度数が有意に大きいという意味です。そしてこの係数から推定されるのは「男性・大人・ショートケーキ」の度数です。もし，「<strong>女</strong>・<strong>大人</strong>・ショートケーキ」の度数について推定したければ，そのセルは切片（男性・子供・ショートケーキ）から男性を女性に，子供を大人に変更した場合ということになるので，「女 - 男」の係数と「大人 - 子供」の係数の両方を切片に加えたもの（2.58 + (<span class="math inline">\(-\textsf{0.40}\)</span>) + 1.29 = 3.47）を指数変換した値（<span class="math inline">\(e^{\textsf{3.47}} = \textsf{32.14}\)</span>）がその推定値ということになるのです。</p>
+<p>その下の交互作用の部分はさらに複雑です。「性別＊ケーキ：」の部分にある「（女 - 男）＊（チーズ - ショート）」は，「大人・女性・チーズケーキ」のセルに関する推定値なのですが，この係数はあくまでも交互作用の影響のみについてのものであるため，このセルの推定値を算出したい場合には，切片の値に「女 - 男」の係数と「チーズ - ショート」の係数を加え，さらにそこにこの係数の値を加えたうえで指数変換する必要があります。</p>
+<p>つまり，この結果の表に示されている主効果や交互作用の係数は，<a href="#fig-frequencies-loglin-results-interpretation" class="quarto-xref">図&nbsp;<span>9.70</span></a>の関係について示したものなのです。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-loglin-results-interpretation" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-loglin-results-interpretation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/loglin-results-interpretation.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-loglin-results-interpretation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.70: 対数線形回帰分析の係数とクロス集計表の関係
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>そして，これらの結果からいえるのは次の点ということになります。ここでは，検定結果が有意であったもののみを示します。</p>
+<ul>
+<li>ショートケーキを選ぶのは，男児より女児の方が少ない（推定値 = <span class="math inline">\(-\textsf{0.40}\)</span>, p = 0.049）</li>
+<li>ショートケーキを選ぶのは，男児より男性の大人の方が多い（推定値 = 1.29, p &lt; .001）</li>
+<li>男児ではショートケーキを選ぶよりチョコレートケーキを選ぶ方が多い（推定値 = 0.59, p &lt; .001）</li>
+<li>女児でチーズケーキを選ぶのは，「女+子供＋チーズケーキ」の組み合わせから想定される数よりも多い（推定値 = 0.65, p = 0.019）</li>
+<li>大人の男性でチョコレートケーキを選ぶ人は，「男+大人＋チョコレートケーキ」の組み合わせから想定される数よりも少ない（推定値 = <span class="math inline">\(-\textsf{1.67}\)</span>, p &lt; .001）</li>
+</ul>
+<p>このうち，「ショートケーキを選ぶ人では，大人の男性より男児の方が人数が少ない」の部分については注意が必要です。今回のデータファイルでは子供の人数は大人の半分であり，これはあたりまえの結果だからです。ですので，この部分に何か特別な意味があると勘違いしないようにしましょう。</p>
+<p>また，ここに挙げた結果に検討したい部分が含まれていない場合には，<span class="groupbar"><img src="images/assets/modules-analyses-arrow-r.svg" width="10pt/">| 基準レベル</span>で基準レベルを適切に変更し，そこで得られた結果を確認しなくてはなりません。</p>
+<p>このように，対数線形回帰分析は結果の解釈が非常に複雑になってしまうのが難点です。</p>
+</section>
+<section id="sub:frequencies-loglin-modelfit" class="level3" data-number="9.5.6">
+<h3 data-number="9.5.6" class="anchored" data-anchor-id="sub:frequencies-loglin-modelfit"><span class="header-section-number">9.5.6</span> モデル適合度</h3>
+<p>設定パネルの<span class="groupbar"><img src="images/assets/modules-analyses-arrow-r.svg" width="10pt/">| モデル適合度</span>には，<a href="#fig-frequencies-loglin-model-fit" class="quarto-xref">図&nbsp;<span>9.71</span></a>の項目が含まれています。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-loglin-model-fit" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-loglin-model-fit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/loglin-model-fit.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-loglin-model-fit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.71: 適合度指標の設定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvsettings">
+<ul>
+<li><strong>Fit Measures</strong>（適合度指標）
+<ul>
+<li>逸脱度　モデルの残差逸脱度を算出します。</li>
+<li>AIC　赤池情報量規準を算出します。</li>
+<li>BIC　ベイズ情報量規準を算出します。</li>
+<li>モデル全体の検定　<span class="math inline">\(\chi^{2}\)</span>を用いてモデル全体の有意性検定を行います。</li>
+</ul></li>
+<li><strong>擬似R²</strong>　モデルのあてはまりの程度を標準化した値を算出します。
+<ul>
+<li>マクファデンのR²　マクファデンの擬似決定係数を算出します。</li>
+<li>コックス=スネルのR²　コックス=スネルの擬似決定係数を算出します。</li>
+<li>ナゲルケルケのR²　ナゲルケルケの擬似決定係数を算出します。</li>
+</ul></li>
+</ul>
+</div>
+<p>これらの項目は2項ロジスティック回帰（<a href="07-Regression.html">第<span class="quarto-xref"><span>8</span></span>章</a> <a href="07-Regression.html#sec-regression-binomial" class="quarto-xref"><span>セクション 8.4</span></a>）の<a href="07-Regression.html#sub:regression-binomial-model-fit">モデルの適合度</a>と同じものですので，ここでは説明を省略します。</p>
+</section>
+<section id="sub:frequencies-loglin-coeff" class="level3" data-number="9.5.7">
+<h3 data-number="9.5.7" class="anchored" data-anchor-id="sub:frequencies-loglin-coeff"><span class="header-section-number">9.5.7</span> モデル係数</h3>
+<p>設定パネルの<span class="groupbar"><img src="images/assets/modules-analyses-arrow-r.svg" width="10pt/">| モデル係数</span>には，次の項目が含まれています（<a href="#fig-frequencies-loglin-coeff" class="quarto-xref">図&nbsp;<span>9.72</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-frequencies-loglin-coeff" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-frequencies-loglin-coeff-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/frequencies/loglin-coeff.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-frequencies-loglin-coeff-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;9.72: モデル係数の設定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvsettings">
+<ul>
+<li><strong>オムニバス検定</strong>
+<ul>
+<li>尤度比検定　モデル全体の適合度について尤度比検定を行います。</li>
+</ul></li>
+<li><strong>推定値（対数率比）</strong>
+<ul>
+<li>信頼区間　対数率比の信頼区間を算出します。</li>
+</ul></li>
+<li><strong>率比</strong>
+<ul>
+<li>率比　率比を算出します。</li>
+<li>信頼区間　率比の信頼区間を算出します。</li>
+</ul></li>
+</ul>
+</div>
+<p>尤度比を用いたオムニバス検定については，ロジスティック回帰の場合と同じですのでここでは説明を省略します。</p>
+<p>それ以外の数値についても，基本はロジスティック回帰分析の場合と同じですが，ここで示されるのは<em>オッズ比</em>ではなく，各セルの比率に基づく<em>率比</em>（比率の比）である点には注意してください。対数線形モデルでは，回帰モデルの各係数は，<em>対数オッズ比</em>ではなく，比率の比の対数になっているからです。ただ，このように回帰係数の値の性質が少し異なるというだけで，表示される結果の見方や考え方はロジスティック回帰分析の場合と同じです。「<strong>推定値（対数率比）</strong>」の「信頼区間」にチェックを入れれば，回帰係数の信頼区間が算出されますし，「<strong>率比</strong>」の部分の設定を行えば，回帰係数を指数変換した値やその信頼区間を表示させることができます。</p>
+</section>
+<section id="sub:frequencies-loglin-emm" class="level3" data-number="9.5.8">
+<h3 data-number="9.5.8" class="anchored" data-anchor-id="sub:frequencies-loglin-emm"><span class="header-section-number">9.5.8</span> 推定周辺平均</h3>
+<p>設定パネルの<span class="groupbar"><img src="images/assets/modules-analyses-arrow-r.svg" width="10pt/">| 推定周辺平均</span>には，次の項目が含まれています。</p>
+<div class="jmvsettings">
+<ul>
+<li>周辺平均値　周辺平均値の算出対象を指定します</li>
+<li><strong>全般オプション</strong>
+<ul>
+<li>均等重みづけ</li>
+<li>信頼区間　周辺平均値の信頼区間を算出します</li>
+</ul></li>
+<li><strong>出力</strong>
+<ul>
+<li>周辺平均値のグラフ</li>
+<li>周辺平均値の表</li>
+</ul></li>
+</ul>
+</div>
+<p><span class="groupbar"><img src="images/assets/modules-analyses-arrow-r.svg" width="10pt/">| 推定周辺平均</span>の設定項目やその使用方法は，<a href="07-Regression.html">第<span class="quarto-xref"><span>8</span></span>章</a>の線形回帰のところで説明したのと同じですので，詳細についてはここでは説明は省略します（線形回帰の「<a href="07-Regression.html#sub:regression-LR-marginalmeans">推定周辺平均</a>」を参照）。</p>
+<p>なお，このオプションで表示される「推定周辺平均」は，回帰モデルの予測値，つまりは度数の推定値ですので，その点だけ注意してください。</p>
+
+
+</section>
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p>2項分布の計算式やその具体的な計算方法については本書では省略します。統計法の教科書などを参照してください。<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>分布の形状を決める値のことです。2項分布では試行数nと確率pが，正規分布では平均値と分散（または標準偏差）がパラメータとなります。<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p> Kass, R. E. &amp; Raftery, A. E. (1995). Bayes Factors. <i>Journal of the American Statistical Association, 90</i>, 773–795. doi:10.1080/01621459.1995.10476572<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>掛け算の式を対数変換した場合，その式は元の項目の対数同士の足し算として，割り算の式を対数変換した場合，その式は元の項目の対数同士の引き算として表すことができます。多変量解析の中でしばしば対数変換が行われるのは，このように掛け算を足し算に，割り算を引き算にできることで計算が単純になるということが理由の1つにあるのです。<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./07-Regression.html" class="pagination-link" aria-label="回帰分析">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">回帰分析</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./09-Factor.html" class="pagination-link" aria-label="因子分析">
+        <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">因子分析</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/sbtseiji/jmv_compguide/blob/main/08-Frequencies.qmd" class="toc-action"><i class="bi bi-github"></i>ソースコード</a></li></ul></div></div></div></footer><script src="site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

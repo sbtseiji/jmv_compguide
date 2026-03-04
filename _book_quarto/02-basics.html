@@ -1,0 +1,2000 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="フリーの統計ソフト jamovi の使用方法についての日本語ガイドです。データの編集方法から分散分析や因子分析の設定方法まで、基本機能のすべてについて一通り説明しています。">
+
+<title>3&nbsp; データ操作 – jamovi完全攻略ガイド</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./03-basics2.html" rel="next">
+<link href="./01-getting-started.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-777ac567918ecbb99a2fd73912d84d5b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "一致なし",
+    "search-matching-documents-text": "一致した文書",
+    "search-copy-link-title": "検索へのリンクをコピー",
+    "search-hide-matches-text": "追加の検索結果を非表示",
+    "search-more-match-text": "追加の検索結果",
+    "search-more-matches-text": "追加の検索結果",
+    "search-clear-button-title": "消去",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "取消",
+    "search-submit-button-title": "検索",
+    "search-label": "サーチ"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+<script>
+MathJax ={chtml: {
+      mtextFont: 'arial',
+      // mtextInheritFont: true,
+   },
+};
+</script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js?config=TeX-AMS_HTML"></script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="nav-sidebar docked quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="サイドバーを切り替える" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./00-part1.html">導入編</a></li><li class="breadcrumb-item"><a href="./02-basics.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">データ操作</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="サイドバーを切り替える" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="サーチ" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">jamovi完全攻略ガイド</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/sbtseiji/jmv_compguide" title="ソースコード" class="quarto-navigation-tool px-1" aria-label="ソースコード"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="サーチ"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">jamovi完全攻略ガイド</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./00-part1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">導入編</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="セクションを切り替え">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-getting-started.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">jamoviの導入</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-basics.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">データ操作</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-basics2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">分析と編集</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./04-part2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">分析編</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="セクションを切り替え">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04a-exploration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">探索</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-t-tests.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">t検定</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-ANOVA.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">分散分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-Regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">回帰分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08-Frequencies.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">度数分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09-Factor.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">因子分析</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./10-part3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">作図編</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="セクションを切り替え">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-chart.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">棒グラフ</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11a-boxplot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">箱ひげ図</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11b-histogram.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">ヒストグラム</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11c-scatterplot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">散布図</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11d-linechart.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">折れ線グラフ</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./12-part4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">付録</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false" aria-label="セクションを切り替え">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./13-Appendix.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">関数一覧</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">目次</h2>
+   
+  <ul>
+  <li><a href="#sec-components" id="toc-sec-components" class="nav-link active" data-scroll-target="#sec-components"><span class="header-section-number">3.1</span> 画面構成</a>
+  <ul class="collapse">
+  <li><a href="#subsec-tabs" id="toc-subsec-tabs" class="nav-link" data-scroll-target="#subsec-tabs"><span class="header-section-number">3.1.1</span> タブ</a></li>
+  </ul></li>
+  <li><a href="#sec-data-handling" id="toc-sec-data-handling" class="nav-link" data-scroll-target="#sec-data-handling"><span class="header-section-number">3.2</span> データ変数</a>
+  <ul class="collapse">
+  <li><a href="#sub:basics2-spreadsheet" id="toc-sub:basics2-spreadsheet" class="nav-link" data-scroll-target="#sub\:basics2-spreadsheet"><span class="header-section-number">3.2.1</span> スプレッドシートでの入力</a></li>
+  <li><a href="#sub:basics-data-variable-row-edit" id="toc-sub:basics-data-variable-row-edit" class="nav-link" data-scroll-target="#sub\:basics-data-variable-row-edit"><span class="header-section-number">3.2.2</span> 行・列の編集</a></li>
+  </ul></li>
+  <li><a href="#sec-basics-computed-variable" id="toc-sec-basics-computed-variable" class="nav-link" data-scroll-target="#sec-basics-computed-variable"><span class="header-section-number">3.3</span> 計算変数</a>
+  <ul class="collapse">
+  <li><a href="#sub:basics-computed-variable-new" id="toc-sub:basics-computed-variable-new" class="nav-link" data-scroll-target="#sub\:basics-computed-variable-new"><span class="header-section-number">3.3.1</span> 計算変数の作成</a></li>
+  <li><a href="#sub:basics-computed-variable-setting" id="toc-sub:basics-computed-variable-setting" class="nav-link" data-scroll-target="#sub\:basics-computed-variable-setting"><span class="header-section-number">3.3.2</span> 計算変数の設定</a></li>
+  </ul></li>
+  <li><a href="#subsec-tranformed-variable" id="toc-subsec-tranformed-variable" class="nav-link" data-scroll-target="#subsec-tranformed-variable"><span class="header-section-number">3.4</span> 変換変数</a></li>
+  <li><a href="#sec-data-weight" id="toc-sec-data-weight" class="nav-link" data-scroll-target="#sec-data-weight"><span class="header-section-number">3.5</span> 重みづけ</a></li>
+  <li><a href="#sec-data-filter" id="toc-sec-data-filter" class="nav-link" data-scroll-target="#sec-data-filter"><span class="header-section-number">3.6</span> フィルタ</a></li>
+  <li><a href="#sec-variables-tab" id="toc-sec-variables-tab" class="nav-link" data-scroll-target="#sec-variables-tab"><span class="header-section-number">3.7</span> 変数タブの使用</a></li>
+  <li><a href="#sec-practice-handling" id="toc-sec-practice-handling" class="nav-link" data-scroll-target="#sec-practice-handling"><span class="header-section-number">3.8</span> 演習：調査票データの処理</a>
+  <ul class="collapse">
+  <li><a href="#sub:basics-reverse-items" id="toc-sub:basics-reverse-items" class="nav-link" data-scroll-target="#sub\:basics-reverse-items"><span class="header-section-number">3.8.1</span> 逆転項目の処理</a></li>
+  <li><a href="#sub:basics2-scale-score" id="toc-sub:basics2-scale-score" class="nav-link" data-scroll-target="#sub\:basics2-scale-score"><span class="header-section-number">3.8.2</span> 尺度得点の算出</a></li>
+  <li><a href="#sub:basics2-split-groups" id="toc-sub:basics2-split-groups" class="nav-link" data-scroll-target="#sub\:basics2-split-groups"><span class="header-section-number">3.8.3</span> グループへの分割</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/sbtseiji/jmv_compguide/blob/main/02-basics.qmd" class="toc-action"><i class="bi bi-github"></i>ソースコード</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./00-part1.html">導入編</a></li><li class="breadcrumb-item"><a href="./02-basics.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">データ操作</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="sec-ch-basics" class="quarto-section-identifier"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">データ操作</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>本章では，jamoviでのデータ操作の方法について見ていきます。jamoviでのデータの操作はExcelなどの表計算ソフトによく似ていますので，それらに慣れた人であればjamoviでの操作にもすぐ慣れるはずです。また，jamoviではかなり幅広い種類のファイルをデータとして読み込むことができますので，大量のデータを入力する際には，慣れたソフトで入力したものをjamoviで開いて分析するという使い方もできるでしょう。</p>
+<p>また，複数の質問への回答を合計あるいは平均して得点を算出するということはExcelのような表計算ソフトでも可能ですが，データに修正が生じた場合などのことを考えると，それらをjamoviでできるようになっておくのがよいでしょう。</p>
+<p>この章では，jamoviにおけるそうしたデータ操作の基本について見ていきます。</p>
+<section id="sec-components" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="sec-components"><span class="header-section-number">3.1</span> 画面構成</h2>
+<p>jamoviの画面は，次の要素で構成されています（<a href="#fig-basics-jamovi-overview" class="quarto-xref">図&nbsp;<span>3.1</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-basics-jamovi-overview" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-basics-jamovi-overview-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/jamovi-overview.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-basics-jamovi-overview-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.1: jamoviの画面構成
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvblue">
+<ul>
+<li><strong>タブ</strong>　使用するリボンを切り替える際に使用します</li>
+<li><strong>リボン</strong>　jamoviのさまざまな機能にアクセスするためのツール群がここに表示されます</li>
+<li><strong>スプレッドシート</strong>　データの入力や編集を行う部分です</li>
+<li><strong>結果ウィンドウ</strong>　ここに分析結果が表示されます</li>
+</ul>
+</div>
+<section id="subsec-tabs" class="level3" data-number="3.1.1">
+<h3 data-number="3.1.1" class="anchored" data-anchor-id="subsec-tabs"><span class="header-section-number">3.1.1</span> タブ</h3>
+<p>jamoviには，「変数」，「データ」，「分析」，「グラフ」，「編集」の5つのタブが用意されています。変数タブはデータファイルに含まれている変数情報の確認に，データタブにはデータ入力に，分析タブはデータ分析の際に使用します。また，グラフタブはデータを可視化したい場合に，編集タブは分析結果にメモを書き込んだりする場合に使用します。</p>
+<p>それぞれのタブにどのような項目が用意されているのかを見てみましょう。</p>
+<section id="subsubsec:variable-tab" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="subsubsec:variable-tab">変数タブ</h4>
+<p>変数タブは，次のような画面構成になっています（<a href="#fig-variable-overview" class="quarto-xref">図&nbsp;<span>3.2</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-variable-overview" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-variable-overview-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/variable-overview.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-variable-overview-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.2: 変数タブ
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>画面上部にはツールボタンのリボンが，中央には変数ウィンドウが，画面下には変数追加ボタンがあります。また，変数の検索窓も用意されており，データにたくさんの変数が含まれている場合にはここに変数名を入力することで目的の変数をすばやく見つけられます。</p>
+<p>通常，各変数の変数名はできるだけ簡潔なものにするのが望ましいですが，質問紙データの場合などには，「Q1」や「Q2」などの変数名では，その質問がどのような内容の質問文だったのかの判断が難しくなります。そのような場合，質問文を「説明」欄に入力しておくと，どの変数がどの質問項目のデータなのかを簡単に確認できます。また，jamoviの拡張モジュールでは日本語に対応していないこともありえますし，余分なトラブルを避けるために変数名を英数字のみにしておきたいこともあるでしょう。そのような場合にも，「説明」欄に日本語で各変数の説明をつけておくと，後々の分析が楽になるはずです。</p>
+<p>このタブのリボンに含まれているツールボタンは次のとおりです。</p>
+<div class="jmvribbon">
+<ul>
+<li>編集　操作の取り消し（<img src="images/assets/menu-undo.svg" class="img-fluid" alt="inline">），やり直し（<img src="images/assets/menu-redo.svg" class="img-fluid" alt="inline">）を行います。</li>
+<li><img src="images/assets/menu-variable-edit.svg" class="img-fluid" alt="inline"> 編集　データ変数の設定を行います。</li>
+<li><img src="images/assets/menu-compute.svg" class="img-fluid" alt="inline"> 計算　すでにある変数値から新たな変数を作成します。</li>
+<li><img src="images/assets/menu-data-transform.svg" class="img-fluid" alt="inline"> 変換　すでにある変数値に変換を適用して新たな変数を作成します。</li>
+<li><img src="images/assets/menu-variable-add.svg" class="img-fluid" alt="inline"> 追加　選択位置に変数を挿入（<img src="images/assets/menu-variable-insert.svg" class="img-fluid" alt="inline">）または最後に変数を追加（<img src="images/assets/menu-variable-append.svg" class="img-fluid" alt="inline">）します。</li>
+<li><img src="images/assets/menu-variable-remove.svg" class="img-fluid" alt="inline">削除　選択した変数を削除します。</li>
+<li><img src="images/assets/menu-data-filter.svg" class="img-fluid" alt="inline"> フィルタ　変数にフィルタを設定します。</li>
+</ul>
+</div>
+<p>このタブに含まれている「編集」や「計算」などのボタンは，データタブに含まれるものと機能は同じですので，これらのボタンの使い方については「<a href="#sec-data-handling">データ変数</a>」のところで説明することにします。</p>
+</section>
+<section id="subsubsec:data-tab" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="subsubsec:data-tab">データタブ</h4>
+<p>データタブはデータの入力や編集の際に使用します。見た目はExcelなどの表計算ソフトによく似ています（<a href="#fig-data-overview" class="quarto-xref">図&nbsp;<span>3.3</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-data-overview" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-data-overview-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/data-overview.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-data-overview-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.3: データタブ
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>このタブのリボンには，次のツールボタンが含まれています。</p>
+<div class="jmvribbon">
+<ul>
+<li><strong>クリップボード</strong>　データのコピー（<img src="images/assets/menu-data-copy.svg" class="img-fluid" alt="inline">）や貼り付け（<img src="images/assets/menu-data-paste.svg" class="img-fluid" alt="inline">），切り取り（<img src="images/assets/menu-data-cut.svg" class="img-fluid" alt="inline">）などに使用します。使い方はWordやExcelなどと基本的に同じです。</li>
+<li><strong>編集</strong>　操作の取り消し（<img src="images/assets/menu-undo.svg" class="img-fluid" alt="inline">），やり直し（<img src="images/assets/menu-redo.svg" class="img-fluid" alt="inline">）を行います。</li>
+<li><strong>変数</strong>　変数の設定や変数値の処理に使用するツール群です。
+<ul>
+<li><img src="images/assets/menu-variable-edit.svg" class="img-fluid" alt="inline"> 設定　データの種類や変数名の設定を行います。</li>
+<li><img src="images/assets/menu-compute.svg" class="img-fluid" alt="inline"> 計算　すでにある変数値から新たな変数を作成します。</li>
+<li><img src="images/assets/menu-data-transform.svg" class="img-fluid" alt="inline"> 変換　すでにある変数値に変換を適用して新たな変数を作成します。</li>
+<li><img src="images/assets/menu-data-weights.svg" class="img-fluid" alt="inline"> 重みづけ　集計済みのデータを分析する際などに，変数値に重みをつけるために使用します。</li>
+<li><img src="images/assets/menu-variable-add.svg" class="img-fluid" alt="inline"> 追加　スプレッドシートの選択位置に変数（列）を挿入（<img src="images/assets/menu-variable-insert.svg" class="img-fluid" alt="inline">）または列の最後に追加（<img src="images/assets/menu-variable-append.svg" class="img-fluid" alt="inline">）します。</li>
+<li><img src="images/assets/menu-variable-remove.svg" class="img-fluid" alt="inline"> 削除　スプレッドシート上で選択した変数（列）を削除します。</li>
+</ul></li>
+<li><strong>行</strong>　データ行の追加や削除に使用するツール群です。
+<ul>
+<li><img src="images/assets/menu-data-filter.svg" class="img-fluid" alt="inline"> フィルタ　特定の条件に適合する行のみ表示させたい場合（男性のみ，女性のみ，など）に使用します。</li>
+<li><img src="images/assets/menu-row-add.svg" class="img-fluid" alt="inline"> 追加　選択部分にデータ行を挿入（<img src="images/assets/menu-row-insert.svg" class="img-fluid" alt="inline">）または最後の行にデータ行を追加（<img src="images/assets/menu-row-append.svg" class="img-fluid" alt="inline">）します。</li>
+<li><img src="images/assets/menu-row-remove.svg" class="img-fluid" alt="inline"> 削除　選択行を削除します。</li>
+</ul></li>
+</ul>
+</div>
+<p>変数操作に関するボタン群，データ行の編集に関するボタン群の詳しい使い方については「<a href="#sec-data-handling">データ変数</a>」の操作のところで説明します。</p>
+</section>
+<section id="subsubsec:analyses-tab" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="subsubsec:analyses-tab">分析タブ</h4>
+<p>分析タブは，統計分析を行う場合に使用します。画面の見た目は変数タブやデータタブと同じですが，リボンの部分が分析用の各ツールボタンになります（<a href="#fig-analyses-tab" class="quarto-xref">図&nbsp;<span>3.4</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-analyses-tab" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-analyses-tab-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics2/analyses-tab.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-analyses-tab-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.4: 分析タブ
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>このタブのリボンには，次の分析用ツールボタンが含まれています。</p>
+<div class="jmvribbon">
+<ul>
+<li><img src="images/assets/analysis-descriptives.svg" class="img-fluid" alt="inline"> 探索　平均値などの基本統計量の算出やグラフの作成に使用します（<a href="04a-exploration.html">第<span class="quarto-xref"><span>5</span></span>章</a>）</li>
+<li><img src="images/assets/analysis-ttest.svg" class="img-fluid" alt="inline"> t検定　1つあるいは2つの平均値の差の検定を行います（<a href="05-t-tests.html">第<span class="quarto-xref"><span>6</span></span>章</a>）</li>
+<li><img src="images/assets/analysis-anova.svg" class="img-fluid" alt="inline"> 分散分析　3つ以上の平均値の差の検定を行います（<a href="06-ANOVA.html">第<span class="quarto-xref"><span>7</span></span>章</a>）</li>
+<li><img src="images/assets/analysis-regression.svg" class="img-fluid" alt="inline"> 回帰分析　回帰分析と呼ばれる手法を用いて変数間の関係を分析します（<a href="07-Regression.html">第<span class="quarto-xref"><span>8</span></span>章</a>）</li>
+<li><img src="images/assets/analysis-frequencies.svg" class="img-fluid" alt="inline"> 度数分析　<span class="math inline">\(\chi^{2}\)</span>（カイ二乗）検定など，度数・比率の検定を行います（<a href="08-Frequencies.html">第<span class="quarto-xref"><span>9</span></span>章</a>）</li>
+<li><img src="images/assets/analysis-factor.svg" class="img-fluid" alt="inline"> 因子分析　因子分析を実施します（<a href="09-Factor.html">第<span class="quarto-xref"><span>10</span></span>章</a>）</li>
+</ul>
+</div>
+<p>このように，分析タブのツールは分析手法ごとに非常にわかりやすく整理されています。また，これらの基本メニューに加え，画面の一番右には「<img src="images/assets/analysis-more.svg" class="img-fluid" alt="inline"> モジュール」というツールもあります。これはjamoviにさらに高度な機能を追加したい場合に使用します<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>。</p>
+<p>これら分析ツールの使用方法については，「分析編」で詳しく説明します。</p>
+</section>
+<section id="subsubsec:graph-tab" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="subsubsec:graph-tab">グラフタブ</h4>
+<p>jamoviには，各分析ツールにそれぞれの分析に適したグラフを作成する機能が用意されていますが，そこで作成されるグラフは分析結果の一部として表示されるもので，グラフの編集機能も限られています。グラフタブは，分析ツールで作成されるグラフとは別に，データを可視化するためのグラフを作成したい場合に使用します（作図編を参照）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-graph-tab" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-graph-tab-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/graph-tab.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-graph-tab-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.5: グラフタブ
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>このタブのリボンには，次のグラフ作成用ツール・ボタンが含まれています。</p>
+<div class="jmvribbon">
+<ul>
+<li>棒グラフ グループ間で値の大小を比較したい場合などに使用します。</li>
+<li>箱ひげ図　複数グループにおけるデータの中央値やばらつき，外れ値などを示したい場合に使用します。</li>
+<li>ヒストグラム　階級ごとの度数の分布を視覚化したい場合に使用します。</li>
+<li>散布図　相関関係など，変数間の関係を視覚化したい場合に使用します。</li>
+<li>折れ線グラフ　時系列に伴う値の変化などを視覚化したい場合に使用します。</li>
+</ul>
+</div>
+</section>
+<section id="subsubsec:edit-tab" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="subsubsec:edit-tab">編集タブ</h4>
+<p>編集タブでは，フォントや段落の設定など，編集に関連したツールボタンがリボンに表示されます（<a href="#fig-edit-tab" class="quarto-xref">図&nbsp;<span>3.6</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-edit-tab" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-edit-tab-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/edit-tab.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-edit-tab-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.6: 編集タブ
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>このタブのリボンに含まれるツールは次のとおりです。</p>
+<div class="jmvribbon">
+<ul>
+<li>クリップボード データタブのボタンと同じです。</li>
+<li>編集　データタブのボタンと同じです。</li>
+<li>書体　文字を太字にしたり，斜体にしたりする際に使用します。</li>
+<li>段落　文字全体を中央揃えにしたり，箇条書きにしたりなど，段落の書式を変更する際に使用します。</li>
+<li>挿入　メモに数式を含めたい場合に使用します。数式はTeX形式で記述します<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>。</li>
+<li>スタイル　その他の文書スタイルを設定するためのツール・ボタン群です。
+<ul>
+<li><img src="images/assets/edit-code.svg" class="img-fluid" alt="inline"> コード メモ中に分析プログラムを記載したい場合に使用します。</li>
+<li><img src="images/assets/edit-heading.svg" class="img-fluid" alt="inline"> 見出し　指定した部分を「見出し」行にしたい場合に使用します。</li>
+<li><img src="images/assets/edit-link.svg" class="img-fluid" alt="inline"> リンク メモにリンクを挿入したい際に使用します。</li>
+</ul></li>
+</ul>
+</div>
+<p>これらのボタンは，いずれも結果ウィンドウの内容を編集したり，メモを作成したりする際に用いられるものです。</p>
+</section>
+</section>
+</section>
+<section id="sec-data-handling" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="sec-data-handling"><span class="header-section-number">3.2</span> データ変数</h2>
+<p>jamoviが扱う<em>変数</em>には，<em>データ変数</em>，<em>計算変数</em>，<em>変換変数</em>の3種類があります<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>。このうち，もっとも基本的で重要なものがデータ変数です。ここではまず，データ変数を用いてjamoviにおけるデータの操作方法を見ていきましょう。</p>
+<p>データ変数は，調査や実験で得られた測定値（データ値）を格納するための変数で，jamoviにおける分析の基本となるものです。データファイルから読み込んだ値は，すべてデータ変数として扱われます。また，データ変数の値はスプレッドシートに直接入力することもできます。</p>
+<p>データファイルからデータを読み込む方法についてはすでに<a href="01-getting-started.html">第<span class="quarto-xref"><span>2</span></span>章</a>の「<a href="01-getting-started.html#sec-intro-file">ファイル操作</a>」で説明しましたので，ここではデータタブのスプレッドシートを用いたデータの編集方法について見ておきましょう。</p>
+<section id="sub:basics2-spreadsheet" class="level3" data-number="3.2.1">
+<h3 data-number="3.2.1" class="anchored" data-anchor-id="sub:basics2-spreadsheet"><span class="header-section-number">3.2.1</span> スプレッドシートでの入力</h3>
+<p>スプレッドシートでの入力は，Excelの操作によく似ています。入力したいセル（マス目）をマウスクリックし，キーボードから値を入力するだけです。入力後，「Enter」キーまたは「↓」キーを押すと次の値が入力できるようになります。</p>
+<p>基本的に，統計処理をするデータは各行が1人分（あるいは1試行分）の測定値で，各列はさまざまな変数（参加者番号や年齢，性別など）となります。なお，jamoviを起動した直後の画面にはA，B，Cの3つの変数しかありませんが，4列目以降にも値を入力することができます。空白の列に値を入力すると，その列は新たなデータ変数として扱われます。</p>
+<p>では，実際にスプレッドシートにデータを入力してみましょう。ここでは<a href="#tbl-basics-datavariable-sampledata" class="quarto-xref">表&nbsp;<span>3.1</span></a>のデータを用いることにします。変数タブが選択されている場合には，データタブを選択してスプレッドシートを表示させてください。</p>
+<div class="cell" data-layout-align="center">
+<div id="tbl-basics-datavariable-sampledata" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-basics-datavariable-sampledata-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+表&nbsp;3.1: サンプルデータ
+</figcaption>
+<div aria-describedby="tbl-basics-datavariable-sampledata-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="do-not-create-environment cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: center;" data-quarto-table-cell-role="th">ID</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">性別</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">年齢</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">身長</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">体重</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">男</td>
+<td style="text-align: center;">18</td>
+<td style="text-align: center;">175</td>
+<td style="text-align: center;">70</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">女</td>
+<td style="text-align: center;">19</td>
+<td style="text-align: center;">158</td>
+<td style="text-align: center;">45</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">男</td>
+<td style="text-align: center;">19</td>
+<td style="text-align: center;">172</td>
+<td style="text-align: center;">62</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>スプレッドシートの1列目（Aの列）にIDの値，2列目に性別の値を入力してください。なお，性別については「男」を「1」，「女」を「2」として入力してください。また，3列目から5列目には「年齢」，「身長」，「体重」の値をそれぞれ入力しましょう。変数名は後で設定しますので，ここでは数値を入力するだけです。</p>
+<p>入力が終わった状態では，画面は<a href="#fig-data-sample-data" class="quarto-xref">図&nbsp;<span>3.7</span></a>のようになっているはずです。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-data-sample-data" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-data-sample-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/data-sample-data.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-data-sample-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.7: データ変数の入力例
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>このように，jamoviではExcelなどの表計算ソフトを操作する感覚で簡単にデータ入力を行うことができます。</p>
+</section>
+<section id="sub:basics-data-variable-row-edit" class="level3" data-number="3.2.2">
+<h3 data-number="3.2.2" class="anchored" data-anchor-id="sub:basics-data-variable-row-edit"><span class="header-section-number">3.2.2</span> 行・列の編集</h3>
+<p>今度は，入力済みデータを行・列の単位で編集する方法についてみてみましょう。jamoviでは，データの行と列はそれぞれ異なった意味をもちますので，追加・削除のメニューは行と列のそれぞれに別々に用意されています（<a href="#fig-edit-row-col" class="quarto-xref">図&nbsp;<span>3.8</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-edit-row-col" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-edit-row-col-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/edit-row-col.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-edit-row-col-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.8: 行・列の編集
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<section id="行の編集" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="行の編集">行の編集</h4>
+<p>基本的に，jamoviではスプレッドシートの行は「参加者1人分のデータ」を意味します。つまり，スプレッドシートに25行のデータが入力されていれば，それは参加者25人分のデータがあるということです。</p>
+<p>すでに入力されているデータに新たな参加者のデータを追加する場合は単純で，データがまだ入力されていない行にデータを入力するだけです。そうでなく，途中にデータを追加したい場合には，データを挿入したい部分を選択してリボンの「行」にある「追加」から「挿入」を選択します（<a href="#fig-add-row" class="quarto-xref">図&nbsp;<span>3.9</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-add-row" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-add-row-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/add-row.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-add-row-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.9: 行の追加
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>なおこの際，「挿入」の代わりに「追加」を実行すると，データの最後に新しい行が追加されます。</p>
+<p>また，不要な行がある場合には，その行を選択し，リボンの「行」の部分にある「削除」を実行します（<a href="#fig-edit-row-delete" class="quarto-xref">図&nbsp;<span>3.10</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-edit-row-delete" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-edit-row-delete-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/edit-row-delete.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-edit-row-delete-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.10: 行の削除
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>なお，これらの操作は，右クリックで表示されるメニューからも行うことができます（<a href="#fig-add-row-submenu" class="quarto-xref">図&nbsp;<span>3.11</span></a>）。</p>
+<!-- ボタンの画面 -->
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-add-row-submenu" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-add-row-submenu-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/add-row-submenu.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-add-row-submenu-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.11: 行の追加
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="列の編集" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="列の編集">列の編集</h4>
+<p>jamoviスプレッドシートの列は，<em>変数</em>（回答者番号や年齢，性別，回答値，測定値など）として扱われます。列の編集方法も基本的には行の編集方法と同じで，列（変数）を追加・削除したい箇所を選択してから，データタブの「変数」にある「追加」または「削除」を実行するだけです。</p>
+<p>ただし，jamoviが扱う変数には「データ変数」，「計算変数」，「変換変数」の3種類がありますので，変数を追加する際にはどの種類の変数を追加するのかを指定しなければなりません（<a href="#fig-edit-col-add" class="quarto-xref">図&nbsp;<span>3.12</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-edit-col-add" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-edit-col-add-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/edit-col-add.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-edit-col-add-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.12: 列（変数）の追加
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>なお，jamoviの現在のバージョンでは，変数の順序を並び替えることができません。変数を追加する場合には，追加する場所をよく考えてからにしましょう。</p>
+</section>
+<section id="subsubsec:data-data-setup" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="subsubsec:data-data-setup">データ変数の設定</h4>
+<p>空白のスプレッドシートにデータを入力した場合，そのままでは変数名が「A」，「B」，「C」などになっていて，どの列が何のデータなのかがわかりにくいですね。そこで，先ほど入力したデータを用い，基本的な変数設定の方法を見ておきましょう。</p>
+<p>「A」列の変数名の部分（「A」の部分）をダブルクリックするか，または「A」列を選択してからリボンの「<img src="images/assets/menu-variable-edit.svg" class="img-fluid" alt="inline"> 設定」ボタンをクリックしてください（<a href="#fig-data-variable-open" class="quarto-xref">図&nbsp;<span>3.13</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-data-variable-open" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-data-variable-open-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/data-variable-open.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-data-variable-open-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.13: データ変数の設定パネルを開く
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>すると，データ変数の設定パネルが表示されますので（<a href="#fig-data-variable" class="quarto-xref">図&nbsp;<span>3.14</span></a>），この画面の「データ変数」の欄に変数名を入力します。データの1列目には「ID」が入力されているので，変数名は「ID」としておきましょう。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-data-variable" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-data-variable-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/data-variable.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-data-variable-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.14: データ変数の設定パネル
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>変数名には日本語を使用することも可能です。ただし，グラフなどの一部の機能で日本語がうまく表示されないことがありますので，そうしたトラブルを避けたければ，変数名はアルファベットと数字の組み合わせにしておいた方がいいでしょう。本書では，わかりやすさを重視して変数名に日本語を用いることにします。</p>
+<p>その下の「説明」の欄は，変数の説明を記入する部分です。この欄は分析には影響しませんので，ここは空欄でも構いません。</p>
+<p>1列目の変数名の設定が終わったら，画面右横の「<img src="images/assets/modules-analyses-arrow-r.svg" class="img-fluid" alt="inline">（次へ）」をクリックして2列目以降の変数名も設定しましょう。2列目の変数名は「性別」，3列目以降はそれぞれ「年齢」，「身長」，「体重」としておきます。</p>
+<section id="測定値型" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="測定値型">測定値型</h5>
+<p>設定パネルの「測定値型」は，変数の尺度型の設定です。データ変数には，測定値の尺度水準に応じて次の4つの型があります（<a href="#fig-data-variable-measure-type" class="quarto-xref">図&nbsp;<span>3.15</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-data-variable-measure-type" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-data-variable-measure-type-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/data-variable-measure-type.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-data-variable-measure-type-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.15: データ変数の尺度型
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="jmvsettings">
+<ul>
+<li><img src="images/assets/variable-nominal.svg" class="img-fluid" alt="inline"> 名義　<em>名義尺度</em>で測定されたデータです。</li>
+<li><img src="images/assets/variable-ordinal.svg" class="img-fluid" alt="inline"> 順序　<em>順序尺度</em>で測定されたデータです。</li>
+<li><img src="images/assets/variable-continuous.svg" class="img-fluid" alt="inline"> 連続　<em>比率尺度</em>や<em>間隔尺度</em>で測定されたデータです。</li>
+<li><img src="images/assets/variable-id.svg" class="img-fluid" alt="inline"> ID　参加者番号など，それぞれのデータを識別するために用いる特殊なデータ型です。</li>
+</ul>
+</div>
+<p>データ変数の尺度型によって使用可能な分析手法が変わってきますので，変数の尺度型は適切に設定しましょう。なお，それぞれの変数がどの尺度型として扱われているのかについては，スプレッドシートの変数名の横にあるアイコンで確認することもできます。</p>
+<p>データ1列目の<code>ID</code>変数は個人を特定するための番号ですので，尺度タイプは「<img src="images/assets/variable-id.svg" class="img-fluid" alt="inline"> ID」型にしておきましょう。2列目の「性別」変数は「<img src="images/assets/variable-nominal.svg" class="img-fluid" alt="inline"> 名義」型，「年齢」から「体重」まではすべて「<img src="images/assets/variable-continuous.svg" class="img-fluid" alt="inline"> 連続」型です。</p>
+</section>
+<section id="データ型" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="データ型">データ型</h5>
+<p>データ変数には，さらに「整数」，「小数」，「文字」というデータ型の区別もあります。</p>
+<p>「整数」型は，「1」や「15」など，測定値に小数値が含まれない場合，「小数」型は，「1.5」や「7.49」など，測定値に小数値が含まれる場合です。この2つのデータ型は画面上の表示方法がやや異なるくらいで本質的な違いはありませんが，「小数」型は尺度型が「連続」の場合にしか指定できません。「文字」型は，入力されたデータ値を「数値」としてではなく「文字」として扱います。「文字」型を指定できるのは，「<img src="images/assets/variable-nominal.svg" class="img-fluid" alt="inline"> 名義」型または「<img src="images/assets/variable-ordinal.svg" class="img-fluid" alt="inline"> 順序」型の場合のみです。</p>
+<p>ほとんどの場合，データ型についてはjamoviが自動的に判定してくれますので，設定の必要はないでしょう。何からの理由でデータ型を指定したい場合，データ変数の測定型と指定できるデータ型の関係は<a href="#tbl-measure-data-type" class="quarto-xref">表&nbsp;<span>3.2</span></a>のとおりです。</p>
+<div class="cell" data-layout-align="center">
+<div id="tbl-measure-data-type" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-measure-data-type-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+表&nbsp;3.2: データ変数の測定型とデータ型
+</figcaption>
+<div aria-describedby="tbl-measure-data-type-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="do-not-create-environment cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">小数</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">整数</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">文字</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">名義</td>
+<td style="text-align: center;">×</td>
+<td style="text-align: center;">○</td>
+<td style="text-align: center;">○</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">順序</td>
+<td style="text-align: center;">○</td>
+<td style="text-align: center;">○</td>
+<td style="text-align: center;">○</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">連続</td>
+<td style="text-align: center;">○</td>
+<td style="text-align: center;">○</td>
+<td style="text-align: center;">×</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+</section>
+<section id="Missinmissin" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="Missinmissin">欠損値</h5>
+<p>「欠損値」の欄では，データ中の欠損値の指定を行います。たとえば，1〜5の5段階尺度で得られたデータで未回答の部分を「9」として入力したようなデータの場合には，ここで「9」を欠損値として指定することができます。</p>
+<p>今回のサンプルデータには欠損値はありませんので，ここは空欄のままにしておいてください。</p>
+</section>
+</section>
+<section id="levelslvels" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="levelslvels">水準</h4>
+<p>「水準」は，その変数が「<img src="images/assets/variable-ordinal.svg" class="img-fluid" alt="inline"> 順序」型あるいは「<img src="images/assets/variable-nominal.svg" class="img-fluid" alt="inline"> 名義」型の場合に使用できます。たとえば「S・A・B・C・D」の5段階で入力された成績評価データがあったとします。そしてそのデータでは，1人目が「D」，2人目が「A」，3人目が「S」，4人目が「C」というようなものだったとしましょう。この場合，そのままではこの変数値が「D・A・S・C・B」という順で扱われたり，あるいはアルファベット順に「A・B・C・D・S」という順に扱われたりしてしまいます。なぜなら，統計ソフトには成績のよい方から「S・A・B・C・D」の順であるという知識はないからです。</p>
+<p>このような場合には，この「水準」の右横にある上下矢印で変数値を適切な順番に並べ替えることで，分析においても「S・A・B・C・D」という順が維持されるようになります（<a href="#fig-data-variable-levels-order" class="quarto-xref">図&nbsp;<span>3.16</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-data-variable-levels-order" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-data-variable-levels-order-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/data-variable-levels-order.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-data-variable-levels-order-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.16: データ順序の設定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>また，今回のサンプルデータのように，「性別」の値で男性が「1」，女性が「2」と入力されている場合，分析結果の出力画面には性別の値は入力値のまま「1」や「2」と表示されるのですが，「1」や「2」という表示ではどちらが男性でどちらが女性なのかがわかりづらいですね。もし，男女をとり違えて結果を解釈してしまったら大変です。</p>
+<p>そのような場合，この「Levels」の「1」の欄に「男」，「2」の欄に「女」と入力し，それぞれの値に<em>変数ラベル</em>をつけることができます。そうすると，データ画面上や結果の表示では性別データの「1」が「男」，「2」が「女」と表示されるようになり，男女のとり違えといったミスを防ぐことができるのです（<a href="#fig-data-variable-levels" class="quarto-xref">図&nbsp;<span>3.17</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-data-variable-levels" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-data-variable-levels-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/data-variable-levels.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-data-variable-levels-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.17: 変数ラベルの設定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>このようにして変数ラベル設定した場合，本来の変数値は「水準」欄の右下で確認できます。</p>
+<p>なお，その下にある「分析で未使用の水準を保持」のスイッチを「オン」にした場合，データの修正などによって特定の水準値を含む行の数が0になった場合にもその水準値が保持されます。ここを「オフ」にした場合には，データ中に含まれていない水準値は「水準」から削除されます。</p>
+<p>さて，これでサンプルデータの入力と設定は完了です。変数の設定パネルを閉じるとスプレッドシートは<a href="#fig-data-sample-data-complete" class="quarto-xref">図&nbsp;<span>3.18</span></a>のようになっているはずです。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-data-sample-data-complete" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-data-sample-data-complete-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/data-sample-data-complete.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-data-sample-data-complete-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.18: データの入力と設定が終わった後の画面
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="sec-basics-computed-variable" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="sec-basics-computed-variable"><span class="header-section-number">3.3</span> 計算変数</h2>
+<p>実際のデータ分析では，複数の質問項目の回答値から参加者ごとに合計得点を算出したり，平均値を算出したりして，それをデータとして使用する場合が多々あります。このように，他の変数値を用いた計算の結果を新たな変数値として使用するのが「計算変数」です。</p>
+<section id="sub:basics-computed-variable-new" class="level3" data-number="3.3.1">
+<h3 data-number="3.3.1" class="anchored" data-anchor-id="sub:basics-computed-variable-new"><span class="header-section-number">3.3.1</span> 計算変数の作成</h3>
+<p>先ほど作成したデータを使って計算変数の作成方法について見てみましょう。ここでは，身長と体重のデータから，各個人のBMI値（体格指数）を算出することにします。</p>
+<p>計算変数を使用するには，スプレッドシートで列名が空欄になっている部分をダブルクリックするか，その列を選択してリボンの「<img src="images/assets/menu-variable-edit.svg" class="img-fluid" alt="inline"> 設定」ボタンをクリックします。すると，<a href="#fig-data-new-variable" class="quarto-xref">図&nbsp;<span>3.19</span></a>のような変数作成画面が表示されますので，ここで「計算変数を作成」のボタンをクリックします。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-data-new-variable" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-data-new-variable-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/data-new-variable.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-data-new-variable-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.19: 新規に変数を作成する
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>あるいは，新しい列を選択した状態でリボンの「<img src="images/assets/menu-compute.svg" class="img-fluid" alt="inline"> 計算」ボタンをクリックしても，新しい列に計算変数が作成されて変数設定パネルになります。</p>
+<p>計算変数の設定パネルは<a href="#fig-data-computed-variable" class="quarto-xref">図&nbsp;<span>3.20</span></a>のようになっています。変数名と説明の部分はデータ変数の場合と同じです。この計算変数の変数名は「BMI」としておきましょう。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-data-computed-variable" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-data-computed-variable-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/data-computed-variable.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-data-computed-variable-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.20: 計算変数の設定パネル
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>その下の部分はデータ変数の場合とだいぶ異なります。計算変数は，この設定パネルの中央，数式ボックスの「=」の後ろに計算式を入力して値を設定します。</p>
+</section>
+<section id="sub:basics-computed-variable-setting" class="level3" data-number="3.3.2">
+<h3 data-number="3.3.2" class="anchored" data-anchor-id="sub:basics-computed-variable-setting"><span class="header-section-number">3.3.2</span> 計算変数の設定</h3>
+<p>では，早速BMI値を計算変数として設定しましょう。数式ボックスに計算式を入力します。BMIの値は，次のようにして求められます。</p>
+<p><span class="math display">\[
+\text{BMI} = \text{体重（kg）} \div \text{身長（m）}^2
+\]</span></p>
+<p>なお，BMIの式では身長はメートルで計算する必要があります。先ほど入力した身長データはセンチメートルで記録されているので，これを100で割ってメートルに変換するのを忘れないようにしてください。そのため，これを入力式の形に直すと「= 体重 / (身長/100)^2」となります。数式ボックスの「=」の後ろの部分をクリックし，この式を入力します。</p>
+<p>このとき，変数名の入力ミスなどがあるとエラーになってしまいますので注意してください。変数名の入力ミスを防ぐには，数式ボックスのすぐ左隣にある「関数ボタン（<img src="images/assets/filters-formula.svg" class="img-fluid" alt="inline">）」を使うのがよいでしょう。この部分をクリックすると，「関数」と「変数」という画面が表示されます（<a href="#fig-data-computed-variable-function" class="quarto-xref">図&nbsp;<span>3.21</span></a>）。左側の「関数」の部分は，平均値などの計算用の関数のリストで，それぞれの関数名をクリックするとその関数簡単な説明が下側に表示されるようになっています。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-data-computed-variable-function" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-data-computed-variable-function-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/data-computed-variable-function.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-data-computed-variable-function-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.21: 計算変数の作成結果
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>ここでは関数は使用しませんが，「関数」は，複数の質問項目の回答値を平均して合成得点を求めたりする場合に役立ちます。なお，計算変数に使用できる関数は，次のグループに分類されています。これらの関数の詳細については<a href="#sec-ch-appendix">付録</a>にまとめてありますのでそちらを参照してください。</p>
+<div class="jmvfunctions">
+<ul>
+<li>数学関数　絶対値（ABS），指数（EXP），対数（LN）など，数学的な計算を行う関数群です。</li>
+<li>統計関数　合計値（SUM），平均値（MEAN）など，基本的な統計量を算出する関数群です。</li>
+<li>論理関数　条件に応じて異なる計算を行いたい場合に使用する関数群です。</li>
+<li>文字関数　文字データを結合したり，数値を文字に変換したりする場合に使用する関数群です。</li>
+<li>参照関数　特定の条件に合致するセルを指定して計算を行いたい場合などに使用します。</li>
+<li>その他　数値と文字の変換など，その他の処理を行うための関数群です。</li>
+<li>シミュレーション　特定の確率分布をもつデータを擬似的に作成したい場合に使用します。</li>
+</ul>
+</div>
+<p>この画面で，「変数」にある「体重」をダブルクリックすると，その変数名が数式ボックスに入力されます。こうした機能を使いながら，計算変数の数式を完成させましょう。なお，数式に使用する文字は，変数名を除いてすべて半角（英数入力モード）で入力する必要がありますので，その点は注意をしてください。式を入力し終わったら，キーボードの「Enter（Return）」キーを押して式を確定させます。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-data-sample-data-computed" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-data-sample-data-computed-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/data-sample-data-computed.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-data-sample-data-computed-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.22: 関数と変数のリスト
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>すると，スプレッドシートの「体重」の横に「BMI」という変数が作成され，そこに各個人のBMI値が表示されます（<a href="#fig-data-sample-data-computed" class="quarto-xref">図&nbsp;<span>3.22</span></a>）。なお，この計算変数に格納されているのは式だけですので，計算変数の作成後に計算に使われている変数（「体重」と「身長」）の値が変更されると自動的に再計算されて新しい値に更新されます。計算変数は，スプレッドシートでは変数名の右上部分に黒丸がついた状態で表示されます。</p>
+<p>計算変数の計算式を修正したい場合には，計算変数のタイトル部分をダブルクリックするか，修正したい計算変数の列を選択したうえで「<img src="images/assets/menu-variable-edit.svg" class="img-fluid" alt="inline"> 設定」ボタンをクリックしてください。</p>
+</section>
+</section>
+<section id="subsec-tranformed-variable" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="subsec-tranformed-variable"><span class="header-section-number">3.4</span> 変換変数</h2>
+<p>質問紙調査のデータで<em>逆転項目</em>が複数ある場合，その回答値の逆転処理は計算変数でも可能ですが，逆転項目がたくさんある場合，その1つ1つに対して計算式を入力して計算変数を作成するのは面倒ですし，途中でミスが発生する可能性も増大します。</p>
+<p>このように，複数の変数に対して同じ処理を繰り返し実施したい場合には，「変換変数」が便利です。変換変数は，空の列の列名をダブルクリックして変数作成画面を開き，そこで「変換変数を作成」を選択するか，リボンの「<img src="images/assets/menu-data-transform.svg" class="img-fluid" alt="inline"> 変換」ボタンをクリックすることで作成できます。</p>
+<p>サンプルデータでは変換変数を使う必要性はとくにありませんが，せっかくなので使ってみましょう。ここでは，身長の測定値をcmからmに変換する処理を，変換変数を使って行ってみます。</p>
+<p>スプレッドシートで「身長」の列を選択したら，リボンの「<img src="images/assets/menu-data-transform.svg" class="img-fluid" alt="inline"> 変換」をクリックして変換変数を1つ作成してください。「身長」を選択してから「<img src="images/assets/menu-data-transform.svg" class="img-fluid" alt="inline"> 変換」をクリックすると，変数名などが自動で入力された状態で設定パネルが開きます（<a href="#fig-data-transformed-setting" class="quarto-xref">図&nbsp;<span>3.23</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-data-transformed-setting" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-data-transformed-setting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/data-transformed-setting.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-data-transformed-setting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.23: 変換関数の設定パネル
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>変数名は，これがメートル単位の身長だということがわかりやすいように「身長 (m)」としておきましょう。その下の「変換元の変数」の部分は，変換を適用する変数を指定します（<a href="#fig-data-transformed-source-select" class="quarto-xref">図&nbsp;<span>3.24</span></a>）。「身長」の列を選択してから変換変数を作成した場合，ここは自動的にその変数が選択された状態になります。もし変換対象とは異なる変数が指定されている場合には，適切な変数を選択してください。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-data-transformed-source-select" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-data-transformed-source-select-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/data-transformed-source-select.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-data-transformed-source-select-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.24: 変換対象の選択
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>変換対象を適切に設定したら，その下の「使用する変換」の部分で適用する変換を指定します。今はまだ適用できる変換がありませんので，「変換を新規作成…」を選択して変換を作成しましょう（<a href="#fig-data-transformed-transform-select" class="quarto-xref">図&nbsp;<span>3.25</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-data-transformed-transform-select" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-data-transformed-transform-select-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/data-transformed-transform-select.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-data-transformed-transform-select-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.25: 変換の指定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>すると，<a href="#fig-data-transformed-transform" class="quarto-xref">図&nbsp;<span>3.26</span></a>のような設定パネルが表示されます。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-data-transformed-transform" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-data-transformed-transform-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/data-transformed-transform.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-data-transformed-transform-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.26: 変換の設定パネル
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>最初の部分はこの変換の名前です。再利用する際に便利なように，できるだけわかりやすい名前をつけておきましょう。今回の変換はセンチメートルからメートルへの変換ですので，「cm -&gt; m」という名前にしておきます。</p>
+<p>その下の「説明」の部分は変換の説明です。変換名からどのようなことをしているのかがわかるようであればここは空欄で構いませんが，そうでない場合はここに簡単に説明を書いておいたほうがよいでしょう。</p>
+<p>この「説明」の隣の「変数の接尾辞」は，この変換を適用した後の変数名の末尾に自動的につける文字を設定します。ここでは空欄にしておきますが，たとえば逆転項目の逆転処理を行うような変換の場合には，ここに「R」と設定しておけば，「Q1 - R」，「Q2 - R」のように，変換後の変数名として元の変数名（「Q1」や「Q2」など）の末尾に「- R」をつけた名前が自動的に設定されるようになります。</p>
+<p>関数ボタンと数式ボックスの使用方法は計算変数の場合と同じです。必要に応じて関数ボタンで変数名や関数を選択し，数式ボックスの中に変換式を記入します。今回の変換ではセンチメートルで記録された身長のデータをメートルに変換するので，数式ボックス内の式は「$source / 100」となります（<a href="#fig-data-transformed-transform-complete" class="quarto-xref">図&nbsp;<span>3.27</span></a>）。なお，「$source」は変換元の値を意味します。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-data-transformed-transform-complete" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-data-transformed-transform-complete-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/data-transformed-transform-complete.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-data-transformed-transform-complete-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.27: 変換式の作成
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>ここでは使用しませんが，変換ボックスのすぐ上にある「変換条件を追加」を用いれば，元の値の範囲に応じて異なる変換式を適用するようなこともできます。</p>
+<p>変換式が完成したら，「Enter（Return）」キーで式を確定し，設定パネルを閉じてください。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-data-transformed-transform-recoded" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-data-transformed-transform-recoded-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/data-transformed-transform-recoded.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-data-transformed-transform-recoded-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.28: 変換の設定が完了した様子
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>すると，「使用する変換」の部分が先ほど作成した「cm -&gt; m」になっているはずです（<a href="#fig-data-transformed-transform-recoded" class="quarto-xref">図&nbsp;<span>3.28</span></a>）。この変換変数も，計算変数の場合と同様に，変換元の変数値が変化すると自動的に値が更新されます。また，この変換式は，その右横にある「編集…」ボタンをクリックすることで修正可能です。変換変数は，スプレッドシートでは変数名の欄の右上に赤丸がついた状態で表示されます。</p>
+<p>変換対象の変数が1つしかない場合には，計算変数と変換変数のどちらを用いてもあまり違いはありませんが，質問紙調査における逆転項目の処理のように，同じ変換を複数の変数に対して適用する場合には，1つの「変換式」を複数の変数に適用できる変換変数のほうが効率的でしょう。</p>
+</section>
+<section id="sec-data-weight" class="level2" data-number="3.5">
+<h2 data-number="3.5" class="anchored" data-anchor-id="sec-data-weight"><span class="header-section-number">3.5</span> 重みづけ</h2>
+<p>通常，分析用データは1行に1人分のデータを入力します。しかし，年齢別・性別に集計されたデータのように，すでに集計済みのデータを分析したい場合もあります。このようなデータでそのまま平均値を求めると，各行に含まれる人数が反映されず，正しい値になりません。そこで，各行が何人分の集計なのかを示す<em>重み</em>変数を設定すると，集計済みデータも分析用データとして扱えるようになります。</p>
+<p>次の例を見てみましょう。このデータには，地区に集計されたある得点が入力されています（<a href="#fig-data-weights-example" class="quarto-xref">図&nbsp;<span>3.29</span></a>）。各地区の回答者数は，それぞれ125人，35人，89人で，3列目の「平均スコア」は，各地区ごとの平均値です。このようなデータでは，回答者全体の「平均スコア」を算出したい場合にそのまま平均値を求めようとすると，単純にこの3つの値の平均値が算出されてしまい，回答者全体の平均値を求めることができません。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-data-weights-example" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-data-weights-example-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/data-weights-example.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-data-weights-example-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.29: フィルタの設定パネル
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>回答者の人数を考慮して全体の平均値を求めたい場合には，各行を回答者数で重みづけする必要があります。リボンの「<img src="images/assets/menu-data-filter.svg" class="img-fluid" alt="inline"> 重みづけ」をクリックすると，<a href="#fig-data-weights-setting" class="quarto-xref">図&nbsp;<span>3.30</span></a>のような設定パネルが表示されます。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-data-weights-setting" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-data-weights-setting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/data-weights-settings.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-data-weights-setting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.30: フィルタの設定パネル
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>設定パネルの左側は，データに含まれる変数一覧です。ここから「回答者数」を選択し，それをダブルクリック，またはマウスでドラッグして右側の「重みづけの変数」に移動させると，結果ウィンドウに次のように表示され（<a href="#fig-data-weights-result" class="quarto-xref">図&nbsp;<span>3.31</span></a>），以後の分析では回答者数を考慮した値が算出されるようになります。この状態で，「平均スコア」の平均値を求めると，その値は3つの値の平均値ではなく，249人の回答値の平均値になるのです。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-data-weights-result" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-data-weights-result-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/data-weights-result.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-data-weights-result-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.31: フィルタの設定パネル
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="sec-data-filter" class="level2" data-number="3.6">
+<h2 data-number="3.6" class="anchored" data-anchor-id="sec-data-filter"><span class="header-section-number">3.6</span> フィルタ</h2>
+<p>データ分析では，データ全体のうちの一部だけを使って分析したいということもよくあります。たとえば，男性のデータだけを分析したいとか，小学校低学年の児童のデータだけを分析したいとかいうような場合です。そのような場合，分析のたびに全体のデータファイルから特定の行を抜き出し，それを別のデータファイルとして作成するというのも1つの方法ですが，そのような方法はかなり手間がかかりますし，対象データを抜き出す過程でミスが生じる可能性も高くなります。</p>
+<p>jamoviには，そのような場合に便利な<em>フィルタ</em>と呼ばれる機能が搭載されています。フィルタは条件に合致するデータ行だけを表示し，それ以外を非表示にすることができる機能で，フィルタをオンにしている間は，表示されているデータのみが分析の対象となります。また，フィルタはいつでも簡単にオン・オフの切り替えができますので，男女別や学年別にデータファイルを別々にしなくても，フィルタを使えば男女別の分析や特定の学年のみを対象とした分析が簡単に実行できるのです。</p>
+<p>では，これまでに使用してきたサンプルのデータを用いてフィルタを体験してみましょう。ここでは，フィルタを使って男性のデータだけを抽出してみます。</p>
+<p>フィルタを使用するには，リボンの「<img src="images/assets/menu-data-filter.svg" class="img-fluid" alt="inline"> フィルタ」をクリックします。すると，<a href="#fig-data-filter-setting" class="quarto-xref">図&nbsp;<span>3.32</span></a>のような設定パネルが表示されます。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-data-filter-setting" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-data-filter-setting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/data-filter-setting.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-data-filter-setting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.32: フィルタの設定パネル
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>設定パネルの左側にあるボタン（<img src="images/assets/filters-add.svg" class="img-fluid" alt="inline">）はフィルタの追加ボタンです。フィルタは必要に応じて複数設定することができます。その下の目の形をしたアイコン（<img src="images/assets/filters-visible.svg" class="img-fluid" alt="inline">）は，フィルタにあてはまる行だけを表示させるかどうかを切り替えるボタンです。</p>
+<p>画面中央の部分がフィルタの条件式を設定する部分で，最初の関数ボタンとボックスは計算変数や変換変数の場合と基本的には同じです。ただ，ここには計算式ではなく，表示させるデータの条件を示す式を記入します。条件式を複数使用したい場合は，ボックスの右側にある小さいほうの「<img src="images/assets/filters-add.svg" class="img-fluid" alt="inline">」ボタンをクリックすると条件式を追加できます。</p>
+<p>その下の「説明」の部分は，そのフィルタについての説明欄です。後から見返したときにそのフィルタが何のためのものなのかがわからなくならないように，説明をきちんと書いておきましょう。条件式ボックスの右上にあるのは，そのフィルタのオン・オフの切り替えスイッチとフィルタの削除ボタンです。</p>
+<p>では，男性のデータだけを表示させるフィルタを作成しましょう。条件式のボックスに「<code>性別 == 1</code>」と入力してください。このとき，「性別」と「1」の間の等号（=）は2つ連続で入力する必要がある点に注意してください。式を入力して確定すると，スプレッドシートの表示が<a href="#fig-data-filter-gender" class="quarto-xref">図&nbsp;<span>3.33</span></a>のようになります。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-data-filter-gender" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-data-filter-gender-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/data-filter-gender.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-data-filter-gender-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.33: 男性フィルタの設定後
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>「フィルタ1」の列に「<img src="images/assets/correct.svg" class="img-fluid" alt="inline">」が表示されているのがこのフィルタの条件にあてはまるデータ行，「<img src="images/assets/incorrect.svg" class="img-fluid" alt="inline">」が表示されているのがフィルタにはあてはまらないデータ行です。見てわかるように，性別が「男」の行だけ「<img src="images/assets/correct.svg" class="img-fluid" alt="inline">」になっています。また，フィルタ設定パネルあるいはスプレッドシート下部にある<img src="images/assets/filters-visible.svg" class="img-fluid" alt="inline">アイコンをクリックすると，フィルタにあてはまらない行を非表示にすることができます（<a href="#fig-data-filter-on-off" class="quarto-xref">図&nbsp;<span>3.34</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-data-filter-on-off" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-data-filter-on-off-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/data-filter-on-off.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-data-filter-on-off-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.34: フィルタ表示方法の変更
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>フィルタ設定パネルの条件式ボックス右上にあるスイッチでは，フィルタのオン・オフをフィルタごとに個別に切り替え可能です。フィルタを使用しない場合は，忘れずに「オフ」にしておきましょう。</p>
+<p>なお，「20代の女性で〜な人のみ」というような複雑な条件でデータを抽出する場合は，複雑な条件式のフィルタを1つ作るよりも，「20代の女性」，「〜な人」というシンプルなフィルタを作成し，それらを組み合わせて使用するほうがよいでしょう。そうすることで，思いどおりの結果が得られない場合にどのフィルタ条件がおかしいのかを簡単に突き止められるようになります。</p>
+</section>
+<section id="sec-variables-tab" class="level2" data-number="3.7">
+<h2 data-number="3.7" class="anchored" data-anchor-id="sec-variables-tab"><span class="header-section-number">3.7</span> 変数タブの使用</h2>
+<p>ここまでの作業で作成した変数やフィルタは，「変数」タブで一覧することもできます。<a href="#fig-data-variables-tab" class="quarto-xref">図&nbsp;<span>3.35</span></a>は，ここまでに作成した変数やフィルタに「説明」をいくつか追加した状態です。このように，変数タブでは変数名と変数の説明がウィンドウに一覧表示されるので，変数名を英数字にして「説明」欄に日本語で説明を記入した場合や，質問紙調査データで「説明」欄に質問文を入力した場合などには，このタブは重宝することでしょう。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-data-variables-tab" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-data-variables-tab-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/variable-tab.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-data-variables-tab-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.35: 変数タブでの変数一覧
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>変数タブでは，大きな＋ボタンを使用して各種変数を挿入したり追加したりすることも可能です。変数の設定や追加・削除の方法は，データタブのスプレッドシート上での操作と同じなのでここでは省略します。</p>
+</section>
+<section id="sec-practice-handling" class="level2" data-number="3.8">
+<h2 data-number="3.8" class="anchored" data-anchor-id="sec-practice-handling"><span class="header-section-number">3.8</span> 演習：調査票データの処理</h2>
+<p>ここまで，jamoviにおけるデータ操作方法の基本についてひととおり見てきましたので，ここでは実際の分析場面により近い形で実践してみましょう。まず，練習用データファイル（<a href="https://github.com/sbtseiji/jmv_compguide/raw/main/data/omv/basics_data01.omv">basics_data01.omv</a>）をjamoviで開いてください。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-basics-exercise" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-basics-exercise-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/exercise.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-basics-exercise-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.36: 練習用データファイル
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>このデータファイルには，「ID」，「年齢」，「性別」の各変数値と，「Q1」から「Q7」までの回答値が入力されています（<a href="#fig-basics-exercise" class="quarto-xref">図&nbsp;<span>3.36</span></a>）。「Q1」から「Q7」は，それぞれ「外向性」を測定する心理尺度の回答データで，いずれも「まったくそう思わない（1）」から「とてもそう思う（7）」までの7段階で回答されています。「Q1」から「Q7」の質問内容は，変数タブで確認することができます（<a href="#fig-basics-exercise-variables" class="quarto-xref">図&nbsp;<span>3.37</span></a>）<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-basics-exercise-variables" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-basics-exercise-variables-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/exercise-variables.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-basics-exercise-variables-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.37: サンプルデータの変数一覧
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>この練習データを用い，調査票データの分析場面でよく用いられる次の処理について実践してみましょう<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>。</p>
+<ul>
+<li>逆転項目の処理を行う</li>
+<li>尺度得点を算出する</li>
+<li>尺度得点に基づいて対象者をグループに分割する</li>
+</ul>
+<section id="sub:basics-reverse-items" class="level3" data-number="3.8.1">
+<h3 data-number="3.8.1" class="anchored" data-anchor-id="sub:basics-reverse-items"><span class="header-section-number">3.8.1</span> 逆転項目の処理</h3>
+<p>一般に，リカート法<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>などを用いた心理尺度では，1つの測定概念について複数の質問を用意して測定を行います。たとえば，「外向性」を測定したい場合には，「初対面の人とでも会話を楽しめる」や「いろんな人と出会うのは楽しい」といった，外向性の高さに関連する質問文を複数用意して，そのすべてに「まったくそう思わない（1）」から「とてもそう思う（7）」の7段階で回答させるということを行うわけです。</p>
+<p>この際，それらの質問文の中には「よく知らない人との交流は苦手だ」のような，外向性の高さとは逆の内容の文が含まれていることがあります。このように，本来測定したいものとは逆の内容を含む質問文のことを<em>逆転項目</em>といいます（<a href="#fig-basics-exercise-reverse" class="quarto-xref">図&nbsp;<span>3.38</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-basics-exercise-reverse" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-basics-exercise-reverse-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/exercise-reverse.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-basics-exercise-reverse-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.38: 逆転項目
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>この練習データでは，偶数番号の質問（Q2，Q4，Q6）が逆転項目になっています。この場合，「Q1」や「Q3」の質問に対して<code>6</code>や<code>7</code>と回答した人は外向性が高いことになるのですが，「Q2」や「Q4」に「6」や「7」と回答した人は外向性が低いことを意味します。このように，逆転項目は他の項目とは点数の方向が逆になるため，その扱いには注意が必要です。通常，こうした逆転項目の回答値は，それ以外の回答値と向きがそろうように変換したうえで分析に用います。</p>
+<p>jamoviでは，逆転項目は「計算変数」または「変換変数」を用いて処理することができます。どちらを用いても構いませんが，逆転項目が複数ある場合には，変換変数を用いたほうが手軽に処理できるでしょう。そこで，ここでは変換変数を用いて逆転項目を処理することにします。</p>
+<section id="変換変数の作成" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="変換変数の作成">変換変数の作成</h4>
+<p>それでは，「Q2」について逆転項目の処理を行いましょう。ここでは，「Q2」のすぐ後ろに，回答値を逆転した変換変数「Q2.R」を作成します。</p>
+<p>まず，「Q2」の列名のところをクリックして，「Q2」の列を選択します（<a href="#fig-basics-exercise-select-col" class="quarto-xref">図&nbsp;<span>3.39</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-basics-exercise-select-col" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-basics-exercise-select-col-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/exercise-select-col.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-basics-exercise-select-col-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.39: 列の選択
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>その状態でデータタブの「変数」にある「<img src="images/assets/menu-data-transform.svg" class="img-fluid" alt="inline"> 変換」ボタンをクリックします（<a href="#fig-basics-exercise-add-transform" class="quarto-xref">図&nbsp;<span>3.40</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-basics-exercise-add-transform" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-basics-exercise-add-transform-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/exercise-add-transform.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-basics-exercise-add-transform-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.40: 変換変数の追加
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>すると，<a href="#fig-basics-exercise-set-transform" class="quarto-xref">図&nbsp;<span>3.41</span></a>のような変換変数の設定パネルが表示されますので，作成した変換変数の名前を「Q2.R」に設定しましょう。このとき，「変換元の変数」の部分が「Q2」になっていることを確認してください。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-basics-exercise-set-transform" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-basics-exercise-set-transform-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/exercise-set-transform.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-basics-exercise-set-transform-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.41: 変換変数名の設定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>次に，「使用する変換」のメニューから「変換を新規作成…」を選択して実行します（<a href="#fig-basics-exercise-using-transform" class="quarto-xref">図&nbsp;<span>3.42</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-basics-exercise-using-transform" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-basics-exercise-using-transform-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/exercise-using-transform.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-basics-exercise-using-transform-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.42: 「変換」の作成
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>すると，<a href="#fig-basics-exercise-transform-name" class="quarto-xref">図&nbsp;<span>3.43</span></a>のような「変換」の設定パネルが表示されます。再利用の際にわかりやすいように，この変換の名前を「逆転項目」にしましょう。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-basics-exercise-transform-name" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-basics-exercise-transform-name-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/exercise-transform-name.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-basics-exercise-transform-name-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.43: 変換名の設定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>そして「変換条件を追加」の数式ボックスに逆転のための変換式を設定します。</p>
+<p>5段階尺度や7段階尺度の場合，逆転項目の変換式は次の形で求めることができます。</p>
+<p><span class="math display">\[
+\text{逆転項目の回答値} = (\text{回答段階の最大値}+\text{回答段階の最小値}) - \text{元の回答値}
+\]</span></p>
+<p>練習データでは，「Q2」は「1」から「7」までの値で回答してもらう形式ですので，逆転項目を処理する際の変換式は次のようになります。</p>
+<p><span class="math display">\[
+\text{逆転項目の回答値} = (7+1) - \text{元の回答値} = 8 - \text{元の回答値}
+\]</span></p>
+<p>そこで，変換式の部分を次のように設定します（<a href="#fig-basics-exercise-transform-formula" class="quarto-xref">図&nbsp;<span>3.44</span></a>）。</p>
+<div class="jmvformula">
+<p>= 8 - $source</p>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-basics-exercise-transform-formula" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-basics-exercise-transform-formula-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/exercise-transform-formula.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-basics-exercise-transform-formula-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.44: 変換式の設定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>画面右側の<img src="images/assets/action-back-circle-d.svg" class="img-fluid" alt="inline">をクリックして変換の設定パネルを閉じ，<img src="images/assets/action-back-circle-u.svg" class="img-fluid" alt="inline">で変数設定パネルを閉じると，「Q2」のすぐ後ろの列に「Q2.R」という変換変数が作成されていることが確認できます （<a href="#fig-basics-exercise-trans-q2" class="quarto-xref">図&nbsp;<span>3.45</span></a>）。この変数が変換変数であることは，変数名の部分の右肩に小さな赤丸がついていることから判断できます。</p>
+<p>この変数の値を確認すると，「Q2」の値が「1」の場合には「Q2.R」は「7」，「Q2」の値が「7」の場合には「Q2.R」は「1」というように，値が逆転しているのがわかると思います。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-basics-exercise-trans-q2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-basics-exercise-trans-q2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/exercise-trans-q2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-basics-exercise-trans-q2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.45: 作成した変換変数とその目印
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><code>Q2</code>の逆転処理はこれでおしまいです。次は「Q4」の逆転処理を行いましょう。「Q4」の列を選択して「<img src="images/assets/menu-data-transform.svg" class="img-fluid" alt="inline"> 変換」をクリックすると，再び変換変数の設定パネルが表示されます。新しく作成した変換変数の名前を「Q4.R」に設定したら，「変換元の変数」の部分が「Q4」になっていることを確認し，「使用する変換」のメニューをクリックしてください。すると，メニュー項目の中に，先ほど作成した「逆転項目」があるはずです （<a href="#fig-basics-exercise-set-transform-q4" class="quarto-xref">図&nbsp;<span>3.46</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-basics-exercise-set-transform-q4" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-basics-exercise-set-transform-q4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/exercise-set-transform-q4.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-basics-exercise-set-transform-q4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.46: 作成済みの変換を他の変数に適用
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>この「逆転項目」を選択して変数設定パネルを閉じれば「Q4」の逆転処理は完了です。このように，一度作成した変換式は繰り返し利用できますので，逆転項目が複数ある場合には変換変数で逆転処理を行うのが便利です。</p>
+<p>先ほどと同様の手順で，「Q6」についても逆転処理を行ってください。これで逆転項目の処理はおしまいです。</p>
+</section>
+</section>
+<section id="sub:basics2-scale-score" class="level3" data-number="3.8.2">
+<h3 data-number="3.8.2" class="anchored" data-anchor-id="sub:basics2-scale-score"><span class="header-section-number">3.8.2</span> 尺度得点の算出</h3>
+<p>「外向性」などの単一の概念について複数の質問文を用いて測定する場合には，それら複数の質問文に対する回答値を合計または平均し，それを<em>尺度得点</em>として用いるのが一般的です。ここでは，「Q1」から「Q7」までの回答の合計値を尺度得点として算出することにしましょう。なお，その際，「Q2」や「Q4」などの逆転項目については逆転処理を行った後の変数値（「Q2.R」や「Q4.R」など）を用いる必要がある点に注意してください。</p>
+<p>この「外向性尺度」の尺度得点は，データの一番最後の列に新たな計算変数として作成しましょう。データタブの「変数」の欄にある「<img src="images/assets/menu-variable-add.svg" class="img-fluid" alt="inline"> 追加」を使用して，新たな「計算変数」を「<img src="images/assets/menu-computed-append.svg" class="img-fluid" alt="inline"> 追加」してください （<a href="#fig-basics-exercise-add-compvar" class="quarto-xref">図&nbsp;<span>3.47</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-basics-exercise-add-compvar" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-basics-exercise-add-compvar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/exercise-add-compvar.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-basics-exercise-add-compvar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.47: 計算変数の追加
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>作成された計算変数の変数名部分をダブルクリックすると，変数の設定パネルが表示されます。変数名は「N」になっているかと思いますが，このままだと何の値か分からないので，変数名を「外向性」に変更します （<a href="#fig-basics-exercise-gaiko" class="quarto-xref">図&nbsp;<span>3.48</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-basics-exercise-gaiko" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-basics-exercise-gaiko-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/exercise-gaiko.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-basics-exercise-gaiko-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.48: 計算変数の名前を設定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>変数名の設定ができたら，その下の計算式の部分に，変数値を合計するための式を入力します。ここでは尺度得点として回答値の合計を用いるので，関数ボタン（<img src="images/assets/filters-formula.svg" class="img-fluid" alt="inline">）で表示される関数の中から「SUM」を探してダブルクリックします （<a href="#fig-basics-exercise-sum" class="quarto-xref">図&nbsp;<span>3.49</span></a>）。この「SUM」という関数は，括弧の中に指定された値の合計値を求める関数です<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a>。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-basics-exercise-sum" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-basics-exercise-sum-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/exercise-sum.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-basics-exercise-sum-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.49: 関数一覧からSUM関数を入力する
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>数式ボックスの中に「<code>= SUM()</code>」と入力されているのを確認したら，括弧の間に合計対象となる変数を記入していきます。この際，変数名はキーボードから入力してもよいですが，関数の右側に表示される変数一覧から必要な変数名をダブルクリックして入力したほうが，タイプミスの心配もなく，わかりやすいでしょう。今回，合計値の対象となるのは，「Q1」，「Q2.R」，「Q3」，「Q4.R」，「Q5」，「Q6.R」，「Q7」の7つの変数です。各変数の区切りにはコンマ（,）を使用します。変数名を1つ入力したらコンマ（,）を入力し，次の変数名を入力するようにしてください。また，コンマは必ず日本語入力をオフにした状態で入力してください。</p>
+<p>完成した外向性得点の算出式は次のようになります （<a href="#fig-basics-exercise-sum-complete" class="quarto-xref">図&nbsp;<span>3.50</span></a>）。</p>
+<div class="jmvformula">
+<p>= SUM(Q1, Q2.R, Q3, Q4.R, Q5, Q6.R, Q7)</p>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-basics-exercise-sum-complete" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-basics-exercise-sum-complete-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/exercise-sum-complete.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-basics-exercise-sum-complete-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.50: SUM関数を完成させる
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>式の入力が終わったら，画面右の<img src="images/assets/action-back-circle-u.svg" class="img-fluid" alt="inline">をクリックして変数設定パネルを閉じます。これで各対象者の外向性得点（合計値）が算出されました （<a href="#fig-basics-exercise-sumscore" class="quarto-xref">図&nbsp;<span>3.51</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-basics-exercise-sumscore" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-basics-exercise-sumscore-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/exercise-sumscore.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-basics-exercise-sumscore-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.51: 算出された外向性得点
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="sub:basics2-split-groups" class="level3" data-number="3.8.3">
+<h3 data-number="3.8.3" class="anchored" data-anchor-id="sub:basics2-split-groups"><span class="header-section-number">3.8.3</span> グループへの分割</h3>
+<p>実際の分析場面では，算出された尺度得点を元に，対象者を外向性が高い群と低い群に分けて分析するといったこともよく行われます。ここでは，外向性得点の平均値を基準に，平均値以上の人を外向性「高群」，平均値未満の人を外向性「低群」としてグループ分けする方法についてみていきます。</p>
+<p>対象者を外向性の高・低2群に分割した結果は計算変数に格納しますので，「変数」の「<img src="images/assets/menu-variable-add.svg" class="img-fluid" alt="inline"> 追加」から，新たな「計算変数」を「<img src="images/assets/menu-computed-append.svg" class="img-fluid" alt="inline"> 追加」してください （<a href="#fig-basics-exercise-grouping" class="quarto-xref">図&nbsp;<span>3.52</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-basics-exercise-grouping" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-basics-exercise-grouping-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/exercise-grouping.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-basics-exercise-grouping-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.52: グループ分け用の計算変数を追加
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>そして新しく作成した計算変数の設定パネルを開き，変数名を「群」に変更しましょう （<a href="#fig-basics-exercise-group-name" class="quarto-xref">図&nbsp;<span>3.53</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-basics-exercise-group-name" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-basics-exercise-group-name-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/exercise-group-name.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-basics-exercise-group-name-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.53: 計算変数の名前を<code>群</code>に設定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>続いて，数式ボックスにグループ分けのための式を入力します。関数ボタン（<img src="images/assets/filters-formula.svg" class="img-fluid" alt="inline">）で表示される関数一覧の中から，「IF」を選択してください （<a href="#fig-basics-exercise-group-if" class="quarto-xref">図&nbsp;<span>3.54</span></a>）。このIF関数は，条件式の結果に応じて異なる値を設定できる関数です。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-basics-exercise-group-if" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-basics-exercise-group-if-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/exercise-group-if.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-basics-exercise-group-if-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.54: 計算式でIF関数を使用
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>この「IF( )」の括弧の中には，次のように「条件式」，「条件式にあてはまる場合の値」，「条件式にあてはまらない場合の値」の3つをコンマで区切って指定します。</p>
+<pre><code>IF(条件式, あてはまる場合の値, あてはまらない場合の値)</code></pre>
+<p>今回は，外向性得点の平均値を基準にして対象者を外向性高群と低群の2群に分割したいので，「条件式」の部分には各対象者の外向性得点が平均値以上であるかどうかを判断する式（<span class="math inline">\(\text{外向性得点} \geqq \text{外向性得点の平均値}\)</span>）を記入することになります。</p>
+<p>そこでまず，変数名一覧から「外向性」をダブルクリックして括弧内に入力し，続けてキーボードから<code>&gt;=</code>と入力します （<a href="#fig-basics-exercise-group-if-formula" class="quarto-xref">図&nbsp;<span>3.55</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-basics-exercise-group-if-formula" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-basics-exercise-group-if-formula-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/exercise-group-if-formula.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-basics-exercise-group-if-formula-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.55: 条件式の入力
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>さらに，関数一覧から「VMEAN」を選択して入力します （<a href="#fig-basics-exercise-group-vmean" class="quarto-xref">図&nbsp;<span>3.56</span></a>）。この「VMEAN」は，指定した変数の平均値を算出する関数です<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-basics-exercise-group-vmean" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-basics-exercise-group-vmean-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/exercise-group-vmean.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-basics-exercise-group-vmean-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.56: 全体の平均値の算出式を入力
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>そしてこの「VMEAN」関数の括弧の中に「外向性」を指定します （<a href="#fig-basics-exercise-group-vmean-gaiko" class="quarto-xref">図&nbsp;<span>3.57</span></a>）。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-basics-exercise-group-vmean-gaiko" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-basics-exercise-group-vmean-gaiko-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/exercise-group-vmean-gaiko.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-basics-exercise-group-vmean-gaiko-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.57: 平均値を算出する変数を指定
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>この「<code>外向性 &gt;= VMEAN(外向性)</code>」の式が，「<span class="math inline">\(\text{外向性得点} \geqq \text{外向性得点の平均値}\)</span>」を意味します。この条件式に続けて，条件式にあてはまる場合の値として「高群」，あてはまらない場合の値として「低群」を，それぞれコンマ（,）で区切って入力します （<a href="#fig-basics-exercise-group-if-full" class="quarto-xref">図&nbsp;<span>3.58</span></a>）。このとき，変数値に「高群」や「低群」のような文字を用いる場合には，その値を引用符（““）で括る必要がありますので注意してください。</p>
+<pre><code>
+=IF(外向性 &gt;= VMEAN(外向性), "高群", "低群")
+</code></pre>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-basics-exercise-group-if-full" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-basics-exercise-group-if-full-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/exercise-group-if-full.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-basics-exercise-group-if-full-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.58: グループ分けの式を完成させる
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>式を完成させて変数設定パネルを閉じると，新しく作成した「群」変数に「高群」または「低群」が値として入力されているのを確認することができます （<a href="#fig-basics-exercise-group-var" class="quarto-xref">図&nbsp;<span>3.59</span></a>）。条件式の部分がやや難しく感じられたかもしれませんが，計算変数ではこのようにしてデータをグループ分けすることもできるのです。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-basics-exercise-group-var" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" data-fig-pos="!ht">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-basics-exercise-group-var-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/basics/exercise-group-var.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-fig-pos="!ht">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-basics-exercise-group-var-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;3.59: グループ分けの変数の完成
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>このような，逆転項目の回答値の処理や尺度得点の算出，グループ分けといった処理は，Excelなどの表計算ソフトで行うこともできますし，そのほうが簡単だと思う人もいるかもしれません。しかし，表計算ソフトで処理をした場合，元のデータに入力ミスが見つかったなどの理由でデータに修正が生じた際には，これらの処理をやり直さなければなりません。</p>
+<p>これに対し，jamoviでこれらの処理を行った場合には，仮に元のデータに修正が生じたとしても，計算変数や変換変数の値は自動的に最新の内容に更新されるため，計算し直す必要がありません。分析データを確実に最新の状態に保てることは，jamoviでデータ処理を行う大きな利点といえます。</p>
+
+
+</section>
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p>現バージョンのjamoviには，さまざまな散布図を作成するための<code>scatr</code>という拡張モジュールが標準でインストールされており，このモジュールをオンにすると探索ツールに「Scatterplot（散布図）」と「Pareto Chart（パレート図）」というメニュー項目が追加されます。これらの項目については，本書では省略します。<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>厳密には<a href="https://katex.org/docs/supported.html">KaTeX</a>というシステムの書式を使用しています。<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>この他に<em>結果変数</em>などもありますが，これらは分析によって自動的に作成されるもので，基本的に編集できません。そのため，ここの説明には含めません。<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>この尺度は，この練習用に作成した架空のものです。<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>ここでとりあげる3つの処理のうち，最初の2つについてはjamoviの分析ツールを使用して行うこともできます。<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>各質問文に対し「あてはまらない」，「どちらでもない」，「あてはまる」など，複数の段階で回答させて数量化する方法<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>尺度得点に平均値を用いる場合には，「MEAN」関数を使用します。これらの関数の詳細については付録の<a href="#sec-ch-appendix">関数一覧</a>を参照してください。<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn8"><p>平均値を算出する関数には「MEAN」と「VMEAN」の2つがありますが，「MEAN」は複数の変数値の平均値を「各対象者ごと」に計算するのに対し，「VMEAN」は1つの変数値について「対象者全体」での平均値を算出する点が異なります。<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./01-getting-started.html" class="pagination-link" aria-label="jamoviの導入">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">jamoviの導入</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./03-basics2.html" class="pagination-link" aria-label="分析と編集">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">分析と編集</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/sbtseiji/jmv_compguide/blob/main/02-basics.qmd" class="toc-action"><i class="bi bi-github"></i>ソースコード</a></li></ul></div></div></div></footer><script src="site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

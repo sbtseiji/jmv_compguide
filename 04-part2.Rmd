@@ -1,5 +1,0 @@
-# (PART) 分析編 {-#part-two}
-
-```{r, echo =F, message=FALSE}
-  source("rscripts/_utility.R")
-```
